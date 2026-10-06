@@ -76,12 +76,12 @@ export function useSignIn({ onSuccess }: UseSignInOptions) {
         },
     })
 
-    function submit(credentials: Credentials): void {
+    function signInOnce(credentials: Credentials): void {
         if (credentialsRef.current !== null) return
 
         credentialsRef.current = credentials
         mutation.mutate()
     }
 
-    return { signIn: submit, isPending: mutation.isPending, error: mutation.error }
+    return { signIn: signInOnce, isPending: mutation.isPending, error: mutation.error }
 }

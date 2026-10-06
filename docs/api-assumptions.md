@@ -75,7 +75,7 @@ the `X-API-KEY` like every call.
 | Item          | Assumption                                                                            | Source                                       |
 | ------------- | ------------------------------------------------------------------------------------- | -------------------------------------------- |
 | Path          | `/login` under the Admin base path                                                    | spec: Inspector `[Route("login")]`           |
-| Request       | `username`, `password`; no `tenantId` (open question #6)                              | handoff: "Login (username, password)"        |
+| Request       | `username` trimmed, `password` exactly as typed; no `tenantId` (open question #6)     | handoff: "Login (username, password)"        |
 | Response      | `token` plus `user`, like the Inspector's `{ token, inspector }`                      | spec: Inspector `Login`                      |
 | User fields   | `adminUserId`, `tenantId`, `username`, `name`, `surname`                              | assumed; `name`/`surname` as on INSPECTORS   |
 | Wrong login   | `401` with no body; the UI does not say which value is wrong                          | spec: Inspector `Login` returns Unauthorized |

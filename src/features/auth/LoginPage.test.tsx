@@ -3,13 +3,14 @@ import { http, HttpResponse } from 'msw'
 import { describe, expect, it } from 'vitest'
 
 import { mockAdminCredentials } from '@/mocks/adminUsers'
-import { config } from '@/shared/config'
+import { apiUrl } from '@/mocks/url'
 import { hr } from '@/shared/i18n/hr'
+import { paths } from '@/shared/paths'
 import { expectNoAxeViolations } from '@/test/axe'
 import { renderRoute } from '@/test/render'
 import { server } from '@/test/server'
 
-const loginUrl = `${config.apiBaseUrl}/api/v1/admin/login`
+const loginUrl = apiUrl('/login')
 const loginResponse = {
     token: 'jwt',
     user: { adminUserId: 1, tenantId: 1, username: 'ana', name: 'Ana', surname: 'Kovač' },
@@ -35,7 +36,7 @@ async function fillAndSubmit(
 
 describe('LoginPage', () => {
     it('shows the logo heading and the form in focus order', async () => {
-        const { user } = renderRoute('/prijava')
+        const { user } = renderRoute(paths.login)
 
         expect(screen.getByRole('heading', { level: 1, name: hr.app.name })).toBeInTheDocument()
         expect(screen.getByRole('form', { name: hr.app.name })).toBeInTheDocument()
@@ -44,6 +45,10 @@ describe('LoginPage', () => {
         expect(getForm().username).toHaveFocus()
         await user.tab()
         expect(getForm().password).toHaveFocus()
+        await user.tab()
+        expect(screen.getByRole('button', { name: hr.login.showPassword })).toHaveFocus()
+        await user.tab()
+        expect(getForm().submit).toHaveFocus()
     })
 
     it('shows a required message on each empty field and sends nothing', async () => {
@@ -55,7 +60,7 @@ describe('LoginPage', () => {
                 return HttpResponse.json(loginResponse)
             }),
         )
-        const { user } = renderRoute('/prijava')
+        const { user } = renderRoute(paths.login)
 
         await user.click(getForm().submit)
 
@@ -69,7 +74,7 @@ describe('LoginPage', () => {
     })
 
     it('treats a username of only spaces as empty', async () => {
-        const { user } = renderRoute('/prijava')
+        const { user } = renderRoute(paths.login)
 
         await fillAndSubmit(user, { username: '   ', password: 'x' })
 
@@ -77,7 +82,7 @@ describe('LoginPage', () => {
     })
 
     it('validates a field when it loses focus and clears the message once it is filled', async () => {
-        const { user } = renderRoute('/prijava')
+        const { user } = renderRoute(paths.login)
         const { username } = getForm()
 
         await user.click(username)
@@ -90,7 +95,7 @@ describe('LoginPage', () => {
     })
 
     it('shows and hides the password with a pressed toggle', async () => {
-        const { user } = renderRoute('/prijava')
+        const { user } = renderRoute(paths.login)
         const toggle = screen.getByRole('button', { name: hr.login.showPassword })
 
         expect(getForm().password).toHaveAttribute('type', 'password')
@@ -113,24 +118,24 @@ describe('LoginPage', () => {
                 return HttpResponse.json(loginResponse)
             }),
         )
-        const { user, router } = renderRoute('/prijava')
+        const { user, router } = renderRoute(paths.login)
 
         await fillAndSubmit(user, { username: ' ana ', password: ' tajna 1 ' })
 
         await waitFor(() => {
-            expect(router.state.location.pathname).toBe('/')
+            expect(router.state.location.pathname).toBe(paths.home)
         })
         // The username is trimmed; the password is sent exactly as typed.
         expect(body).toEqual({ username: 'ana', password: ' tajna 1 ' })
     })
 
     it('signs in with the mock account', async () => {
-        const { user, router } = renderRoute('/prijava')
+        const { user, router } = renderRoute(paths.login)
 
         await fillAndSubmit(user, mockAdminCredentials)
 
         await waitFor(() => {
-            expect(router.state.location.pathname).toBe('/')
+            expect(router.state.location.pathname).toBe(paths.home)
         })
     })
 
@@ -145,11 +150,16 @@ describe('LoginPage', () => {
             () => new HttpResponse(null, { status: 429 }),
             hr.login.errors.rateLimited,
         ],
+        [
+            'a rejected request',
+            () => new HttpResponse(null, { status: 400 }),
+            hr.login.errors.server,
+        ],
         ['a server error', () => new HttpResponse(null, { status: 500 }), hr.login.errors.server],
         ['a network error', () => HttpResponse.error(), hr.login.errors.network],
     ])('announces %s and keeps the typed values', async (_, resolver, message) => {
         server.use(http.post(loginUrl, resolver))
-        const { user } = renderRoute('/prijava')
+        const { user } = renderRoute(paths.login)
 
         await fillAndSubmit(user, { username: 'ana', password: 'kriva' })
 
@@ -164,7 +174,7 @@ describe('LoginPage', () => {
     })
 
     it('answers the sixth attempt in a minute with the rate-limit message', async () => {
-        const { user } = renderRoute('/prijava')
+        const { user } = renderRoute(paths.login)
         const { username, password, submit } = getForm()
         await user.type(username, 'ana')
         await user.type(password, 'kriva')
@@ -187,18 +197,21 @@ describe('LoginPage', () => {
                 return new Promise<never>(() => undefined)
             }),
         )
-        const { user } = renderRoute('/prijava')
+        const { user } = renderRoute(paths.login)
 
         await fillAndSubmit(user, { username: 'ana', password: 'tajna' })
 
         expect(getForm().submit).toBeDisabled()
         await user.type(getForm().password, '{Enter}')
+        await user.click(getForm().submit)
+        // Give a stray second request time to reach the handler.
+        await new Promise((resolve) => setTimeout(resolve, 50))
         expect(requests).toBe(1)
     })
 
     it('keeps the password out of the query client', async () => {
         server.use(http.post(loginUrl, () => new HttpResponse(null, { status: 401 })))
-        const { user, queryClient } = renderRoute('/prijava')
+        const { user, queryClient } = renderRoute(paths.login)
 
         await fillAndSubmit(user, { username: 'ana', password: 'tajna-123' })
         await screen.findByRole('alert')
@@ -210,7 +223,7 @@ describe('LoginPage', () => {
 
     it('has no axe violations, with and without an error', async () => {
         server.use(http.post(loginUrl, () => new HttpResponse(null, { status: 401 })))
-        const { user, container } = renderRoute('/prijava')
+        const { user, container } = renderRoute(paths.login)
 
         await expectNoAxeViolations(container)
 
