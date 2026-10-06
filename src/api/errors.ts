@@ -15,8 +15,8 @@ export class ApiError extends Error {
     readonly kind: ApiErrorKind
     readonly status: number | undefined
 
-    constructor(kind: ApiErrorKind, status?: number, options?: ErrorOptions) {
-        super(status === undefined ? kind : `${kind} (HTTP ${status})`, options)
+    constructor(kind: ApiErrorKind, { status, cause }: { status?: number; cause?: unknown } = {}) {
+        super(status === undefined ? kind : `${kind} (HTTP ${status})`, { cause })
         this.kind = kind
         this.status = status
     }

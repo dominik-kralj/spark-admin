@@ -37,12 +37,12 @@ export async function request<TSchema extends z.ZodType>(
         })
     } catch (error) {
         if (isAbort(error, signal)) throw error
-        throw new ApiError('network', undefined, { cause: error })
+        throw new ApiError('network', { cause: error })
     }
 
     if (!response.ok) {
         // The kind comes from the status alone, so a non-JSON body is fine to ignore.
-        throw new ApiError(kindForStatus(response.status), response.status)
+        throw new ApiError(kindForStatus(response.status), { status: response.status })
     }
 
     let data: unknown
@@ -51,12 +51,12 @@ export async function request<TSchema extends z.ZodType>(
         data = text === '' ? undefined : JSON.parse(text)
     } catch (error) {
         if (isAbort(error, signal)) throw error
-        throw new ApiError('invalidResponse', response.status, { cause: error })
+        throw new ApiError('invalidResponse', { status: response.status, cause: error })
     }
 
     const parsed = schema.safeParse(data)
     if (!parsed.success) {
-        throw new ApiError('invalidResponse', response.status, { cause: parsed.error })
+        throw new ApiError('invalidResponse', { status: response.status, cause: parsed.error })
     }
 
     return parsed.data
