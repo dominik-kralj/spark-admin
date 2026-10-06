@@ -161,8 +161,15 @@ deduplicates); read `next/dynamic` as `React.lazy`.
   (`expectNoAxeViolations` from `src/test/axe.ts`).
 - Render with `renderWithProviders` from `src/test/render.tsx`, which uses the
   real providers and returns a `user` from user-event.
-- Responsive behaviour that jsdom can't see (card layout at 320 px, drawers)
-  gets checked in a real browser before the milestone report.
+  Two layers, and every feature gets both:
+
+- **Testing Library + MSW** (`pnpm test`, part of `pnpm check`): the bulk.
+  Every form path, every screen state, normalisation, dialogs, axe.
+- **Playwright** (`pnpm e2e`, run before each milestone report, not in
+  `pnpm check`): what jsdom can't see. One main journey per feature at phone
+  and desktop widths, responsive layout (cards, drawers), focus movement,
+  touch targets, axe in a real browser. The suite is set up with the first
+  feature (M1, login journey).
 
 ## Glossary
 
