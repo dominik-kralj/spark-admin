@@ -81,17 +81,61 @@ describe('LoginPage', () => {
         expect(getForm().username).toHaveAccessibleDescription(hr.login.usernameRequired)
     })
 
-    it('validates a field when it loses focus and clears the message once it is filled', async () => {
+    it('shows no field error on blur, only on submit, and clears it as the user types', async () => {
         const { user } = renderRoute(paths.login)
-        const { username } = getForm()
+        const { username, submit } = getForm()
 
         await user.click(username)
         await user.tab()
+        expect(username).not.toHaveAccessibleDescription()
+
+        await user.click(submit)
         expect(username).toHaveAccessibleDescription(hr.login.usernameRequired)
 
         await user.type(username, 'ana')
         expect(username).not.toHaveAccessibleDescription()
         expect(username).not.toHaveAttribute('aria-invalid')
+    })
+
+    it('keeps the error on screen while a retry is pending', async () => {
+        let requests = 0
+        server.use(
+            http.post(loginUrl, () => {
+                requests += 1
+                if (requests === 1) return new HttpResponse(null, { status: 401 })
+
+                return new Promise<never>(() => undefined)
+            }),
+        )
+        const { user } = renderRoute(paths.login)
+
+        await fillAndSubmit(user, { username: 'ana', password: 'kriva' })
+        await screen.findByRole('alert')
+        await user.click(getForm().submit)
+
+        expect(getForm().submit).toBeDisabled()
+        expect(screen.getByRole('alert')).toHaveTextContent(hr.login.errors.unauthorized)
+    })
+
+    it('replaces the error and moves focus to it again after a failed retry', async () => {
+        let requests = 0
+        server.use(
+            http.post(loginUrl, () => {
+                requests += 1
+
+                return new HttpResponse(null, { status: requests === 1 ? 401 : 500 })
+            }),
+        )
+        const { user } = renderRoute(paths.login)
+
+        await fillAndSubmit(user, { username: 'ana', password: 'kriva' })
+        await screen.findByRole('alert')
+        await user.click(getForm().submit)
+
+        await waitFor(() => {
+            expect(screen.getByRole('alert')).toHaveTextContent(hr.login.errors.server)
+        })
+        expect(screen.getByRole('alert')).toHaveFocus()
     })
 
     it('shows and hides the password with a pressed toggle', async () => {

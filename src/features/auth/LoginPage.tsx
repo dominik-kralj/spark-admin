@@ -31,30 +31,37 @@ export function LoginPage() {
     } = useForm({
         resolver: zodResolver(loginFormSchema),
         defaultValues: emptyLoginForm,
-        mode: 'onTouched',
+        mode: 'onSubmit',
+        reValidateMode: 'onChange',
     })
-    const { signIn, isPending, error } = useSignIn({
+    const { signIn, isPending, failure } = useSignIn({
         onSuccess: () => {
             void navigate(paths.home, { replace: true })
         },
     })
 
-    const showError = error !== null && !isPending
-
     return (
-        <Flex as="main" minH="100dvh" align="center" justify="center" p="6" bg="bg">
+        <Flex
+            as="main"
+            minH="100dvh"
+            justify="center"
+            p="6"
+            pt={{ base: '24', md: '28vh' }}
+            bg="bg"
+        >
             <Stack asChild w="full" maxW="360px" gap="5">
                 <form
                     method="post"
                     noValidate
                     aria-labelledby={headingId}
-                    aria-describedby={showError ? errorId : undefined}
+                    aria-describedby={failure ? errorId : undefined}
                     onSubmit={(event) => void handleSubmit(signIn)(event)}
                 >
                     <LoginHeading id={headingId} />
 
-                    {showError && (
+                    {failure && (
                         <Alert.Root
+                            key={failure.attempt}
                             ref={focusOnMount}
                             id={errorId}
                             role="alert"
@@ -65,7 +72,8 @@ export function LoginPage() {
                                 <CircleAlert />
                             </Alert.Indicator>
                             <Alert.Description>
-                                <strong>{hr.login.errorTitle}</strong> {loginErrorMessage(error)}
+                                <strong>{hr.login.errorTitle}</strong>{' '}
+                                {loginErrorMessage(failure.error)}
                             </Alert.Description>
                         </Alert.Root>
                     )}

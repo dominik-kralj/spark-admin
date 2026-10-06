@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { z } from 'zod'
 
 import { request } from './client'
@@ -52,6 +52,11 @@ export async function signIn(credentials: Credentials): Promise<Session> {
     }
 }
 
+export interface SignInFailure {
+    error: Error
+    attempt: number
+}
+
 interface UseSignInOptions {
     onSuccess: (session: Session) => void
 }
@@ -59,6 +64,7 @@ interface UseSignInOptions {
 export function useSignIn({ onSuccess }: UseSignInOptions) {
     // A ref, not mutation variables, so the password never enters the mutation cache.
     const credentialsRef = useRef<Credentials | null>(null)
+    const [failure, setFailure] = useState<SignInFailure | null>(null)
     const mutation = useMutation({
         mutationFn: () => {
             if (credentialsRef.current === null) {
@@ -67,7 +73,13 @@ export function useSignIn({ onSuccess }: UseSignInOptions) {
 
             return signIn(credentialsRef.current)
         },
-        onSuccess,
+        onSuccess: (session) => {
+            setFailure(null)
+            onSuccess(session)
+        },
+        onError: (error) => {
+            setFailure((previous) => ({ error, attempt: (previous?.attempt ?? 0) + 1 }))
+        },
         onSettled: () => {
             credentialsRef.current = null
         },
@@ -80,5 +92,5 @@ export function useSignIn({ onSuccess }: UseSignInOptions) {
         mutation.mutate()
     }
 
-    return { signIn: signInOnce, isPending: mutation.isPending, error: mutation.error }
+    return { signIn: signInOnce, isPending: mutation.isPending, failure }
 }
