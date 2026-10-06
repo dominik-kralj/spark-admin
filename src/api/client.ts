@@ -7,7 +7,7 @@ import { getAccessToken } from './session'
 
 const basePath = '/api/v1/admin'
 
-export type QueryValue = string | number | boolean | null | undefined
+type QueryValue = string | number | boolean | null | undefined
 
 interface RequestOptions<TSchema extends z.ZodType> {
     method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
@@ -79,6 +79,10 @@ function buildUrl(path: string, query: Record<string, QueryValue> | undefined): 
     return url.toString()
 }
 
+/**
+ * Once the caller has aborted, whatever fetch or the body read throws is the
+ * cancellation, so it passes through for TanStack Query rather than being wrapped.
+ */
 function isAbort(error: unknown, signal: AbortSignal | undefined): boolean {
     return (
         signal?.aborted === true || (error instanceof DOMException && error.name === 'AbortError')

@@ -2,13 +2,14 @@ import { http, HttpResponse } from 'msw'
 import { afterEach, describe, expect, it } from 'vitest'
 import { z } from 'zod'
 
+import { config } from '@/shared/config'
 import { server } from '@/test/server'
 
 import { request } from './client'
 import { ApiError, type ApiErrorKind } from './errors'
 import { setAccessToken } from './session'
 
-const base = 'https://api.spark.mock/api/v1/admin'
+const base = `${config.apiBaseUrl}/api/v1/admin`
 const zoneSchema = z.object({ zoneId: z.number(), name: z.string() })
 
 async function captureError(promise: Promise<unknown>): Promise<unknown> {
@@ -31,13 +32,14 @@ describe('request', () => {
         server.use(
             http.get(`${base}/zones`, ({ request }) => {
                 headers = request.headers
+
                 return HttpResponse.json([])
             }),
         )
 
         await request('/zones', { schema: z.array(zoneSchema) })
 
-        expect(headers.get('X-API-KEY')).toBe('mock-api-key')
+        expect(headers.get('X-API-KEY')).toBe(config.apiKey)
         expect(headers.get('Accept')).toBe('application/json')
         expect(headers.has('Authorization')).toBe(false)
         expect(headers.has('Content-Type')).toBe(false)
@@ -48,6 +50,7 @@ describe('request', () => {
         server.use(
             http.get(`${base}/zones`, ({ request }) => {
                 authorization = request.headers.get('Authorization')
+
                 return HttpResponse.json([])
             }),
         )
@@ -72,6 +75,7 @@ describe('request', () => {
         server.use(
             http.get(`${base}/tickets`, ({ request }) => {
                 search = new URL(request.url).search
+
                 return HttpResponse.json([])
             }),
         )
@@ -98,6 +102,7 @@ describe('request', () => {
             http.post(`${base}/zones`, async ({ request }) => {
                 contentType = request.headers.get('Content-Type')
                 body = await request.json()
+
                 return HttpResponse.json({ zoneId: 7, name: 'B' }, { status: 201 })
             }),
         )
@@ -197,6 +202,7 @@ describe('request', () => {
 
         const error = await captureError(request('/zones', { schema: z.array(zoneSchema) }))
 
-        expect(String(error)).not.toMatch(/secret-jwt|mock-api-key/)
+        expect(String(error)).not.toContain('secret-jwt')
+        expect(String(error)).not.toContain(config.apiKey)
     })
 })
