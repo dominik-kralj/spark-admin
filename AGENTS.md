@@ -171,8 +171,10 @@ deduplicates); read `next/dynamic` as `React.lazy`.
 - **Playwright** (`pnpm e2e`, run before each milestone report, not in
   `pnpm check`): what jsdom can't see. One main journey per feature at phone
   and desktop widths, responsive layout (cards, drawers), focus movement,
-  touch targets, axe in a real browser. The suite is set up with the first
-  feature (M1, login journey).
+  touch targets, axe in a real browser. Specs live in `e2e/` as `*.spec.ts`,
+  run in the `phone` (375 px) and `desktop` (1440 px) projects, and check axe
+  with `expectNoAxeViolations` from `e2e/axe.ts`. The dev server starts on its
+  own port with the mock API on.
 
 ## Glossary
 
