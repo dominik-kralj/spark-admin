@@ -33,6 +33,24 @@ export default defineConfig([
         },
     },
     {
+        // The API module's internals (request, raw field names) stay behind its index.
+        files: ['src/**/*.{ts,tsx}'],
+        ignores: ['src/api/**', 'src/mocks/**'],
+        rules: {
+            'no-restricted-imports': [
+                'error',
+                {
+                    patterns: [
+                        {
+                            group: ['@/api/*', '**/api/*'],
+                            message: "Import from '@/api' only; its internals are private.",
+                        },
+                    ],
+                },
+            ],
+        },
+    },
+    {
         files: ['eslint.config.js'],
         extends: [js.configs.recommended],
         languageOptions: { globals: globals.node },
