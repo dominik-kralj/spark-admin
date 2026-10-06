@@ -91,27 +91,9 @@ src/
 
 ## Code style
 
-Prettier formats (4-space indent, no semicolons, single quotes); it keeps
-blank lines but cannot add them, so spacing is on you:
-
-- One blank line between import groups: side-effect imports, packages, then
-  `@/` and relative imports.
-- One blank line between logical blocks in a function: hooks, derived values,
-  handlers, early returns, and before the final `return`.
-- In JSX, one blank line between sibling sections (header, filters, table,
-  pagination), so each section reads as a block.
-
-Beyond formatting:
-
-- **Comments carry the _why_.** A comment earns its line with something the
-  code cannot say: a spec rule, a constraint, a gotcha, a pointer to an open
-  question. Names and types carry the _what_. One line is the norm. Doc
-  comments (`/** */`) go on exports whose name and type leave something
-  unsaid. Removed code is deleted; git keeps it.
-- **One condition per ternary.** Three or more outcomes become an early
-  return, a `switch`, or a lookup object (`no-nested-ternary`).
-- **Silent in production.** `src/` holds no `console` calls (`no-console`):
-  the API module carries the token and key, and a stray log is how they leak.
+`CODING_STANDARDS.md` holds the code rules: formatting, comments, functions,
+state, effects, memoization, styling, data fetching. Read it before writing or
+reviewing code, and run its "Before finishing" list before the gate.
 
 ## Performance
 
