@@ -42,7 +42,8 @@ export default defineConfig([
                 {
                     patterns: [
                         {
-                            group: ['@/api/*', '**/api/*'],
+                            // The alias deep path, or any relative path into an api/ folder.
+                            regex: String.raw`^(@/api/|(\.{1,2}/)+api(/|$))`,
                             message: "Import from '@/api' only; its internals are private.",
                         },
                     ],

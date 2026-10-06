@@ -45,6 +45,21 @@ describe('API module boundary', () => {
         expect(messages).toEqual(['no-restricted-imports'])
     })
 
+    it('rejects a relative import of the index', async () => {
+        const messages = await lintImport(
+            "import { ApiError } from '../../api'",
+            'src/features/zones/ZonesPage.tsx',
+        )
+
+        expect(messages).toEqual(['no-restricted-imports'])
+    })
+
+    it('allows a package subpath that contains api', async () => {
+        await expect(
+            lintImport("import x from 'some-lib/api/x'", 'src/features/zones/ZonesPage.tsx'),
+        ).resolves.toEqual([])
+    })
+
     it('allows the public index', async () => {
         await expect(
             lintImport("import { ApiError } from '@/api'", 'src/features/zones/ZonesPage.tsx'),
