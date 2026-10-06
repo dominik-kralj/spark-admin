@@ -1,13 +1,10 @@
-import { Container, Heading } from '@chakra-ui/react'
+import { createBrowserRouter } from 'react-router'
+import { RouterProvider } from 'react-router/dom'
 
-import { hr } from '@/shared/i18n/hr'
+import { routes } from '@/routes'
+
+const router = createBrowserRouter(routes)
 
 export function App() {
-    return (
-        <Container as="main" py="8">
-            <Heading as="h1" color="spark.heading">
-                {hr.app.name}
-            </Heading>
-        </Container>
-    )
+    return <RouterProvider router={router} />
 }
