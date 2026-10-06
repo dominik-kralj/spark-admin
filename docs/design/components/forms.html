@@ -1,0 +1,132 @@
+<!doctype html>
+<!-- SPARK Admin design export. Board: Forms. Size: 1200 x 1100 px. State: none. Static reference only: not production code. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Form layout and field states</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+*{box-sizing:border-box}
+button,input,select{font:inherit;color:inherit}
+a{color:#1565C0}a:hover{color:#0D47A1}
+svg.i{flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+</style>
+</head>
+<body>
+<div style="width: 1200px; min-height: 1100px; padding: 48px; display: flex; flex-direction: column; gap: 40px; background: #FFFFFF; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 14px; line-height: 20px; color: #18202B">
+
+<h1 style="margin: 0; font-size: 28px; line-height: 36px; font-weight: 600; color: #03112D">Forms</h1>
+
+<section style="display: flex; flex-direction: column; gap: 16px">
+<h2 style="margin: 0; font-size: 18px; line-height: 28px; font-weight: 600; color: #03112D">Field states</h2>
+<div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 24px; align-items: start">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="s1" style="font-weight: 500">Naziv</label>
+<input id="s1" type="text" style="width: 100%; height: 40px; padding: 0 12px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF">
+<p style="margin: 8px 0 0; font-size: 13px; line-height: 18px; color: #56606E">Default. Label always visible above; 1 px gray.500 border, 4.47 : 1.</p>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="s2" style="font-weight: 500">Naziv</label>
+<input id="s2" type="text" value="Prva zona" style="width: 100%; height: 40px; padding: 0 12px; border: 1px solid #1565C0; border-radius: 6px; background: #FFFFFF; outline: 2px solid #1565C0; outline-offset: 2px">
+<p style="margin: 8px 0 0; font-size: 13px; line-height: 18px; color: #56606E">Focus. 2 px blue.700 ring with 2 px offset, 5.75 : 1 on white.</p>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="s3" style="font-weight: 500">OIB</label>
+<input id="s3" type="text" inputmode="numeric" aria-describedby="s3h" value="12345678901" style="width: 100%; height: 40px; padding: 0 12px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF; font-family: 'IBM Plex Mono', ui-monospace, monospace">
+<p id="s3h" style="margin: 0; font-size: 13px; line-height: 18px; color: #56606E">11 znamenki</p>
+<p style="margin: 8px 0 0; font-size: 13px; line-height: 18px; color: #56606E">Help text sits under the field in gray.600, 6.38 : 1.</p>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="s4" style="font-weight: 500">OIB</label>
+<input id="s4" type="text" inputmode="numeric" aria-invalid="true" aria-describedby="s4e" value="1234567890" style="width: 100%; height: 40px; padding: 0 11px; border: 2px solid #B42318; border-radius: 6px; background: #FFFFFF; font-family: 'IBM Plex Mono', ui-monospace, monospace">
+<p id="s4e" style="margin: 0; display: flex; align-items: flex-start; gap: 6px; font-size: 13px; line-height: 18px; color: #B42318"><svg class="i" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true" style="margin-top: 2px"><path d="M12 12m-10 0a10 10 0 1 0 20 0a10 10 0 1 0-20 0M12 8v4M12 16h.01"></path></svg><span>OIB mora imati točno 11 znamenki. Upisano ih je 10.</span></p>
+<p style="margin: 8px 0 0; font-size: 13px; line-height: 18px; color: #56606E">Error. 2 px red.700 border, icon and text, 6.57 : 1.</p>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="s5" style="font-weight: 500">Šifra</label>
+<input id="s5" type="text" aria-disabled="true" value="ZONA1" style="width: 100%; height: 40px; padding: 0 12px; border: 1px solid #6E7887; border-radius: 6px; background: #EEF1F4; color: #3D4755">
+<p style="margin: 8px 0 0; font-size: 13px; line-height: 18px; color: #56606E">Read-only. gray.100 fill, gray.700 text, 8.30 : 1. Still readable and focusable.</p>
+</div>
+</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 16px">
+<h2 style="margin: 0; font-size: 18px; line-height: 28px; font-weight: 600; color: #03112D">Field types</h2>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; align-items: start">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="t1" style="font-weight: 500">Registracija</label>
+<input id="t1" type="text" aria-describedby="t1h" value="ZG1234AB" style="width: 100%; height: 40px; padding: 0 12px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF; font-family: 'IBM Plex Mono', ui-monospace, monospace; text-transform: uppercase">
+<p id="t1h" style="margin: 0; font-size: 13px; line-height: 18px; color: #56606E">Upišite kako želite, npr. zg 1234-ab. Sprema se kao ZG1234AB.</p>
+<p style="margin: 8px 0 0; font-size: 13px; line-height: 18px; color: #56606E">Plate. Monospace; spaces and dashes are removed and letters upper-cased on blur.</p>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="t2" style="font-weight: 500">Zona</label>
+<div style="position: relative">
+<select id="t2" style="width: 100%; height: 40px; padding: 0 36px 0 12px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF; appearance: none; -webkit-appearance: none"><option>Sve zone</option><option>ZONA1</option><option>2A</option></select>
+<svg class="i" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="position: absolute; right: 12px; top: 12px; pointer-events: none; color: #3D4755"><path d="m6 9 6 6 6-6"></path></svg>
+</div>
+<p style="margin: 8px 0 0; font-size: 13px; line-height: 18px; color: #56606E">Select. Chakra NativeSelect, so phones get the system picker.</p>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="t3" style="font-weight: 500">PIN</label>
+<div style="display: flex; gap: 8px">
+<input id="t3" type="password" inputmode="numeric" aria-describedby="t3h" value="1234" style="width: 120px; height: 40px; padding: 0 12px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF; font-family: 'IBM Plex Mono', ui-monospace, monospace; letter-spacing: 0.2em">
+<button type="button" aria-label="Prikaži PIN" aria-pressed="false" style="display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF"><svg class="i" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0ZM12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0-6 0"></path></svg></button>
+</div>
+<p id="t3h" style="margin: 0; font-size: 13px; line-height: 18px; color: #56606E">Do 4 znamenke.</p>
+<p style="margin: 8px 0 0; font-size: 13px; line-height: 18px; color: #56606E">PIN and password. Hidden by default with a show button named Prikaži PIN.</p>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 10px 12px; border: 1px solid #E1E5EA; border-radius: 8px">
+<div id="t4l" style="font-weight: 500">Aktivan</div>
+<div style="display: flex; align-items: center; gap: 8px">
+<span aria-hidden="true" style="font-weight: 500">Da</span>
+<button type="button" role="switch" aria-checked="true" aria-labelledby="t4l" style="position: relative; width: 44px; height: 24px; padding: 0; border: 0; border-radius: 12px; background: #1565C0"><span style="position: absolute; top: 2px; right: 2px; width: 20px; height: 20px; border-radius: 10px; background: #FFFFFF"></span></button>
+</div>
+</div>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 10px 12px; border: 1px solid #E1E5EA; border-radius: 8px">
+<div id="t5l" style="font-weight: 500">Aktivan</div>
+<div style="display: flex; align-items: center; gap: 8px">
+<span aria-hidden="true" style="font-weight: 500">Ne</span>
+<button type="button" role="switch" aria-checked="false" aria-labelledby="t5l" style="position: relative; width: 44px; height: 24px; padding: 0; border: 2px solid #6E7887; border-radius: 12px; background: #FFFFFF"><span style="position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 8px; background: #56606E"></span></button>
+</div>
+</div>
+<p style="margin: 8px 0 0; font-size: 13px; line-height: 18px; color: #56606E">Switch. State is shown by knob position and the word Da or Ne, not by colour alone.</p>
+</div>
+</div>
+</section>
+
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px; align-items: start">
+<section style="display: flex; flex-direction: column; gap: 16px">
+<h2 style="margin: 0; font-size: 18px; line-height: 28px; font-weight: 600; color: #03112D">Error summary</h2>
+<div role="alert" style="display: flex; align-items: flex-start; gap: 10px; padding: 12px 16px; background: #FDECEA; border: 1px solid #B42318; border-radius: 8px; color: #8E1B16">
+<svg class="i" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" style="margin-top: 1px"><path d="M12 12m-10 0a10 10 0 1 0 20 0a10 10 0 1 0-20 0M12 8v4M12 16h.01"></path></svg>
+<div>
+<h3 style="margin: 0; font-size: 14px; line-height: 20px; font-weight: 600">Postavke nisu spremljene. Ispravite 2 polja:</h3>
+<ul style="margin: 4px 0 0; padding-left: 18px">
+<li><a href="#" style="color: #8E1B16">OIB mora imati točno 11 znamenki</a></li>
+<li><a href="#" style="color: #8E1B16">IBAN mora imati 21 znak</a></li>
+</ul>
+</div>
+</div>
+<p style="margin: 0; font-size: 13px; line-height: 18px; color: #56606E">Shown at the top of a form after a failed save. It receives focus, each line links to its field, and the same text appears next to the field. red.800 on red.50, 7.92 : 1.</p>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-size: 18px; line-height: 28px; font-weight: 600; color: #03112D">Rules</h2>
+<ul style="margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; color: #3D4755">
+<li>One column on phone. Two columns from 768 px, only where the fields belong together: name and surname, street and house number, postcode and city.</li>
+<li>Every field has a visible label. Placeholders are examples only, never the label.</li>
+<li>Validate when the user leaves a field, not on each keystroke. Clear the error as soon as the value becomes valid.</li>
+<li>Error text says what is wrong and what to do: what the field needs and what was entered.</li>
+<li>Inputs are 40 px high on desktop and 48 px on phone and tablet, with 16 px text on phone.</li>
+<li>Primary action on the right on desktop, on top when buttons stack on phone. Destructive actions sit apart from Spremi.</li>
+<li>Leaving a form with unsaved changes opens a confirmation. Saving ends with a toast, or with the error summary.</li>
+</ul>
+</section>
+</div>
+</div>
+</body>
+</html>

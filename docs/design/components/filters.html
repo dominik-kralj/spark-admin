@@ -1,0 +1,143 @@
+<!doctype html>
+<!-- SPARK Admin design export. Board: Filters. Size: 1200 x 1170 px. State: none. Static reference only: not production code. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Filter bar and filter drawer</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+*{box-sizing:border-box}
+button,input,select{font:inherit;color:inherit}
+::placeholder{color:#56606E;opacity:1;text-transform:none}
+a{color:#1565C0}a:hover{color:#0D47A1}
+svg.i{flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+</style>
+</head>
+<body>
+<div style="width: 1200px; min-height: 1170px; padding: 48px; display: flex; flex-direction: column; gap: 40px; background: #FFFFFF; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 14px; line-height: 20px; color: #18202B">
+
+<h1 style="margin: 0; font-size: 28px; line-height: 36px; font-weight: 600; color: #03112D">Filters</h1>
+
+<section style="display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-size: 18px; line-height: 28px; font-weight: 600; color: #03112D">Filter bar, desktop</h2>
+<div style="display: flex; flex-direction: column; gap: 12px; padding: 24px; background: #F6F7F9; border-radius: 8px">
+<form role="search" aria-label="Filteri karata" style="display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px; padding: 16px; background: #FFFFFF; border: 1px solid #E1E5EA; border-radius: 8px">
+<div style="flex: 1 1 220px; display: flex; flex-direction: column; gap: 6px">
+<label for="f-plate" style="font-weight: 500">Registracija</label>
+<div style="position: relative">
+<svg class="i" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" style="position: absolute; left: 12px; top: 11px; color: #56606E"><path d="M11 11m-8 0a8 8 0 1 0 16 0a8 8 0 1 0-16 0M21 21l-4.3-4.3"></path></svg>
+<input id="f-plate" type="search" autocomplete="off" value="ZG1234AB" style="width: 100%; height: 40px; padding: 0 12px 0 40px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF; font-family: 'IBM Plex Mono', ui-monospace, monospace; text-transform: uppercase">
+</div>
+</div>
+<div style="flex: 0 0 130px; display: flex; flex-direction: column; gap: 6px">
+<label for="f-from" style="font-weight: 500">Datum od</label>
+<input id="f-from" type="text" inputmode="numeric" value="01.10.2026" style="width: 100%; height: 40px; padding: 0 12px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF">
+</div>
+<div style="flex: 0 0 130px; display: flex; flex-direction: column; gap: 6px">
+<label for="f-to" style="font-weight: 500">Datum do</label>
+<input id="f-to" type="text" inputmode="numeric" value="06.10.2026" style="width: 100%; height: 40px; padding: 0 12px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF">
+</div>
+<div style="flex: 0 0 130px; display: flex; flex-direction: column; gap: 6px">
+<label for="f-zone" style="font-weight: 500">Zona</label>
+<div style="position: relative">
+<select id="f-zone" style="width: 100%; height: 40px; padding: 0 36px 0 12px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF; appearance: none; -webkit-appearance: none"><option>ZONA1</option><option>Sve zone</option><option>2A</option></select>
+<svg class="i" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="position: absolute; right: 12px; top: 12px; pointer-events: none; color: #3D4755"><path d="m6 9 6 6 6-6"></path></svg>
+</div>
+</div>
+<div style="flex: 0 0 170px; display: flex; flex-direction: column; gap: 6px">
+<label for="f-fisc" style="font-weight: 500">Fiskalizacija</label>
+<div style="position: relative">
+<select id="f-fisc" style="width: 100%; height: 40px; padding: 0 36px 0 12px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF; appearance: none; -webkit-appearance: none"><option>Neuspjelo</option><option>Svi statusi</option><option>Na čekanju</option><option>U obradi</option><option>Fiskalizirano</option></select>
+<svg class="i" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" style="position: absolute; right: 12px; top: 12px; pointer-events: none; color: #3D4755"><path d="m6 9 6 6 6-6"></path></svg>
+</div>
+</div>
+<button type="button" style="height: 40px; padding: 0 16px; border: 0; border-radius: 6px; background: #1565C0; color: #FFFFFF; font-weight: 600">Pretraži</button>
+<button type="button" style="height: 40px; padding: 0 12px; border: 0; border-radius: 6px; background: none; color: #1565C0; font-weight: 600">Očisti</button>
+</form>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px">
+<span style="color: #56606E">Aktivni filteri:</span>
+<button type="button" aria-label="Ukloni filter Registracija: ZG1234AB" style="display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 8px 0 10px; border: 1px solid #6E7887; border-radius: 4px; background: #FFFFFF; font-size: 13px"><span>Registracija: ZG1234AB</span><svg class="i" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+<button type="button" aria-label="Ukloni filter Razdoblje: 01.10.2026 – 06.10.2026" style="display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 8px 0 10px; border: 1px solid #6E7887; border-radius: 4px; background: #FFFFFF; font-size: 13px"><span>Razdoblje: 01.10.2026 – 06.10.2026</span><svg class="i" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+<button type="button" aria-label="Ukloni filter Zona: ZONA1" style="display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 8px 0 10px; border: 1px solid #6E7887; border-radius: 4px; background: #FFFFFF; font-size: 13px"><span>Zona: ZONA1</span><svg class="i" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+<button type="button" aria-label="Ukloni filter Fiskalizacija: Neuspjelo" style="display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 8px 0 10px; border: 1px solid #6E7887; border-radius: 4px; background: #FFFFFF; font-size: 13px"><span>Fiskalizacija: Neuspjelo</span><svg class="i" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+</div>
+</div>
+<ul style="margin: 4px 0 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; color: #3D4755">
+<li>Plate search comes first and takes the spare width. It accepts any casing and spacing (zg 1234-ab) and normalises to ZG1234AB when the field loses focus.</li>
+<li>Filters apply on Pretraži or Enter, not on every keystroke. Each active filter appears as a tag whose whole surface removes it.</li>
+<li>Dates are typed as DD.MM.GGGG. A calendar picker can be added later; Chakra does not ship one by default.</li>
+</ul>
+</section>
+
+<div style="display: grid; grid-template-columns: 375px 375px minmax(0, 1fr); gap: 40px; align-items: start">
+<section style="display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-size: 18px; line-height: 28px; font-weight: 600; color: #03112D">Trigger and tags, phone</h2>
+<div style="display: flex; flex-direction: column; gap: 12px; padding: 16px; background: #F6F7F9; border: 1px solid #E1E5EA; border-radius: 8px; font-size: 16px; line-height: 24px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="m-plate" style="font-size: 14px; line-height: 20px; font-weight: 500">Registracija</label>
+<div style="position: relative">
+<svg class="i" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" style="position: absolute; left: 12px; top: 14px; color: #56606E"><path d="M11 11m-8 0a8 8 0 1 0 16 0a8 8 0 1 0-16 0M21 21l-4.3-4.3"></path></svg>
+<input id="m-plate" type="search" autocomplete="off" placeholder="npr. ZG1234AB" style="width: 100%; height: 48px; padding: 0 12px 0 42px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF; font-family: 'IBM Plex Mono', ui-monospace, monospace; text-transform: uppercase">
+</div>
+</div>
+<button type="button" aria-label="Filteri, 2 aktivna" style="display: flex; align-items: center; justify-content: center; gap: 8px; height: 44px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF; font-weight: 600"><svg class="i" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M21 4h-7M10 4H3M21 12h-9M8 12H3M21 20h-5M12 20H3M14 2v4M8 10v4M16 18v4"></path></svg>Filteri<span style="display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 11px; background: #03112D; color: #FFFFFF; font-size: 13px">2</span></button>
+<div style="display: flex; flex-wrap: wrap; gap: 8px">
+<button type="button" aria-label="Ukloni filter Zona: ZONA1" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 10px 0 12px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF; font-size: 14px; line-height: 20px"><span>Zona: ZONA1</span><svg class="i" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+<button type="button" aria-label="Ukloni filter Fiskalizacija: Neuspjelo" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 10px 0 12px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF; font-size: 14px; line-height: 20px"><span>Fiskalizacija: Neuspjelo</span><svg class="i" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+</div>
+</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-size: 18px; line-height: 28px; font-weight: 600; color: #03112D">Filter drawer, phone</h2>
+<div role="dialog" aria-modal="true" aria-labelledby="fd-title" style="display: flex; flex-direction: column; min-height: 600px; background: #FFFFFF; border: 1px solid #E1E5EA; border-radius: 8px; overflow: hidden; font-size: 16px; line-height: 24px">
+<div style="display: flex; align-items: center; justify-content: space-between; height: 56px; padding: 0 6px 0 16px; border-bottom: 1px solid #E1E5EA">
+<h3 id="fd-title" style="margin: 0; font-size: 18px; line-height: 28px; font-weight: 600; color: #03112D">Filteri</h3>
+<button type="button" aria-label="Zatvori filtere" style="display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border: 0; border-radius: 6px; background: none"><svg class="i" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+</div>
+<div style="flex: 1; display: flex; flex-direction: column; gap: 20px; padding: 16px">
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="d-from" style="font-size: 14px; line-height: 20px; font-weight: 500">Datum od</label>
+<input id="d-from" type="text" inputmode="numeric" value="06.10.2026" style="width: 100%; height: 48px; padding: 0 12px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF">
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="d-to" style="font-size: 14px; line-height: 20px; font-weight: 500">Datum do</label>
+<input id="d-to" type="text" inputmode="numeric" value="06.10.2026" style="width: 100%; height: 48px; padding: 0 12px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF">
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="d-zone" style="font-size: 14px; line-height: 20px; font-weight: 500">Zona</label>
+<div style="position: relative">
+<select id="d-zone" style="width: 100%; height: 48px; padding: 0 40px 0 12px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF; appearance: none; -webkit-appearance: none"><option>ZONA1</option><option>Sve zone</option><option>2A</option></select>
+<svg class="i" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" style="position: absolute; right: 12px; top: 15px; pointer-events: none; color: #3D4755"><path d="m6 9 6 6 6-6"></path></svg>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="d-fisc" style="font-size: 14px; line-height: 20px; font-weight: 500">Fiskalizacija</label>
+<div style="position: relative">
+<select id="d-fisc" style="width: 100%; height: 48px; padding: 0 40px 0 12px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF; appearance: none; -webkit-appearance: none"><option>Neuspjelo</option><option>Svi statusi</option><option>Na čekanju</option><option>U obradi</option><option>Fiskalizirano</option></select>
+<svg class="i" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" style="position: absolute; right: 12px; top: 15px; pointer-events: none; color: #3D4755"><path d="m6 9 6 6 6-6"></path></svg>
+</div>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px; padding: 16px; border-top: 1px solid #E1E5EA">
+<button type="button" style="height: 48px; border: 0; border-radius: 6px; background: #1565C0; color: #FFFFFF; font-weight: 600">Prikaži rezultate</button>
+<button type="button" style="height: 48px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF; font-weight: 600">Očisti sve</button>
+</div>
+</div>
+</section>
+
+<ul style="margin: 40px 0 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; color: #3D4755">
+<li>Below Chakra's lg breakpoint the inline bar collapses to a Filteri button. Plate search stays on the page, because it is the most common task.</li>
+<li>The button shows how many filters are active. Its accessible name says the same: Filteri, 2 aktivna.</li>
+<li>The drawer is full screen on phone and a side drawer on tablet. It traps focus, closes with Esc and returns focus to the Filteri button.</li>
+<li>Tags and buttons are at least 44 px high on touch screens.</li>
+<li>Nothing is applied until Prikaži rezultate, so the list behind does not reload on each change.</li>
+</ul>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,9 @@
+pnpm-lock.yaml
+dist
+coverage
+.vitest
+# Third-party and reference material; never reformat it.
+.claude/
+docs/design/
+docs/spark-spec-full.md
+docs/SPARK-feature-docs.md

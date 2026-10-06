@@ -1,0 +1,77 @@
+<!doctype html>
+<!-- SPARK Admin design export. Board: 06 Povlašteni – form (drawer). Size: 560 x 760 px. State: none. Static reference only: not production code. -->
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Povlašteni korisnici – obrazac</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+*{box-sizing:border-box}
+button,input,select{font:inherit;color:inherit}
+a{color:#1565C0}a:hover{color:#0D47A1}
+:focus-visible{outline:2px solid #1565C0;outline-offset:2px}
+svg.i{flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+</style>
+</head>
+<body>
+<section role="dialog" aria-modal="true" aria-labelledby="pf-title" style="width: 560px; min-height: 760px; display: flex; flex-direction: column; background: #FFFFFF; border-left: 1px solid #E1E5EA; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 14px; line-height: 20px; color: #18202B">
+<header style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 16px 16px 24px; border-bottom: 1px solid #E1E5EA">
+<h2 id="pf-title" style="margin: 0; font-size: 18px; line-height: 28px; font-weight: 600; color: #03112D">Dodaj povlaštenog korisnika</h2>
+<button type="button" aria-label="Zatvori obrazac" style="display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border: 0; border-radius: 6px; background: none; cursor: pointer"><svg class="i" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+</header>
+
+<form style="flex: 1; display: flex; flex-direction: column">
+<div style="flex: 1; padding: 24px; display: flex; flex-direction: column; gap: 20px">
+<p style="margin: 0; color: #56606E">Sva su polja obavezna.</p>
+
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 16px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="p-plate" style="font-weight: 500">Registracija</label>
+<input id="p-plate" type="text" autocomplete="off" aria-describedby="p-plate-help" value="ZG1234AB" style="width: 100%; height: 40px; padding: 0 12px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF; font-family: 'IBM Plex Mono', ui-monospace, monospace; text-transform: uppercase">
+<p id="p-plate-help" style="margin: 0; font-size: 13px; line-height: 18px; color: #56606E">Upišite kako želite, npr. zg 1234-ab. Sprema se kao ZG1234AB.</p>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="p-until" style="font-weight: 500">Vrijedi do</label>
+<input id="p-until" type="text" inputmode="numeric" aria-describedby="p-until-help" value="31.12.2026" style="width: 100%; height: 40px; padding: 0 12px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF">
+<p id="p-until-help" style="margin: 0; font-size: 13px; line-height: 18px; color: #56606E">Oblik: DD.MM.GGGG</p>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="p-owner" style="font-weight: 500">Ime i prezime vlasnika</label>
+<input id="p-owner" type="text" autocomplete="off" value="Josip Babić" style="width: 100%; height: 40px; padding: 0 12px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF">
+</div>
+
+<div style="display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 20px 16px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="p-street" style="font-weight: 500">Adresa</label>
+<input id="p-street" type="text" autocomplete="off" value="Perkovčeva ulica" style="width: 100%; height: 40px; padding: 0 12px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF">
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="p-no" style="font-weight: 500">Kućni broj</label>
+<input id="p-no" type="text" autocomplete="off" value="12" style="width: 100%; height: 40px; padding: 0 12px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF">
+</div>
+</div>
+
+<div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 20px 16px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="p-zip" style="font-weight: 500">Poštanski broj</label>
+<input id="p-zip" type="text" inputmode="numeric" autocomplete="off" value="10430" style="width: 100%; height: 40px; padding: 0 12px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF">
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="p-city" style="font-weight: 500">Mjesto</label>
+<input id="p-city" type="text" autocomplete="off" value="Samobor" style="width: 100%; height: 40px; padding: 0 12px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF">
+</div>
+</div>
+</div>
+
+<footer style="display: flex; justify-content: flex-end; gap: 12px; padding: 16px 24px; border-top: 1px solid #E1E5EA">
+<button type="button" style="height: 40px; padding: 0 16px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF; font-weight: 600; cursor: pointer">Odustani</button>
+<button type="submit" style="height: 40px; padding: 0 16px; border: 0; border-radius: 6px; background: #1565C0; color: #FFFFFF; font-weight: 600; cursor: pointer">Spremi</button>
+</footer>
+</form>
+</section>
+</body>
+</html>

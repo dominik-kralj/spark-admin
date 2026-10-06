@@ -1,0 +1,99 @@
+<!doctype html>
+<!-- SPARK Admin design export. Board: 08 Izvještaji. Size: 375 x 1160 px. State: stanje = Pregled. Static reference only: not production code. -->
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Izvještaji – mobitel</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+*{box-sizing:border-box}
+button,input,select{font:inherit;color:inherit}
+a{color:#1565C0}a:hover{color:#0D47A1}
+:focus-visible{outline:2px solid #1565C0;outline-offset:2px}
+svg.i{flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+th{padding:0 12px;height:40px;text-align:left;font-size:13px;font-weight:600;color:#3D4755;background:#F6F7F9;white-space:nowrap}
+td{padding:0 12px;height:40px;border-top:1px solid #E1E5EA;white-space:nowrap;font-size:14px;color:#56606E}
+</style>
+</head>
+<body>
+<div style="width: 375px; min-height: 1160px; background: #F6F7F9; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 16px; line-height: 24px; color: #18202B">
+
+<header style="display: flex; align-items: center; gap: 8px; height: 56px; padding: 0 8px 0 6px; background: #FFFFFF; border-bottom: 1px solid #E1E5EA">
+<a href="02-ljuska.html" aria-label="Otvori izbornik" style="display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 6px; color: #18202B"><svg class="i" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"></path></svg></a>
+<span style="font-weight: 600; color: #03112D">Grad Samobor</span>
+</header>
+
+<main style="padding: 16px 16px 24px; display: flex; flex-direction: column; gap: 16px">
+<h1 style="margin: 0; font-size: 22px; line-height: 28px; font-weight: 600; color: #03112D">Izvještaji</h1>
+
+<form aria-label="Parametri izvještaja" style="display: flex; flex-direction: column; gap: 16px; padding: 16px; background: #FFFFFF; border: 1px solid #E1E5EA; border-radius: 8px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="r-type" style="font-size: 14px; line-height: 20px; font-weight: 500">Izvještaj</label>
+<div style="position: relative">
+<select id="r-type" style="width: 100%; height: 48px; padding: 0 40px 0 12px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF; appearance: none; -webkit-appearance: none"><option>[Naziv izvještaja 1]</option><option>[Naziv izvještaja 2]</option><option>[Naziv izvještaja 3]</option></select>
+<svg class="i" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" style="position: absolute; right: 12px; top: 15px; pointer-events: none; color: #3D4755"><path d="m6 9 6 6 6-6"></path></svg>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="r-from" style="font-size: 14px; line-height: 20px; font-weight: 500">Datum od</label>
+<input id="r-from" type="text" inputmode="numeric" value="01.09.2026" style="width: 100%; height: 48px; padding: 0 12px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF">
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="r-to" style="font-size: 14px; line-height: 20px; font-weight: 500">Datum do</label>
+<input id="r-to" type="text" inputmode="numeric" value="30.09.2026" style="width: 100%; height: 48px; padding: 0 12px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF">
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="r-zone" style="font-size: 14px; line-height: 20px; font-weight: 500">Zona</label>
+<div style="position: relative">
+<select id="r-zone" style="width: 100%; height: 48px; padding: 0 40px 0 12px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF; appearance: none; -webkit-appearance: none"><option>Sve zone</option><option>ZONA1</option><option>2A</option></select>
+<svg class="i" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" style="position: absolute; right: 12px; top: 15px; pointer-events: none; color: #3D4755"><path d="m6 9 6 6 6-6"></path></svg>
+</div>
+</div>
+<button type="submit" style="height: 48px; border: 0; border-radius: 6px; background: #1565C0; color: #FFFFFF; font-weight: 600; cursor: pointer">Prikaži pregled</button>
+</form>
+
+
+<section aria-labelledby="r-prev" style="display: flex; flex-direction: column; gap: 16px; padding: 16px; background: #FFFFFF; border: 1px solid #E1E5EA; border-radius: 8px">
+<div>
+<h2 id="r-prev" style="margin: 0; font-size: 18px; line-height: 26px; font-weight: 600; color: #03112D">Pregled izvještaja</h2>
+<p style="margin: 4px 0 0; font-weight: 600">[Naziv izvještaja 1]</p>
+<p style="margin: 2px 0 0; font-size: 14px; line-height: 20px; color: #56606E">Grad Samobor · 01.09.2026 – 30.09.2026 · Sve zone</p>
+</div>
+<div>
+<div tabindex="0" role="region" aria-label="Tablica izvještaja, pomiče se vodoravno" style="overflow-x: auto; border: 1px solid #E1E5EA; border-radius: 6px">
+<table style="width: 100%; border-collapse: collapse">
+<thead>
+<tr><th scope="col">[Stupac 1]</th><th scope="col">[Stupac 2]</th><th scope="col" style="text-align: right">[Stupac 3]</th><th scope="col" style="text-align: right">[Stupac 4]</th></tr>
+</thead>
+<tbody>
+<tr><td>[vrijednost]</td><td>[vrijednost]</td><td style="text-align: right">[vrijednost]</td><td style="text-align: right">[vrijednost]</td></tr>
+<tr><td>[vrijednost]</td><td>[vrijednost]</td><td style="text-align: right">[vrijednost]</td><td style="text-align: right">[vrijednost]</td></tr>
+<tr><td>[vrijednost]</td><td>[vrijednost]</td><td style="text-align: right">[vrijednost]</td><td style="text-align: right">[vrijednost]</td></tr>
+<tr><td>[vrijednost]</td><td>[vrijednost]</td><td style="text-align: right">[vrijednost]</td><td style="text-align: right">[vrijednost]</td></tr>
+<tr><th scope="row" colspan="2" style="border-top: 1px solid #E1E5EA; color: #18202B">[Ukupno]</th><td style="text-align: right; font-weight: 600; color: #18202B; background: #F6F7F9">[zbroj]</td><td style="text-align: right; font-weight: 600; color: #18202B; background: #F6F7F9">[zbroj]</td></tr>
+</tbody>
+</table>
+</div>
+<p style="margin: 8px 0 0; font-size: 13px; line-height: 18px; color: #56606E">Za ostale stupce povucite tablicu ulijevo.</p>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<button type="button" style="display: flex; align-items: center; justify-content: center; gap: 8px; height: 48px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF; font-weight: 600; cursor: pointer"><svg class="i" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"></path></svg>Izvezi PDF</button>
+<button type="button" aria-describedby="r-mail" style="display: flex; align-items: center; justify-content: center; gap: 8px; height: 48px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF; font-weight: 600; cursor: pointer"><svg class="i" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2ZM22 7l-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>Pošalji e-poštom</button>
+<p id="r-mail" style="margin: 0; font-size: 13px; line-height: 18px; color: #56606E">Šalje se na unaprijed postavljenu adresu: [adresa e-pošte]</p>
+</div>
+</section>
+
+
+
+
+
+
+
+</main>
+</div>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!doctype html>
+<!-- SPARK Admin design export. Board: 09 Postavke grada – saved. Size: 375 x 1290 px. State: obavijest = true. Static reference only: not production code. -->
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Postavke grada – mobitel</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+*{box-sizing:border-box}
+button,input,select{font:inherit;color:inherit}
+a{color:#1565C0}a:hover{color:#0D47A1}
+:focus-visible{outline:2px solid #1565C0;outline-offset:2px}
+svg.i{flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+</style>
+</head>
+<body>
+<div style="position: relative; width: 375px; min-height: 1290px; background: #F6F7F9; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 16px; line-height: 24px; color: #18202B">
+
+<header style="display: flex; align-items: center; gap: 8px; height: 56px; padding: 0 8px 0 6px; background: #FFFFFF; border-bottom: 1px solid #E1E5EA">
+<a href="02-ljuska.html" aria-label="Otvori izbornik" style="display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 6px; color: #18202B"><svg class="i" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"></path></svg></a>
+<span style="font-weight: 600; color: #03112D">Grad Samobor</span>
+</header>
+
+<main style="padding: 16px 16px 110px; display: flex; flex-direction: column; gap: 16px">
+<h1 style="margin: 0; font-size: 22px; line-height: 28px; font-weight: 600; color: #03112D">Postavke grada</h1>
+
+<form style="background: #FFFFFF; border: 1px solid #E1E5EA; border-radius: 8px">
+<div style="padding: 16px; display: flex; flex-direction: column; gap: 28px">
+<p style="margin: 0 0 -4px; font-size: 14px; line-height: 20px; color: #56606E">Sva su polja obavezna. Podaci se ispisuju na računima i šalju pri fiskalizaciji.</p>
+
+<section aria-labelledby="s-city" style="display: flex; flex-direction: column; gap: 20px">
+<h2 id="s-city" style="margin: 0 0 -4px; font-size: 18px; line-height: 26px; font-weight: 600; color: #03112D">Podaci o gradu</h2>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="c-name" style="font-size: 14px; line-height: 20px; font-weight: 500">Naziv</label>
+<input id="c-name" type="text" autocomplete="off" value="Grad Samobor" style="width: 100%; height: 48px; padding: 0 12px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF">
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="c-oib" style="font-size: 14px; line-height: 20px; font-weight: 500">OIB</label>
+<input id="c-oib" type="text" inputmode="numeric" autocomplete="off" aria-describedby="c-oib-help" value="12345678901" style="width: 100%; height: 48px; padding: 0 12px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF; font-family: 'IBM Plex Mono', ui-monospace, monospace">
+<p id="c-oib-help" style="margin: 0; font-size: 13px; line-height: 18px; color: #56606E">11 znamenki</p>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="c-addr" style="font-size: 14px; line-height: 20px; font-weight: 500">Adresa</label>
+<input id="c-addr" type="text" autocomplete="off" value="Trg kralja Tomislava 5, 10430 Samobor" style="width: 100%; height: 48px; padding: 0 12px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF">
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="c-iban" style="font-size: 14px; line-height: 20px; font-weight: 500">IBAN</label>
+<input id="c-iban" type="text" autocomplete="off" aria-describedby="c-iban-help" value="HR1210010051863000160" style="width: 100%; height: 48px; padding: 0 12px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 15px">
+<p id="c-iban-help" style="margin: 0; font-size: 13px; line-height: 18px; color: #56606E">Počinje s HR i ima 21 znak. Razmaci se uklanjaju pri spremanju.</p>
+</div>
+</section>
+
+<section aria-labelledby="s-fisc" style="display: flex; flex-direction: column; gap: 20px">
+<h2 id="s-fisc" style="margin: 0 0 -4px; font-size: 18px; line-height: 26px; font-weight: 600; color: #03112D">Fiskalizacija</h2>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="c-prem" style="font-size: 14px; line-height: 20px; font-weight: 500">Oznaka poslovnog prostora</label>
+<input id="c-prem" type="text" autocomplete="off" value="POSL1" style="width: 100%; height: 48px; padding: 0 12px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF">
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="c-reg" style="font-size: 14px; line-height: 20px; font-weight: 500">Oznaka naplatnog uređaja</label>
+<input id="c-reg" type="text" autocomplete="off" value="1" style="width: 100%; height: 48px; padding: 0 12px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF">
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="c-vat" style="font-size: 14px; line-height: 20px; font-weight: 500">Stopa PDV-a (%)</label>
+<input id="c-vat" type="text" inputmode="decimal" autocomplete="off" value="25" style="width: 120px; height: 48px; padding: 0 12px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF">
+</div>
+</section>
+</div>
+<footer style="display: flex; flex-direction: column; gap: 8px; padding: 16px; border-top: 1px solid #E1E5EA">
+<button type="submit" style="height: 48px; border: 0; border-radius: 6px; background: #1565C0; color: #FFFFFF; font-weight: 600; cursor: pointer">Spremi promjene</button>
+<button type="button" style="height: 48px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF; font-weight: 600; cursor: pointer">Odustani</button>
+</footer>
+</form>
+</main>
+
+
+<div role="status" style="position: absolute; left: 16px; right: 16px; bottom: 16px; display: flex; align-items: flex-start; gap: 12px; padding: 12px 4px 12px 16px; background: #FFFFFF; border: 1px solid #1B6B3A; border-radius: 8px; box-shadow: 0 4px 12px rgba(3, 17, 45, 0.12); font-size: 15px; line-height: 22px">
+<svg class="i" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" style="margin-top: 1px; color: #1B6B3A"><path d="M12 12m-10 0a10 10 0 1 0 20 0a10 10 0 1 0-20 0M9 12l2 2 4-4"></path></svg>
+<div style="flex: 1"><div style="font-weight: 600">Postavke grada su spremljene</div><div style="font-size: 14px; line-height: 20px; color: #56606E">Promjene vrijede za sve nove račune.</div></div>
+<button type="button" aria-label="Zatvori obavijest" style="display: inline-flex; align-items: center; justify-content: center; flex: none; width: 44px; height: 44px; margin: -6px 0; border: 0; border-radius: 6px; background: none; cursor: pointer"><svg class="i" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+</div>
+
+</div>
+</body>
+</html>

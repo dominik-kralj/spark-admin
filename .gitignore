@@ -1,0 +1,14 @@
+node_modules/
+dist/
+coverage/
+*.local
+.env
+.env.*
+!.env.example
+.vscode/*
+!.vscode/extensions.json
+.DS_Store
+.vitest/
+!.env.development
+!.env.test
+.playwright-mcp/

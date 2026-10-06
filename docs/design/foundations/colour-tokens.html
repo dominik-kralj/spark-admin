@@ -1,0 +1,305 @@
+<!doctype html>
+<!-- SPARK Admin design export. Board: Colour tokens and contrast. Size: 1200 x 1660 px. State: none. Static reference only: not production code. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Colour tokens and contrast</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+*{box-sizing:border-box}
+</style>
+</head>
+<body>
+<div style="width: 1200px; min-height: 1660px; padding: 48px; display: flex; flex-direction: column; gap: 32px; background: #FFFFFF; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 14px; line-height: 20px; color: #18202B">
+
+<div>
+<h1 style="margin: 0; font-size: 28px; line-height: 36px; font-weight: 600; color: #03112D">Colour tokens</h1>
+<p style="margin: 8px 0 0; max-width: 820px; color: #56606E">Most of the interface is white, gray.50 and text. Navy and blue are accents; green means OK and red means not OK. Ratios are WCAG 2.2 contrast against the two page surfaces. Text needs 4.5 : 1; icons, input borders and focus rings need 3 : 1.</p>
+</div>
+
+<section style="display: flex; flex-direction: column">
+<h2 style="margin: 0 0 12px; font-size: 18px; line-height: 28px; font-weight: 600; color: #03112D">Tokens</h2>
+<div style="display: grid; grid-template-columns: 44px 120px 110px minmax(0, 1fr) 110px 110px; gap: 16px; align-items: center; height: 40px; padding: 0 16px; background: #F6F7F9; border: 1px solid #E1E5EA; border-radius: 8px 8px 0 0; font-size: 13px; font-weight: 600; color: #3D4755">
+<span></span><span>Token</span><span>Hex</span><span>Used for</span><span>On white</span><span>On gray.50</span>
+</div>
+
+<div style="display: grid; grid-template-columns: 44px 120px 110px minmax(0, 1fr) 110px 110px; gap: 16px; align-items: center; min-height: 44px; padding: 6px 16px; border: 1px solid #E1E5EA; border-top: 0">
+<span style="width: 28px; height: 28px; border-radius: 4px; border: 1px solid #6E7887; background: #03112D"></span>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 500">navy.900</span>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace">#03112D</span>
+<span style="color: #3D4755">Headings, logo tile, current page marker</span>
+<span style="font-variant-numeric: tabular-nums">18.72 : 1</span>
+<span style="font-variant-numeric: tabular-nums">17.46 : 1</span>
+</div>
+
+<div style="display: grid; grid-template-columns: 44px 120px 110px minmax(0, 1fr) 110px 110px; gap: 16px; align-items: center; min-height: 44px; padding: 6px 16px; border: 1px solid #E1E5EA; border-top: 0">
+<span style="width: 28px; height: 28px; border-radius: 4px; border: 1px solid #6E7887; background: #2196F3"></span>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 500">blue.500</span>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace">#2196F3</span>
+<span style="color: #3D4755">Brand accent in the logo only. Not for text or controls</span>
+<span style="font-variant-numeric: tabular-nums">3.12 : 1</span>
+<span style="font-variant-numeric: tabular-nums">2.91 : 1</span>
+</div>
+
+<div style="display: grid; grid-template-columns: 44px 120px 110px minmax(0, 1fr) 110px 110px; gap: 16px; align-items: center; min-height: 44px; padding: 6px 16px; border: 1px solid #E1E5EA; border-top: 0">
+<span style="width: 28px; height: 28px; border-radius: 4px; border: 1px solid #6E7887; background: #1565C0"></span>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 500">blue.700</span>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace">#1565C0</span>
+<span style="color: #3D4755">Links, primary buttons, focus ring</span>
+<span style="font-variant-numeric: tabular-nums">5.75 : 1</span>
+<span style="font-variant-numeric: tabular-nums">5.36 : 1</span>
+</div>
+
+<div style="display: grid; grid-template-columns: 44px 120px 110px minmax(0, 1fr) 110px 110px; gap: 16px; align-items: center; min-height: 44px; padding: 6px 16px; border: 1px solid #E1E5EA; border-top: 0">
+<span style="width: 28px; height: 28px; border-radius: 4px; border: 1px solid #6E7887; background: #0D47A1"></span>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 500">blue.800</span>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace">#0D47A1</span>
+<span style="color: #3D4755">Link hover, text on blue.50</span>
+<span style="font-variant-numeric: tabular-nums">8.63 : 1</span>
+<span style="font-variant-numeric: tabular-nums">8.05 : 1</span>
+</div>
+
+<div style="display: grid; grid-template-columns: 44px 120px 110px minmax(0, 1fr) 110px 110px; gap: 16px; align-items: center; min-height: 44px; padding: 6px 16px; border: 1px solid #E1E5EA; border-top: 0">
+<span style="width: 28px; height: 28px; border-radius: 4px; border: 1px solid #6E7887; background: #E8F1FB"></span>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 500">blue.50</span>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace">#E8F1FB</span>
+<span style="color: #3D4755">Current nav item, processing chip, new-tickets banner</span>
+<span style="font-variant-numeric: tabular-nums">Surface</span>
+<span style="font-variant-numeric: tabular-nums">Surface</span>
+</div>
+
+<div style="display: grid; grid-template-columns: 44px 120px 110px minmax(0, 1fr) 110px 110px; gap: 16px; align-items: center; min-height: 44px; padding: 6px 16px; border: 1px solid #E1E5EA; border-top: 0">
+<span style="width: 28px; height: 28px; border-radius: 4px; border: 1px solid #6E7887; background: #18202B"></span>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 500">gray.900</span>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace">#18202B</span>
+<span style="color: #3D4755">Body text</span>
+<span style="font-variant-numeric: tabular-nums">16.40 : 1</span>
+<span style="font-variant-numeric: tabular-nums">15.30 : 1</span>
+</div>
+
+<div style="display: grid; grid-template-columns: 44px 120px 110px minmax(0, 1fr) 110px 110px; gap: 16px; align-items: center; min-height: 44px; padding: 6px 16px; border: 1px solid #E1E5EA; border-top: 0">
+<span style="width: 28px; height: 28px; border-radius: 4px; border: 1px solid #6E7887; background: #3D4755"></span>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 500">gray.700</span>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace">#3D4755</span>
+<span style="color: #3D4755">Secondary text, nav labels, table headers</span>
+<span style="font-variant-numeric: tabular-nums">9.41 : 1</span>
+<span style="font-variant-numeric: tabular-nums">8.78 : 1</span>
+</div>
+
+<div style="display: grid; grid-template-columns: 44px 120px 110px minmax(0, 1fr) 110px 110px; gap: 16px; align-items: center; min-height: 44px; padding: 6px 16px; border: 1px solid #E1E5EA; border-top: 0">
+<span style="width: 28px; height: 28px; border-radius: 4px; border: 1px solid #6E7887; background: #56606E"></span>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 500">gray.600</span>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace">#56606E</span>
+<span style="color: #3D4755">Help text, captions, placeholders</span>
+<span style="font-variant-numeric: tabular-nums">6.38 : 1</span>
+<span style="font-variant-numeric: tabular-nums">5.95 : 1</span>
+</div>
+
+<div style="display: grid; grid-template-columns: 44px 120px 110px minmax(0, 1fr) 110px 110px; gap: 16px; align-items: center; min-height: 44px; padding: 6px 16px; border: 1px solid #E1E5EA; border-top: 0">
+<span style="width: 28px; height: 28px; border-radius: 4px; border: 1px solid #6E7887; background: #6E7887"></span>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 500">gray.500</span>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace">#6E7887</span>
+<span style="color: #3D4755">Input and button borders, inactive icons</span>
+<span style="font-variant-numeric: tabular-nums">4.47 : 1</span>
+<span style="font-variant-numeric: tabular-nums">4.17 : 1</span>
+</div>
+
+<div style="display: grid; grid-template-columns: 44px 120px 110px minmax(0, 1fr) 110px 110px; gap: 16px; align-items: center; min-height: 44px; padding: 6px 16px; border: 1px solid #E1E5EA; border-top: 0">
+<span style="width: 28px; height: 28px; border-radius: 4px; border: 1px solid #6E7887; background: #E1E5EA"></span>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 500">gray.200</span>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace">#E1E5EA</span>
+<span style="color: #3D4755">Dividers and card outlines, decorative only</span>
+<span style="font-variant-numeric: tabular-nums">1.27 : 1</span>
+<span style="font-variant-numeric: tabular-nums">1.18 : 1</span>
+</div>
+
+<div style="display: grid; grid-template-columns: 44px 120px 110px minmax(0, 1fr) 110px 110px; gap: 16px; align-items: center; min-height: 44px; padding: 6px 16px; border: 1px solid #E1E5EA; border-top: 0">
+<span style="width: 28px; height: 28px; border-radius: 4px; border: 1px solid #6E7887; background: #EEF1F4"></span>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 500">gray.100</span>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace">#EEF1F4</span>
+<span style="color: #3D4755">Pending chip, read-only fields, segmented control</span>
+<span style="font-variant-numeric: tabular-nums">Surface</span>
+<span style="font-variant-numeric: tabular-nums">Surface</span>
+</div>
+
+<div style="display: grid; grid-template-columns: 44px 120px 110px minmax(0, 1fr) 110px 110px; gap: 16px; align-items: center; min-height: 44px; padding: 6px 16px; border: 1px solid #E1E5EA; border-top: 0">
+<span style="width: 28px; height: 28px; border-radius: 4px; border: 1px solid #6E7887; background: #F6F7F9"></span>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 500">gray.50</span>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace">#F6F7F9</span>
+<span style="color: #3D4755">Page background, table header</span>
+<span style="font-variant-numeric: tabular-nums">Surface</span>
+<span style="font-variant-numeric: tabular-nums">Surface</span>
+</div>
+
+<div style="display: grid; grid-template-columns: 44px 120px 110px minmax(0, 1fr) 110px 110px; gap: 16px; align-items: center; min-height: 44px; padding: 6px 16px; border: 1px solid #E1E5EA; border-top: 0">
+<span style="width: 28px; height: 28px; border-radius: 4px; border: 1px solid #6E7887; background: #FFFFFF"></span>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 500">white</span>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace">#FFFFFF</span>
+<span style="color: #3D4755">Cards, tables, inputs, drawers, dialogs</span>
+<span style="font-variant-numeric: tabular-nums">Surface</span>
+<span style="font-variant-numeric: tabular-nums">Surface</span>
+</div>
+
+<div style="display: grid; grid-template-columns: 44px 120px 110px minmax(0, 1fr) 110px 110px; gap: 16px; align-items: center; min-height: 44px; padding: 6px 16px; border: 1px solid #E1E5EA; border-top: 0">
+<span style="width: 28px; height: 28px; border-radius: 4px; border: 1px solid #6E7887; background: #14532D"></span>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 500">green.800</span>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace">#14532D</span>
+<span style="color: #3D4755">Text and icon on green.50</span>
+<span style="font-variant-numeric: tabular-nums">9.11 : 1</span>
+<span style="font-variant-numeric: tabular-nums">8.50 : 1</span>
+</div>
+
+<div style="display: grid; grid-template-columns: 44px 120px 110px minmax(0, 1fr) 110px 110px; gap: 16px; align-items: center; min-height: 44px; padding: 6px 16px; border: 1px solid #E1E5EA; border-top: 0">
+<span style="width: 28px; height: 28px; border-radius: 4px; border: 1px solid #6E7887; background: #1B6B3A"></span>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 500">green.700</span>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace">#1B6B3A</span>
+<span style="color: #3D4755">Success icon and toast border</span>
+<span style="font-variant-numeric: tabular-nums">6.54 : 1</span>
+<span style="font-variant-numeric: tabular-nums">6.10 : 1</span>
+</div>
+
+<div style="display: grid; grid-template-columns: 44px 120px 110px minmax(0, 1fr) 110px 110px; gap: 16px; align-items: center; min-height: 44px; padding: 6px 16px; border: 1px solid #E1E5EA; border-top: 0">
+<span style="width: 28px; height: 28px; border-radius: 4px; border: 1px solid #6E7887; background: #E7F4EC"></span>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 500">green.50</span>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace">#E7F4EC</span>
+<span style="color: #3D4755">Done, valid and active chips</span>
+<span style="font-variant-numeric: tabular-nums">Surface</span>
+<span style="font-variant-numeric: tabular-nums">Surface</span>
+</div>
+
+<div style="display: grid; grid-template-columns: 44px 120px 110px minmax(0, 1fr) 110px 110px; gap: 16px; align-items: center; min-height: 44px; padding: 6px 16px; border: 1px solid #E1E5EA; border-top: 0">
+<span style="width: 28px; height: 28px; border-radius: 4px; border: 1px solid #6E7887; background: #8E1B16"></span>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 500">red.800</span>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace">#8E1B16</span>
+<span style="color: #3D4755">Text and icon on red.50</span>
+<span style="font-variant-numeric: tabular-nums">9.06 : 1</span>
+<span style="font-variant-numeric: tabular-nums">8.45 : 1</span>
+</div>
+
+<div style="display: grid; grid-template-columns: 44px 120px 110px minmax(0, 1fr) 110px 110px; gap: 16px; align-items: center; min-height: 44px; padding: 6px 16px; border: 1px solid #E1E5EA; border-top: 0">
+<span style="width: 28px; height: 28px; border-radius: 4px; border: 1px solid #6E7887; background: #B42318"></span>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 500">red.700</span>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace">#B42318</span>
+<span style="color: #3D4755">Error text and border, destructive button</span>
+<span style="font-variant-numeric: tabular-nums">6.57 : 1</span>
+<span style="font-variant-numeric: tabular-nums">6.13 : 1</span>
+</div>
+
+<div style="display: grid; grid-template-columns: 44px 120px 110px minmax(0, 1fr) 110px 110px; gap: 16px; align-items: center; min-height: 44px; padding: 6px 16px; border: 1px solid #E1E5EA; border-top: 0">
+<span style="width: 28px; height: 28px; border-radius: 4px; border: 1px solid #6E7887; background: #FDECEA"></span>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 500">red.50</span>
+<span style="font-family: 'IBM Plex Mono', ui-monospace, monospace">#FDECEA</span>
+<span style="color: #3D4755">Fail and expired chips, error summary</span>
+<span style="font-variant-numeric: tabular-nums">Surface</span>
+<span style="font-variant-numeric: tabular-nums">Surface</span>
+</div>
+
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-size: 18px; line-height: 28px; font-weight: 600; color: #03112D">Pairs used in the interface</h2>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px">
+
+<div style="display: flex; align-items: center; gap: 12px; padding: 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<span style="flex: none; display: inline-flex; align-items: center; justify-content: center; width: 72px; height: 40px; border-radius: 4px; border: 1px solid #E1E5EA; background: #FFFFFF; color: #18202B; font-weight: 600">Aa</span>
+<span style="flex: 1; min-width: 0"><span style="display: block; font-weight: 500">gray.900 on white</span><span style="display: block; font-size: 13px; line-height: 18px; color: #56606E">Body text</span></span>
+<span style="flex: none; text-align: right"><span style="display: block; font-weight: 600; font-variant-numeric: tabular-nums">16.40 : 1</span><span style="display: block; font-size: 13px; line-height: 18px; color: #56606E">needs 4.5</span></span>
+</div>
+
+<div style="display: flex; align-items: center; gap: 12px; padding: 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<span style="flex: none; display: inline-flex; align-items: center; justify-content: center; width: 72px; height: 40px; border-radius: 4px; border: 1px solid #E1E5EA; background: #FFFFFF; color: #56606E; font-weight: 600">Aa</span>
+<span style="flex: 1; min-width: 0"><span style="display: block; font-weight: 500">gray.600 on white</span><span style="display: block; font-size: 13px; line-height: 18px; color: #56606E">Help text, captions</span></span>
+<span style="flex: none; text-align: right"><span style="display: block; font-weight: 600; font-variant-numeric: tabular-nums">6.38 : 1</span><span style="display: block; font-size: 13px; line-height: 18px; color: #56606E">needs 4.5</span></span>
+</div>
+
+<div style="display: flex; align-items: center; gap: 12px; padding: 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<span style="flex: none; display: inline-flex; align-items: center; justify-content: center; width: 72px; height: 40px; border-radius: 4px; border: 1px solid #E1E5EA; background: #EEF1F4; color: #56606E; font-weight: 600">Aa</span>
+<span style="flex: 1; min-width: 0"><span style="display: block; font-weight: 500">gray.600 on gray.100</span><span style="display: block; font-size: 13px; line-height: 18px; color: #56606E">Captions on tinted cards</span></span>
+<span style="flex: none; text-align: right"><span style="display: block; font-weight: 600; font-variant-numeric: tabular-nums">5.62 : 1</span><span style="display: block; font-size: 13px; line-height: 18px; color: #56606E">needs 4.5</span></span>
+</div>
+
+<div style="display: flex; align-items: center; gap: 12px; padding: 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<span style="flex: none; display: inline-flex; align-items: center; justify-content: center; width: 72px; height: 40px; border-radius: 4px; border: 1px solid #E1E5EA; background: #FFFFFF; color: #1565C0; font-weight: 600">Aa</span>
+<span style="flex: 1; min-width: 0"><span style="display: block; font-weight: 500">blue.700 on white</span><span style="display: block; font-size: 13px; line-height: 18px; color: #56606E">Links, ghost buttons</span></span>
+<span style="flex: none; text-align: right"><span style="display: block; font-weight: 600; font-variant-numeric: tabular-nums">5.75 : 1</span><span style="display: block; font-size: 13px; line-height: 18px; color: #56606E">needs 4.5</span></span>
+</div>
+
+<div style="display: flex; align-items: center; gap: 12px; padding: 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<span style="flex: none; display: inline-flex; align-items: center; justify-content: center; width: 72px; height: 40px; border-radius: 4px; border: 1px solid #E1E5EA; background: #1565C0; color: #FFFFFF; font-weight: 600">Aa</span>
+<span style="flex: 1; min-width: 0"><span style="display: block; font-weight: 500">white on blue.700</span><span style="display: block; font-size: 13px; line-height: 18px; color: #56606E">Primary button</span></span>
+<span style="flex: none; text-align: right"><span style="display: block; font-weight: 600; font-variant-numeric: tabular-nums">5.75 : 1</span><span style="display: block; font-size: 13px; line-height: 18px; color: #56606E">needs 4.5</span></span>
+</div>
+
+<div style="display: flex; align-items: center; gap: 12px; padding: 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<span style="flex: none; display: inline-flex; align-items: center; justify-content: center; width: 72px; height: 40px; border-radius: 4px; border: 1px solid #E1E5EA; background: #E8F1FB; color: #0D47A1; font-weight: 600">Aa</span>
+<span style="flex: 1; min-width: 0"><span style="display: block; font-weight: 500">blue.800 on blue.50</span><span style="display: block; font-size: 13px; line-height: 18px; color: #56606E">Processing chip, current nav</span></span>
+<span style="flex: none; text-align: right"><span style="display: block; font-weight: 600; font-variant-numeric: tabular-nums">7.57 : 1</span><span style="display: block; font-size: 13px; line-height: 18px; color: #56606E">needs 4.5</span></span>
+</div>
+
+<div style="display: flex; align-items: center; gap: 12px; padding: 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<span style="flex: none; display: inline-flex; align-items: center; justify-content: center; width: 72px; height: 40px; border-radius: 4px; border: 1px solid #E1E5EA; background: #EEF1F4; color: #3D4755; font-weight: 600">Aa</span>
+<span style="flex: 1; min-width: 0"><span style="display: block; font-weight: 500">gray.700 on gray.100</span><span style="display: block; font-size: 13px; line-height: 18px; color: #56606E">Pending chip</span></span>
+<span style="flex: none; text-align: right"><span style="display: block; font-weight: 600; font-variant-numeric: tabular-nums">8.30 : 1</span><span style="display: block; font-size: 13px; line-height: 18px; color: #56606E">needs 4.5</span></span>
+</div>
+
+<div style="display: flex; align-items: center; gap: 12px; padding: 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<span style="flex: none; display: inline-flex; align-items: center; justify-content: center; width: 72px; height: 40px; border-radius: 4px; border: 1px solid #E1E5EA; background: #E7F4EC; color: #14532D; font-weight: 600">Aa</span>
+<span style="flex: 1; min-width: 0"><span style="display: block; font-weight: 500">green.800 on green.50</span><span style="display: block; font-size: 13px; line-height: 18px; color: #56606E">Done chip</span></span>
+<span style="flex: none; text-align: right"><span style="display: block; font-weight: 600; font-variant-numeric: tabular-nums">8.05 : 1</span><span style="display: block; font-size: 13px; line-height: 18px; color: #56606E">needs 4.5</span></span>
+</div>
+
+<div style="display: flex; align-items: center; gap: 12px; padding: 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<span style="flex: none; display: inline-flex; align-items: center; justify-content: center; width: 72px; height: 40px; border-radius: 4px; border: 1px solid #E1E5EA; background: #FDECEA; color: #8E1B16; font-weight: 600">Aa</span>
+<span style="flex: 1; min-width: 0"><span style="display: block; font-weight: 500">red.800 on red.50</span><span style="display: block; font-size: 13px; line-height: 18px; color: #56606E">Fail chip, error summary</span></span>
+<span style="flex: none; text-align: right"><span style="display: block; font-weight: 600; font-variant-numeric: tabular-nums">7.92 : 1</span><span style="display: block; font-size: 13px; line-height: 18px; color: #56606E">needs 4.5</span></span>
+</div>
+
+<div style="display: flex; align-items: center; gap: 12px; padding: 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<span style="flex: none; display: inline-flex; align-items: center; justify-content: center; width: 72px; height: 40px; border-radius: 4px; border: 1px solid #E1E5EA; background: #FFFFFF; color: #B42318; font-weight: 600">Aa</span>
+<span style="flex: 1; min-width: 0"><span style="display: block; font-weight: 500">red.700 on white</span><span style="display: block; font-size: 13px; line-height: 18px; color: #56606E">Field error text</span></span>
+<span style="flex: none; text-align: right"><span style="display: block; font-weight: 600; font-variant-numeric: tabular-nums">6.57 : 1</span><span style="display: block; font-size: 13px; line-height: 18px; color: #56606E">needs 4.5</span></span>
+</div>
+
+<div style="display: flex; align-items: center; gap: 12px; padding: 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<span style="flex: none; display: inline-flex; align-items: center; justify-content: center; width: 72px; height: 40px; border-radius: 4px; border: 1px solid #E1E5EA; background: #B42318; color: #FFFFFF; font-weight: 600">Aa</span>
+<span style="flex: 1; min-width: 0"><span style="display: block; font-weight: 500">white on red.700</span><span style="display: block; font-size: 13px; line-height: 18px; color: #56606E">Destructive button</span></span>
+<span style="flex: none; text-align: right"><span style="display: block; font-weight: 600; font-variant-numeric: tabular-nums">6.57 : 1</span><span style="display: block; font-size: 13px; line-height: 18px; color: #56606E">needs 4.5</span></span>
+</div>
+
+<div style="display: flex; align-items: center; gap: 12px; padding: 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<span style="flex: none; display: inline-flex; align-items: center; justify-content: center; width: 72px; height: 40px; border-radius: 4px; border: 1px solid #E1E5EA; background: #03112D; color: #FFFFFF; font-weight: 600">Aa</span>
+<span style="flex: 1; min-width: 0"><span style="display: block; font-weight: 500">white on navy.900</span><span style="display: block; font-size: 13px; line-height: 18px; color: #56606E">Current page, filter count</span></span>
+<span style="flex: none; text-align: right"><span style="display: block; font-weight: 600; font-variant-numeric: tabular-nums">18.72 : 1</span><span style="display: block; font-size: 13px; line-height: 18px; color: #56606E">needs 4.5</span></span>
+</div>
+
+<div style="display: flex; align-items: center; gap: 12px; padding: 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<span style="flex: none; display: inline-flex; align-items: center; justify-content: center; width: 72px; height: 40px; border-radius: 4px; border: 2px solid #6E7887; background: #FFFFFF; color: #6E7887; font-weight: 600"></span>
+<span style="flex: 1; min-width: 0"><span style="display: block; font-weight: 500">gray.500 on white</span><span style="display: block; font-size: 13px; line-height: 18px; color: #56606E">Input and button border</span></span>
+<span style="flex: none; text-align: right"><span style="display: block; font-weight: 600; font-variant-numeric: tabular-nums">4.47 : 1</span><span style="display: block; font-size: 13px; line-height: 18px; color: #56606E">needs 3</span></span>
+</div>
+
+<div style="display: flex; align-items: center; gap: 12px; padding: 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<span style="flex: none; display: inline-flex; align-items: center; justify-content: center; width: 72px; height: 40px; border-radius: 4px; border: 2px solid #1565C0; background: #F6F7F9; color: #1565C0; font-weight: 600"></span>
+<span style="flex: 1; min-width: 0"><span style="display: block; font-weight: 500">blue.700 on gray.50</span><span style="display: block; font-size: 13px; line-height: 18px; color: #56606E">Focus ring on the page</span></span>
+<span style="flex: none; text-align: right"><span style="display: block; font-weight: 600; font-variant-numeric: tabular-nums">5.36 : 1</span><span style="display: block; font-size: 13px; line-height: 18px; color: #56606E">needs 3</span></span>
+</div>
+
+<div style="display: flex; align-items: center; gap: 12px; padding: 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<span style="flex: none; display: inline-flex; align-items: center; justify-content: center; width: 72px; height: 40px; border-radius: 4px; border: 2px solid #1B6B3A; background: #FFFFFF; color: #1B6B3A; font-weight: 600"></span>
+<span style="flex: 1; min-width: 0"><span style="display: block; font-weight: 500">green.700 on white</span><span style="display: block; font-size: 13px; line-height: 18px; color: #56606E">Success toast border and icon</span></span>
+<span style="flex: none; text-align: right"><span style="display: block; font-weight: 600; font-variant-numeric: tabular-nums">6.54 : 1</span><span style="display: block; font-size: 13px; line-height: 18px; color: #56606E">needs 3</span></span>
+</div>
+
+</div>
+</section>
+
+<ul style="margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; max-width: 900px; color: #3D4755">
+<li>blue.500 (#2196F3) is 3.12 : 1 on white, so it is never used for text, links or button labels. blue.700 takes that role at 5.75 : 1.</li>
+<li>gray.200 dividers and card outlines are decorative. Anything that marks a control, such as an input or button border, uses gray.500.</li>
+<li>Status colours differ in lightness as well as hue, and every status also has an icon and a label.</li>
+</ul>
+</div>
+</body>
+</html>

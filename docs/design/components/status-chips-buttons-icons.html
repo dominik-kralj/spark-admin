@@ -1,0 +1,258 @@
+<!doctype html>
+<!-- SPARK Admin design export. Board: Status chips, buttons, icons. Size: 1200 x 1280 px. State: none. Static reference only: not production code. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Status chips, buttons and icons</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+*{box-sizing:border-box}
+button,input,select{font:inherit;color:inherit}
+svg.i{flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+th{padding:0 16px;height:40px;text-align:left;font-size:13px;font-weight:600;color:#3D4755;background:#F6F7F9;white-space:nowrap}
+td{padding:0 16px;height:52px;border-top:1px solid #E1E5EA;white-space:nowrap}
+</style>
+</head>
+<body>
+<div style="width: 1200px; min-height: 1280px; padding: 48px; display: flex; flex-direction: column; gap: 40px; background: #FFFFFF; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 14px; line-height: 20px; color: #18202B">
+
+<h1 style="margin: 0; font-size: 28px; line-height: 36px; font-weight: 600; color: #03112D">Status chips, buttons, icons</h1>
+
+<section style="display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-size: 18px; line-height: 28px; font-weight: 600; color: #03112D">Status chips</h2>
+<p style="margin: 0; max-width: 760px; color: #56606E">Chakra Badge, 24 px high, 4 px radius, 13 px medium text. Every chip carries an icon and a text label, so status never depends on colour alone. Each status uses a different icon shape and a different lightness.</p>
+<div style="border: 1px solid #E1E5EA; border-radius: 8px; overflow: hidden">
+<table style="width: 100%; border-collapse: collapse">
+<thead>
+<tr><th scope="col">API value</th><th scope="col">Payment (Plaćanje)</th><th scope="col">Fiscalization (Fiskalizacija)</th><th scope="col">Background</th><th scope="col">Text and icon</th><th scope="col">Contrast</th></tr>
+</thead>
+<tbody>
+<tr>
+<th scope="row" style="background: none; border-top: 1px solid #E1E5EA; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 500; color: #18202B">PENDING</th>
+<td><span style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px; border-radius: 4px; background: #EEF1F4; color: #3D4755; font-size: 13px; font-weight: 500"><svg class="i" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M12 12m-10 0a10 10 0 1 0 20 0a10 10 0 1 0-20 0M12 6v6l4 2"></path></svg>Na čekanju</span></td>
+<td><span style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px; border-radius: 4px; background: #EEF1F4; color: #3D4755; font-size: 13px; font-weight: 500"><svg class="i" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M12 12m-10 0a10 10 0 1 0 20 0a10 10 0 1 0-20 0M12 6v6l4 2"></path></svg>Na čekanju</span></td>
+<td style="font-family: 'IBM Plex Mono', ui-monospace, monospace">gray.100 #EEF1F4</td>
+<td style="font-family: 'IBM Plex Mono', ui-monospace, monospace">gray.700 #3D4755</td>
+<td>8.30 : 1</td>
+</tr>
+<tr>
+<th scope="row" style="background: none; border-top: 1px solid #E1E5EA; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 500; color: #18202B">PROCESSING</th>
+<td><span style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px; border-radius: 4px; background: #E8F1FB; color: #0D47A1; font-size: 13px; font-weight: 500"><svg class="i" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8M21 3v5h-5M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16M8 16H3v5"></path></svg>U obradi</span></td>
+<td><span style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px; border-radius: 4px; background: #E8F1FB; color: #0D47A1; font-size: 13px; font-weight: 500"><svg class="i" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8M21 3v5h-5M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16M8 16H3v5"></path></svg>U obradi</span></td>
+<td style="font-family: 'IBM Plex Mono', ui-monospace, monospace">blue.50 #E8F1FB</td>
+<td style="font-family: 'IBM Plex Mono', ui-monospace, monospace">blue.800 #0D47A1</td>
+<td>7.57 : 1</td>
+</tr>
+<tr>
+<th scope="row" style="background: none; border-top: 1px solid #E1E5EA; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 500; color: #18202B">DONE</th>
+<td><span style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px; border-radius: 4px; background: #E7F4EC; color: #14532D; font-size: 13px; font-weight: 500"><svg class="i" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>Plaćeno</span></td>
+<td><span style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px; border-radius: 4px; background: #E7F4EC; color: #14532D; font-size: 13px; font-weight: 500"><svg class="i" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>Fiskalizirano</span></td>
+<td style="font-family: 'IBM Plex Mono', ui-monospace, monospace">green.50 #E7F4EC</td>
+<td style="font-family: 'IBM Plex Mono', ui-monospace, monospace">green.800 #14532D</td>
+<td>8.05 : 1</td>
+</tr>
+<tr>
+<th scope="row" style="background: none; border-top: 1px solid #E1E5EA; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-weight: 500; color: #18202B">FAIL</th>
+<td><span style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px; border-radius: 4px; background: #FDECEA; color: #8E1B16; font-size: 13px; font-weight: 500"><svg class="i" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg>Neuspjelo</span></td>
+<td><span style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px; border-radius: 4px; background: #FDECEA; color: #8E1B16; font-size: 13px; font-weight: 500"><svg class="i" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg>Neuspjelo</span></td>
+<td style="font-family: 'IBM Plex Mono', ui-monospace, monospace">red.50 #FDECEA</td>
+<td style="font-family: 'IBM Plex Mono', ui-monospace, monospace">red.800 #8E1B16</td>
+<td>7.92 : 1</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin-top: 4px">
+<span style="color: #56606E">Same pattern elsewhere:</span>
+<span style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px; border-radius: 4px; background: #E7F4EC; color: #14532D; font-size: 13px; font-weight: 500"><svg class="i" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>Važeće</span>
+<span style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px; border-radius: 4px; background: #FDECEA; color: #8E1B16; font-size: 13px; font-weight: 500"><svg class="i" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M8 2v4M16 2v4M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2ZM3 10h18M14 14l-4 4M10 14l4 4"></path></svg>Isteklo</span>
+<span style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px; border-radius: 4px; background: #E7F4EC; color: #14532D; font-size: 13px; font-weight: 500"><svg class="i" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>Aktivan</span>
+<span style="display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px; border-radius: 4px; background: #EEF1F4; color: #3D4755; font-size: 13px; font-weight: 500"><svg class="i" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M12 12m-10 0a10 10 0 1 0 20 0a10 10 0 1 0-20 0M8 12h8"></path></svg>Neaktivan</span>
+</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-size: 18px; line-height: 28px; font-weight: 600; color: #03112D">Buttons</h2>
+<p style="margin: 0; max-width: 760px; color: #56606E">40 px high on desktop, 44 to 48 px on phone and tablet. 6 px radius, 600 weight label. One primary button per view.</p>
+<div style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 16px; align-items: end">
+<div style="display: flex; flex-direction: column; align-items: flex-start; gap: 8px"><button type="button" style="height: 40px; padding: 0 16px; border: 0; border-radius: 6px; background: #1565C0; color: #FFFFFF; font-weight: 600">Spremi</button><span style="font-size: 13px; color: #56606E">Primary · white on blue.700, 5.75 : 1</span></div>
+<div style="display: flex; flex-direction: column; align-items: flex-start; gap: 8px"><button type="button" style="height: 40px; padding: 0 16px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF; font-weight: 600">Odustani</button><span style="font-size: 13px; color: #56606E">Secondary · border gray.500, 4.47 : 1</span></div>
+<div style="display: flex; flex-direction: column; align-items: flex-start; gap: 8px"><button type="button" style="height: 40px; padding: 0 12px; border: 0; border-radius: 6px; background: none; color: #1565C0; font-weight: 600">Očisti</button><span style="font-size: 13px; color: #56606E">Ghost · blue.700 text, 5.75 : 1</span></div>
+<div style="display: flex; flex-direction: column; align-items: flex-start; gap: 8px"><button type="button" style="height: 40px; padding: 0 16px; border: 0; border-radius: 6px; background: #B42318; color: #FFFFFF; font-weight: 600">Obriši</button><span style="font-size: 13px; color: #56606E">Destructive · white on red.700, 6.57 : 1</span></div>
+<div style="display: flex; flex-direction: column; align-items: flex-start; gap: 8px"><button type="button" style="height: 40px; padding: 0 16px; border: 0; border-radius: 6px; background: #1565C0; color: #FFFFFF; font-weight: 600; outline: 2px solid #1565C0; outline-offset: 2px">Spremi</button><span style="font-size: 13px; color: #56606E">Focus · 2 px blue.700 ring, 2 px offset</span></div>
+<div style="display: flex; flex-direction: column; align-items: flex-start; gap: 8px"><button type="button" aria-label="Uredi zonu ZONA1" style="display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF"><svg class="i" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497ZM15 5l4 4"></path></svg></button><span style="font-size: 13px; color: #56606E">Icon-only · always has an accessible name</span></div>
+</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 12px">
+<h2 style="margin: 0; font-size: 18px; line-height: 28px; font-weight: 600; color: #03112D">Icons</h2>
+<p style="margin: 0; max-width: 760px; color: #56606E">One line-icon set throughout (Lucide, 24 px grid, 2 px stroke, round caps). Icons inherit the text colour and are decorative next to a label.</p>
+<div style="display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 12px">
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<svg class="i" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2ZM13 5v2M13 17v2M13 11v2"></path></svg>
+<span style="font-size: 12px; line-height: 16px; color: #56606E; font-family: 'IBM Plex Mono', ui-monospace, monospace">ticket</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<svg class="i" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M9 2h6a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1ZM16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2M12 11h4M12 16h4M8 11h.01M8 16h.01"></path></svg>
+<span style="font-size: 12px; line-height: 16px; color: #56606E; font-family: 'IBM Plex Mono', ui-monospace, monospace">clipboard-list</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<svg class="i" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0ZM12 10m-3 0a3 3 0 1 0 6 0a3 3 0 1 0-6 0"></path></svg>
+<span style="font-size: 12px; line-height: 16px; color: #56606E; font-family: 'IBM Plex Mono', ui-monospace, monospace">map-pin</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<svg class="i" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1ZM9 12l2 2 4-4"></path></svg>
+<span style="font-size: 12px; line-height: 16px; color: #56606E; font-family: 'IBM Plex Mono', ui-monospace, monospace">shield-check</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<svg class="i" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0-8 0M16 11l2 2 4-4"></path></svg>
+<span style="font-size: 12px; line-height: 16px; color: #56606E; font-family: 'IBM Plex Mono', ui-monospace, monospace">user-check</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<svg class="i" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7ZM14 2v4a2 2 0 0 0 2 2h4M10 9H8M16 13H8M16 17H8"></path></svg>
+<span style="font-size: 12px; line-height: 16px; color: #56606E; font-family: 'IBM Plex Mono', ui-monospace, monospace">file-text</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<svg class="i" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M3 22h18M6 18v-7M10 18v-7M14 18v-7M18 18v-7M12 2l8 5H4Z"></path></svg>
+<span style="font-size: 12px; line-height: 16px; color: #56606E; font-family: 'IBM Plex Mono', ui-monospace, monospace">landmark</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<svg class="i" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0-8 0M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+<span style="font-size: 12px; line-height: 16px; color: #56606E; font-family: 'IBM Plex Mono', ui-monospace, monospace">users</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<svg class="i" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M11 11m-8 0a8 8 0 1 0 16 0a8 8 0 1 0-16 0M21 21l-4.3-4.3"></path></svg>
+<span style="font-size: 12px; line-height: 16px; color: #56606E; font-family: 'IBM Plex Mono', ui-monospace, monospace">search</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<svg class="i" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M21 4h-7M10 4H3M21 12h-9M8 12H3M21 20h-5M12 20H3M14 2v4M8 10v4M16 18v4"></path></svg>
+<span style="font-size: 12px; line-height: 16px; color: #56606E; font-family: 'IBM Plex Mono', ui-monospace, monospace">sliders-horizontal</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<svg class="i" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>
+<span style="font-size: 12px; line-height: 16px; color: #56606E; font-family: 'IBM Plex Mono', ui-monospace, monospace">menu</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<svg class="i" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+<span style="font-size: 12px; line-height: 16px; color: #56606E; font-family: 'IBM Plex Mono', ui-monospace, monospace">x</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<svg class="i" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M5 12h14M12 5v14"></path></svg>
+<span style="font-size: 12px; line-height: 16px; color: #56606E; font-family: 'IBM Plex Mono', ui-monospace, monospace">plus</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<svg class="i" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497ZM15 5l4 4"></path></svg>
+<span style="font-size: 12px; line-height: 16px; color: #56606E; font-family: 'IBM Plex Mono', ui-monospace, monospace">pencil</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<svg class="i" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6"></path></svg>
+<span style="font-size: 12px; line-height: 16px; color: #56606E; font-family: 'IBM Plex Mono', ui-monospace, monospace">trash-2</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<svg class="i" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M10 8h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2V10a2 2 0 0 1 2-2ZM4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>
+<span style="font-size: 12px; line-height: 16px; color: #56606E; font-family: 'IBM Plex Mono', ui-monospace, monospace">copy</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<svg class="i" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>
+<span style="font-size: 12px; line-height: 16px; color: #56606E; font-family: 'IBM Plex Mono', ui-monospace, monospace">check</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<svg class="i" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M12 12m-10 0a10 10 0 1 0 20 0a10 10 0 1 0-20 0M12 6v6l4 2"></path></svg>
+<span style="font-size: 12px; line-height: 16px; color: #56606E; font-family: 'IBM Plex Mono', ui-monospace, monospace">clock</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<svg class="i" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8M21 3v5h-5M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16M8 16H3v5"></path></svg>
+<span style="font-size: 12px; line-height: 16px; color: #56606E; font-family: 'IBM Plex Mono', ui-monospace, monospace">refresh-cw</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<svg class="i" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M12 12m-10 0a10 10 0 1 0 20 0a10 10 0 1 0-20 0M12 8v4M12 16h.01"></path></svg>
+<span style="font-size: 12px; line-height: 16px; color: #56606E; font-family: 'IBM Plex Mono', ui-monospace, monospace">circle-alert</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<svg class="i" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3ZM12 9v4M12 17h.01"></path></svg>
+<span style="font-size: 12px; line-height: 16px; color: #56606E; font-family: 'IBM Plex Mono', ui-monospace, monospace">triangle-alert</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<svg class="i" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M8 2v4M16 2v4M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2ZM3 10h18M14 14l-4 4M10 14l4 4"></path></svg>
+<span style="font-size: 12px; line-height: 16px; color: #56606E; font-family: 'IBM Plex Mono', ui-monospace, monospace">calendar-x</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<svg class="i" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"></path></svg>
+<span style="font-size: 12px; line-height: 16px; color: #56606E; font-family: 'IBM Plex Mono', ui-monospace, monospace">download</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<svg class="i" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2ZM22 7l-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+<span style="font-size: 12px; line-height: 16px; color: #56606E; font-family: 'IBM Plex Mono', ui-monospace, monospace">mail</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<svg class="i" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0ZM12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0-6 0"></path></svg>
+<span style="font-size: 12px; line-height: 16px; color: #56606E; font-family: 'IBM Plex Mono', ui-monospace, monospace">eye</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<svg class="i" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2ZM9 9m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0M21 15l-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path></svg>
+<span style="font-size: 12px; line-height: 16px; color: #56606E; font-family: 'IBM Plex Mono', ui-monospace, monospace">image</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<svg class="i" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"></path></svg>
+<span style="font-size: 12px; line-height: 16px; color: #56606E; font-family: 'IBM Plex Mono', ui-monospace, monospace">log-out</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<svg class="i" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg>
+<span style="font-size: 12px; line-height: 16px; color: #56606E; font-family: 'IBM Plex Mono', ui-monospace, monospace">chevron-right</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<svg class="i" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M12 5v14M19 12l-7 7-7-7"></path></svg>
+<span style="font-size: 12px; line-height: 16px; color: #56606E; font-family: 'IBM Plex Mono', ui-monospace, monospace">arrow-down</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<svg class="i" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="m7 15 5 5 5-5M7 9l5-5 5 5"></path></svg>
+<span style="font-size: 12px; line-height: 16px; color: #56606E; font-family: 'IBM Plex Mono', ui-monospace, monospace">chevrons-up-down</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<svg class="i" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="m12 19-7-7 7-7M19 12H5"></path></svg>
+<span style="font-size: 12px; line-height: 16px; color: #56606E; font-family: 'IBM Plex Mono', ui-monospace, monospace">arrow-left</span>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 8px; border: 1px solid #E1E5EA; border-radius: 6px">
+<svg class="i" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2M12 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0-8 0"></path></svg>
+<span style="font-size: 12px; line-height: 16px; color: #56606E; font-family: 'IBM Plex Mono', ui-monospace, monospace">user</span>
+</div>
+
+</div>
+</section>
+</div>
+</body>
+</html>

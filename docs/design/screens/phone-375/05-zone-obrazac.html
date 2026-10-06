@@ -1,0 +1,67 @@
+<!doctype html>
+<!-- SPARK Admin design export. Board: 05 Zone – form. Size: 375 x 1010 px. State: none. Static reference only: not production code. -->
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zone – uređivanje zone, mobitel</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0}
+*{box-sizing:border-box}
+button,input,select{font:inherit;color:inherit}
+a{color:#1565C0}a:hover{color:#0D47A1}
+:focus-visible{outline:2px solid #1565C0;outline-offset:2px}
+svg.i{flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+</style>
+</head>
+<body>
+<section role="dialog" aria-modal="true" aria-labelledby="zf-title" style="width: 375px; min-height: 1010px; display: flex; flex-direction: column; background: #FFFFFF; font-family: 'IBM Plex Sans', system-ui, sans-serif; font-size: 16px; line-height: 24px; color: #18202B">
+
+<header style="display: flex; align-items: center; gap: 4px; height: 56px; padding: 0 16px 0 6px; border-bottom: 1px solid #E1E5EA">
+<a href="05-zone.html" aria-label="Zatvori obrazac i vrati se na zone" style="display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 6px; color: #18202B"><svg class="i" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></a>
+<h2 id="zf-title" style="margin: 0; font-size: 18px; line-height: 28px; font-weight: 600; color: #03112D">Uredi zonu ZONA1</h2>
+</header>
+
+<form style="flex: 1; display: flex; flex-direction: column">
+<div style="flex: 1; padding: 16px; display: flex; flex-direction: column; gap: 20px">
+<p style="margin: 0; font-size: 14px; line-height: 20px; color: #56606E">Sva su polja obavezna.</p>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="z-code" style="font-size: 14px; line-height: 20px; font-weight: 500">Šifra</label>
+<input id="z-code" type="text" value="ZONA1" style="width: 100%; height: 48px; padding: 0 12px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF">
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="z-name" style="font-size: 14px; line-height: 20px; font-weight: 500">Naziv</label>
+<input id="z-name" type="text" value="Prva zona" style="width: 100%; height: 48px; padding: 0 12px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF">
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="z-price" style="font-size: 14px; line-height: 20px; font-weight: 500">Cijena (EUR)</label>
+<input id="z-price" type="text" inputmode="decimal" value="0,70" style="width: 100%; height: 48px; padding: 0 12px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF">
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="z-day" style="font-size: 14px; line-height: 20px; font-weight: 500">Cijena dnevne karte (EUR)</label>
+<input id="z-day" type="text" inputmode="decimal" value="15,00" style="width: 100%; height: 48px; padding: 0 12px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF">
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="z-dur" style="font-size: 14px; line-height: 20px; font-weight: 500">Trajanje (min)</label>
+<input id="z-dur" type="text" inputmode="numeric" value="60" style="width: 100%; height: 48px; padding: 0 12px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF">
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="z-ext" style="font-size: 14px; line-height: 20px; font-weight: 500">Najviše produljenja</label>
+<input id="z-ext" type="text" inputmode="numeric" value="2" style="width: 100%; height: 48px; padding: 0 12px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF">
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px">
+<label for="z-wait" style="font-size: 14px; line-height: 20px; font-weight: 500">Čekanje za DPK (min)</label>
+<input id="z-wait" type="text" inputmode="numeric" value="15" style="width: 100%; height: 48px; padding: 0 12px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF">
+</div>
+</div>
+
+<footer style="display: flex; flex-direction: column; gap: 8px; padding: 16px; border-top: 1px solid #E1E5EA">
+<button type="submit" style="height: 48px; border: 0; border-radius: 6px; background: #1565C0; color: #FFFFFF; font-weight: 600; cursor: pointer">Spremi</button>
+<button type="button" style="height: 48px; border: 1px solid #6E7887; border-radius: 6px; background: #FFFFFF; font-weight: 600; cursor: pointer">Odustani</button>
+<button type="button" style="display: flex; align-items: center; justify-content: center; gap: 8px; height: 48px; border: 0; border-radius: 6px; background: none; color: #B42318; font-weight: 600; cursor: pointer"><svg class="i" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M10 11v6M14 11v6"></path></svg>Obriši zonu</button>
+</footer>
+</form>
+</section>
+</body>
+</html>
