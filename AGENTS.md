@@ -26,18 +26,27 @@ MSW mock.
   When the spec is silent or contradicts itself, add an entry and ask; build the
   narrowest version that keeps the question open.
 
-## Milestone loop
+## Issue loop
 
-1. State the plan in a few lines and wait for approval.
-2. Build test-first (`/tdd` skill).
-3. Run the gate (below) until it's green.
-4. Report back **built / assumed / open**, then stop for review. Each
-   "assumed" item also lands in `api-assumptions.md` or `open-questions.md`.
+Work comes from the GitHub issues (`gh issue view <n>`), one at a time, in
+number order unless told otherwise. Milestones M0–M6 group them. The point is
+thorough review, so keep each change to its issue's scope.
 
-A milestone is done when every handoff hard requirement that applies to its
-screens is met **and has a test or a stated manual check**.
+1. Read the issue and everything it points to. State the plan in a few lines
+   and wait for approval.
+2. Branch `issue-<n>-<slug>` from an up-to-date `main`.
+3. Build test-first (`/tdd` skill).
+4. Run the gate (below) until it's green.
+5. Open a PR that says `Closes #<n>` and lists **built / assumed / open**, then
+   stop for review. Each "assumed" item also lands in `api-assumptions.md` or
+   `open-questions.md`.
 
-**Zone (M2) is the reference slice.** Before building any later screen, open the
+An issue is done when its "Done when" list is met, every handoff hard
+requirement that applies is met, **and each has a test or a stated manual
+check**. Work found along the way that is outside the scope becomes a new
+issue, not part of the current PR.
+
+**Zone (#10–#14) is the reference slice.** Before building any later screen, open the
 Zone files and copy their structure: list, form, query hooks, the three states,
 tests. If a later screen needs to depart from the pattern, change Zone first so
 the pattern stays single-sourced.
