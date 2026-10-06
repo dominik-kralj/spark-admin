@@ -1,0 +1,135 @@
+import { Alert, Button, Field, Flex, HStack, IconButton, Input, Stack } from '@chakra-ui/react'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { CircleAlert, Eye, EyeOff } from 'lucide-react'
+import { useId, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { useNavigate } from 'react-router'
+
+import { useSignIn } from '@/api'
+import { hr } from '@/shared/i18n/hr'
+import { focusOnMount } from '@/shared/lib/focusOnMount'
+import { paths } from '@/shared/paths'
+
+import { emptyLoginForm, loginFormSchema } from './loginFormSchema'
+import { LoginHeading } from './LoginHeading'
+import { loginErrorMessage } from './loginErrorMessage'
+
+const controlSize = { base: 'xl', md: 'lg' } as const
+
+export function LoginPage() {
+    const navigate = useNavigate()
+    const headingId = useId()
+    const errorId = useId()
+    // Chakra links field errors only via aria-errormessage, so inputs add aria-describedby.
+    const usernameErrorId = useId()
+    const passwordErrorId = useId()
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false)
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm({
+        resolver: zodResolver(loginFormSchema),
+        defaultValues: emptyLoginForm,
+        mode: 'onTouched',
+    })
+    const { signIn, isPending, error } = useSignIn({
+        onSuccess: () => {
+            void navigate(paths.home, { replace: true })
+        },
+    })
+
+    const showError = error !== null && !isPending
+
+    return (
+        <Flex as="main" minH="100dvh" align="center" justify="center" p="6" bg="bg">
+            <Stack asChild w="full" maxW="360px" gap="5">
+                <form
+                    method="post"
+                    noValidate
+                    aria-labelledby={headingId}
+                    aria-describedby={showError ? errorId : undefined}
+                    onSubmit={(event) => void handleSubmit(signIn)(event)}
+                >
+                    <LoginHeading id={headingId} />
+
+                    {showError && (
+                        <Alert.Root
+                            ref={focusOnMount}
+                            id={errorId}
+                            role="alert"
+                            tabIndex={-1}
+                            status="error"
+                        >
+                            <Alert.Indicator>
+                                <CircleAlert />
+                            </Alert.Indicator>
+                            <Alert.Description>
+                                <strong>{hr.login.errorTitle}</strong> {loginErrorMessage(error)}
+                            </Alert.Description>
+                        </Alert.Root>
+                    )}
+
+                    <Field.Root
+                        invalid={errors.username !== undefined}
+                        ids={{ errorText: usernameErrorId }}
+                    >
+                        <Field.Label>{hr.login.username}</Field.Label>
+                        <Input
+                            {...register('username')}
+                            aria-describedby={errors.username ? usernameErrorId : undefined}
+                            autoComplete="username"
+                            size={controlSize}
+                        />
+                        <Field.ErrorText fontSize="caption">
+                            <CircleAlert size="14" />
+                            {errors.username?.message}
+                        </Field.ErrorText>
+                    </Field.Root>
+
+                    <Field.Root
+                        invalid={errors.password !== undefined}
+                        ids={{ errorText: passwordErrorId }}
+                    >
+                        <Field.Label>{hr.login.password}</Field.Label>
+                        <HStack w="full" gap="2">
+                            <Input
+                                {...register('password')}
+                                aria-describedby={errors.password ? passwordErrorId : undefined}
+                                type={isPasswordVisible ? 'text' : 'password'}
+                                autoComplete="current-password"
+                                size={controlSize}
+                            />
+                            <IconButton
+                                aria-label={hr.login.showPassword}
+                                aria-pressed={isPasswordVisible}
+                                onClick={() => {
+                                    setIsPasswordVisible((isVisible) => !isVisible)
+                                }}
+                                variant="outline"
+                                size={controlSize}
+                            >
+                                {isPasswordVisible ? <EyeOff /> : <Eye />}
+                            </IconButton>
+                        </HStack>
+                        <Field.ErrorText fontSize="caption">
+                            <CircleAlert size="14" />
+                            {errors.password?.message}
+                        </Field.ErrorText>
+                    </Field.Root>
+
+                    <Button
+                        type="submit"
+                        loading={isPending}
+                        loadingText={hr.login.submit}
+                        colorPalette="blue"
+                        size={controlSize}
+                        mt="1"
+                    >
+                        {hr.login.submit}
+                    </Button>
+                </form>
+            </Stack>
+        </Flex>
+    )
+}

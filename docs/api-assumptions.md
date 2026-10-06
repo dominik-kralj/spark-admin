@@ -42,4 +42,42 @@ rejects with the original `AbortError`, not an `ApiError`.
 
 ## Endpoints
 
-None yet. Each feature adds its endpoints and payload shapes here.
+Each feature adds its endpoints and payload shapes here.
+
+### Login (`src/api/auth.ts`)
+
+The spec has no Admin login (feature docs §5.12, `open-questions.md` #2). This
+mirrors the Inspector `Login` action, with username and password in place of
+`TenantId` and `PIN`.
+
+`POST /login`, no `Authorization` header (the token does not exist yet), with
+the `X-API-KEY` like every call.
+
+```json
+{ "username": "admin", "password": "…" }
+```
+
+`200`:
+
+```json
+{
+  "token": "<JWT>",
+  "user": {
+    "adminUserId": 1,
+    "tenantId": 1,
+    "username": "admin",
+    "name": "Ana",
+    "surname": "Kovač"
+  }
+}
+```
+
+| Item          | Assumption                                                                            | Source                                       |
+| ------------- | ------------------------------------------------------------------------------------- | -------------------------------------------- |
+| Path          | `/login` under the Admin base path                                                    | spec: Inspector `[Route("login")]`           |
+| Request       | `username` trimmed, `password` exactly as typed; no `tenantId` (open question #6)     | handoff: "Login (username, password)"        |
+| Response      | `token` plus `user`, like the Inspector's `{ token, inspector }`                      | spec: Inspector `Login`                      |
+| User fields   | `adminUserId`, `tenantId`, `username`, `name`, `surname`                              | assumed; `name`/`surname` as on INSPECTORS   |
+| Wrong login   | `401` with no body; the UI does not say which value is wrong                          | spec: Inspector `Login` returns Unauthorized |
+| Rate limit    | `429` after 5 requests per IP per minute, fixed window; the mock counts every request | spec: `LoginPolicy`                          |
+| Token storage | memory only until #5 decides where the session lives                                  | #5                                           |

@@ -119,6 +119,8 @@ deduplicates); read `next/dynamic` as `React.lazy`.
 - **Theme** (`src/shared/theme/system.ts`): a copy of `docs/design/theme/theme.ts`.
   Style with its semantic tokens (`bg.subtle`, `fg.muted`, `spark.heading`,
   `colorPalette="blue"`), never raw hex values.
+  App-wide component styling goes in recipe overrides in
+  `src/shared/theme/recipes/`, one file per component, never in `system.ts`.
 - **Strings** (`src/shared/i18n/hr.ts`): every user-visible string, including
   aria-labels, validation messages and toasts. Components import keys from it.
 - **Format** (`src/shared/lib/format.ts`): every date, time and money shown in the UI
