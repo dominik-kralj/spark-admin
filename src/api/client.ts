@@ -11,19 +11,13 @@ type QueryValue = string | number | boolean | null | undefined
 
 interface RequestOptions<TSchema extends z.ZodType> {
     method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
-    /** Values that are undefined, null or '' are left out of the URL. */
     query?: Record<string, QueryValue>
-    /** Sent as JSON. */
     body?: unknown
-    /** Parses the response body; a 204 or empty body is parsed as undefined. */
+    /** A 204 or empty body is parsed as undefined. */
     schema: TSchema
     signal?: AbortSignal
 }
 
-/**
- * The single HTTP entry point. Adds the base path, X-API-KEY and the bearer
- * token, and turns every failure except an abort into an ApiError.
- */
 export async function request<TSchema extends z.ZodType>(
     path: string,
     { method = 'GET', query, body, schema, signal }: RequestOptions<TSchema>,
@@ -79,10 +73,7 @@ function buildUrl(path: string, query: Record<string, QueryValue> | undefined): 
     return url.toString()
 }
 
-/**
- * Once the caller has aborted, whatever fetch or the body read throws is the
- * cancellation, so it passes through for TanStack Query rather than being wrapped.
- */
+// After an abort, whatever fetch throws is the cancellation TanStack Query expects.
 function isAbort(error: unknown, signal: AbortSignal | undefined): boolean {
     return (
         signal?.aborted === true || (error instanceof DOMException && error.name === 'AbortError')

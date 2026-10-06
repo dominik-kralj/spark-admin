@@ -1,9 +1,6 @@
 let accessToken: string | null = null
 
-/**
- * Sets the JWT sent as the bearer token on every request; null signs out.
- * Where the token lives between reloads is decided with the session (#5).
- */
+// Memory only until #5 decides where the session lives.
 export function setAccessToken(token: string | null): void {
     accessToken = token
 }

@@ -9,16 +9,10 @@ export type ApiErrorKind =
     | 'server'
     | 'invalidResponse'
 
-/**
- * Every failed API call rejects with this, except aborts, which pass through
- * so TanStack Query can tell a cancelled query from a failed one. The UI picks
- * its message by `kind`; server text is never shown. The message never holds
- * request headers, so the token and API key cannot leak into logs.
- */
+/** The message holds only kind and status, so the token and key never reach a log. */
 export class ApiError extends Error {
     override readonly name = 'ApiError'
     readonly kind: ApiErrorKind
-    /** HTTP status, absent for network failures. */
     readonly status: number | undefined
 
     constructor(kind: ApiErrorKind, status?: number, options?: ErrorOptions) {
