@@ -6,7 +6,6 @@ import { apiUrl } from './url'
 
 const loginBodySchema = z.object({ username: z.string(), password: z.string() })
 
-// Spec: login allows 5 requests per IP per minute in a fixed window, then answers 429.
 const permitLimit = 5
 const windowMs = 60_000
 let windowStart = 0

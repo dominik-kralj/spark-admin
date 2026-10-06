@@ -125,7 +125,6 @@ describe('LoginPage', () => {
         await waitFor(() => {
             expect(router.state.location.pathname).toBe(paths.home)
         })
-        // The username is trimmed; the password is sent exactly as typed.
         expect(body).toEqual({ username: 'ana', password: ' tajna 1 ' })
     })
 
@@ -204,7 +203,6 @@ describe('LoginPage', () => {
         expect(getForm().submit).toBeDisabled()
         await user.type(getForm().password, '{Enter}')
         await user.click(getForm().submit)
-        // Give a stray second request time to reach the handler.
         await new Promise((resolve) => setTimeout(resolve, 50))
         expect(requests).toBe(1)
     })

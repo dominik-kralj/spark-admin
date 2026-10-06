@@ -7,34 +7,20 @@ import { useNavigate } from 'react-router'
 
 import { useSignIn } from '@/api'
 import { hr } from '@/shared/i18n/hr'
+import { focusOnMount } from '@/shared/lib/focusOnMount'
 import { paths } from '@/shared/paths'
 
 import { emptyLoginForm, loginFormSchema } from './loginFormSchema'
 import { LoginHeading } from './LoginHeading'
 import { loginErrorMessage } from './loginErrorMessage'
 
-// Phone gets 48 px controls, wider screens 44 px (design: 01-prijava).
 const controlSize = { base: 'xl', md: 'lg' } as const
-
-// The recipe's default border is decorative gray.200; inputs need gray.500 (4.47:1), and
-// an invalid input gets a 2 px red.700 border (docs/design/docs/components.md, Forms).
-const inputStyles = {
-    size: controlSize,
-    borderColor: 'border.emphasized',
-    _invalid: { borderColor: 'border.error', borderWidth: '2px' },
-} as const
-
-// The error takes focus when it appears (accessibility.md, 01 Prijava).
-function focusOnMount(node: HTMLElement | null) {
-    node?.focus()
-}
 
 export function LoginPage() {
     const navigate = useNavigate()
     const headingId = useId()
     const errorId = useId()
-    // Chakra's Field links an error only through aria-errormessage, which screen readers
-    // support unevenly, so each input also names its error in aria-describedby.
+    // Chakra links field errors only via aria-errormessage, so inputs add aria-describedby.
     const usernameErrorId = useId()
     const passwordErrorId = useId()
     const [isPasswordVisible, setIsPasswordVisible] = useState(false)
@@ -58,7 +44,6 @@ export function LoginPage() {
     return (
         <Flex as="main" minH="100dvh" align="center" justify="center" p="6" bg="bg">
             <Stack asChild w="full" maxW="360px" gap="5">
-                {/* method="post" keeps the password out of the URL even if script fails. */}
                 <form
                     method="post"
                     noValidate
@@ -75,10 +60,6 @@ export function LoginPage() {
                             role="alert"
                             tabIndex={-1}
                             status="error"
-                            borderWidth="1px"
-                            borderColor="border.error"
-                            p="3"
-                            gap="2.5"
                         >
                             <Alert.Indicator>
                                 <CircleAlert />
@@ -98,7 +79,7 @@ export function LoginPage() {
                             {...register('username')}
                             aria-describedby={errors.username ? usernameErrorId : undefined}
                             autoComplete="username"
-                            {...inputStyles}
+                            size={controlSize}
                         />
                         <Field.ErrorText fontSize="caption">
                             <CircleAlert size="14" />
@@ -117,7 +98,7 @@ export function LoginPage() {
                                 aria-describedby={errors.password ? passwordErrorId : undefined}
                                 type={isPasswordVisible ? 'text' : 'password'}
                                 autoComplete="current-password"
-                                {...inputStyles}
+                                size={controlSize}
                             />
                             <IconButton
                                 aria-label={hr.login.showPassword}
@@ -127,7 +108,6 @@ export function LoginPage() {
                                 }}
                                 variant="outline"
                                 size={controlSize}
-                                borderColor="border.emphasized"
                             >
                                 {isPasswordVisible ? <EyeOff /> : <Eye />}
                             </IconButton>

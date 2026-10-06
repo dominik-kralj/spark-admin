@@ -1,7 +1,6 @@
 import { isApiError } from '@/api'
 import { hr } from '@/shared/i18n/hr'
 
-// Every failure the user can't fix by retyping reads as a server problem.
 export function loginErrorMessage(error: Error): string {
     if (!isApiError(error)) return hr.login.errors.server
 

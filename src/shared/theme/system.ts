@@ -1,8 +1,10 @@
 // Copied from docs/design/theme/theme.ts (Chakra v3, checked against 3.37). The design
 // export is the source: when it changes, copy it again. Its `statusChip` map is left
 // out because it keys on raw API status names and holds UI strings; status chips
-// get built in src/ with labels from src/i18n/hr.ts.
+// get built in src/ with labels from src/i18n/hr.ts. Keep the recipesConfig argument.
 import { createSystem, defaultConfig, defineConfig } from '@chakra-ui/react'
+
+import { recipesConfig } from './recipes'
 
 const config = defineConfig({
     globalCss: {
@@ -144,4 +146,4 @@ const config = defineConfig({
     },
 })
 
-export const system = createSystem(defaultConfig, config)
+export const system = createSystem(defaultConfig, config, recipesConfig)

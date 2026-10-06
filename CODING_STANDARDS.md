@@ -7,6 +7,20 @@ cognitive overhead. Where these rules meet a hard requirement in
 Prefer clear code over clever code, and follow the existing pattern before
 introducing a new one. Zone (#10–#14) is the reference slice for screens.
 
+## Principles
+
+- **KISS.** The simplest code that meets the requirement. No cleverness that a
+  reviewer has to decode.
+- **DRY.** Logic, markup patterns and style values are written once. Before
+  writing a helper, search for one; on the second copy of anything, extract it.
+- **YAGNI.** Build what the issue asks for, not what a later issue might need.
+  No options, parameters or abstractions without a current caller.
+- **Extract reusable logic.** A helper that isn't tied to one feature (DOM
+  helpers, ref callbacks, formatting, mapping, validation) goes in
+  `shared/lib/` from its first use, one concern per file. Logic tied to one
+  feature gets its own file in that feature, not a function at the top of a
+  component.
+
 ## Scope
 
 Change only what the issue asks for. Refactors, renames and cleanups of nearby
@@ -26,10 +40,11 @@ blank lines but cannot add them, so spacing is on you:
 
 ## Comments
 
-A comment carries the _why_: a spec rule, a constraint, a gotcha, a pointer to
-an open question. Names and types carry the _what_. One line is the norm. Doc
-comments (`/** */`) go on exports whose name and type leave something unsaid.
-Removed code is deleted; git keeps it.
+Default to no comment: names, types and tests carry the meaning, and the design
+or spec reference belongs in the PR, not the code. Write a comment only when the
+code would otherwise invite a wrong change, such as a guard that looks redundant
+or a workaround for a library gap. Then it is one line. Removed code is deleted;
+git keeps it.
 
 ## Functions
 
@@ -154,6 +169,11 @@ amounts go through `shared/lib/format.ts`.
 - Chakra v3 style props and recipes, with the theme's semantic tokens
   (`bg.subtle`, `fg.muted`, `colorPalette="blue"`); never raw hex. The theme is
   light only.
+- How a component looks everywhere (borders, padding, invalid and focus states)
+  lives in a recipe override in `shared/theme/recipes/`, one file per
+  component, not in style props or style objects in components. Style props in
+  a component are for layout and one-off cases only. `system.ts` is a copy of
+  the design export, so overrides never go there.
 - Conditional styling stays shallow: one condition per prop. Repeated or
   tangled styling becomes a recipe or a small helper.
 - Hover, active, selected, disabled and loading states stay distinct, and
@@ -177,6 +197,9 @@ Run through this before the gate:
 
 - Did the change stay inside the issue's scope?
 - Is the code easy to scan, with names doing most of the explaining?
+- Is anything written twice, or a reusable helper left inside a component?
+- Is any styling in a component that belongs in a recipe?
+- Is every comment one the code can't do without?
 - Any avoidable nesting, duplicated state, `useEffect`, variable, comment,
   cast or memo hook?
 - Is every user-visible string in `hr.ts`?

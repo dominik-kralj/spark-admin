@@ -21,7 +21,6 @@ export function renderWithProviders(ui: ReactElement, options?: RenderOptions) {
     }
 }
 
-/** Renders the app's routes at `path`; `router` exposes the current location. */
 export function renderRoute(path: string) {
     const router = createMemoryRouter(routes, { initialEntries: [path] })
 

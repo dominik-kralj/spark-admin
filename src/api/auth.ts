@@ -22,7 +22,6 @@ export interface Session {
     user: AdminUser
 }
 
-// Shaped like the Inspector login response in the spec; see docs/api-assumptions.md.
 const loginResponseSchema = z.object({
     token: z.string().min(1),
     user: z.object({
@@ -34,7 +33,6 @@ const loginResponseSchema = z.object({
     }),
 })
 
-/** Stores the token for later requests and returns the signed-in user. */
 export async function signIn(credentials: Credentials): Promise<Session> {
     const { token, user } = await request('/login', {
         method: 'POST',
@@ -59,8 +57,7 @@ interface UseSignInOptions {
 }
 
 export function useSignIn({ onSuccess }: UseSignInOptions) {
-    // The credentials travel through a ref rather than as mutation variables, so the
-    // password never enters the mutation cache. A held ref also means one request at a time.
+    // A ref, not mutation variables, so the password never enters the mutation cache.
     const credentialsRef = useRef<Credentials | null>(null)
     const mutation = useMutation({
         mutationFn: () => {
