@@ -35,7 +35,6 @@ export default defineConfig([
         },
     },
     {
-        // The API module's internals (request, raw field names) stay behind its index.
         files: ['src/**/*.{ts,tsx}'],
         ignores: ['src/api/**', 'src/mocks/**'],
         rules: {

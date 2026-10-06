@@ -2,11 +2,7 @@
 import { ESLint, Linter } from 'eslint'
 import { describe, expect, it } from 'vitest'
 
-/**
- * Lints snippets with the real `no-restricted-imports` setting the project
- * config computes for each path. Only that rule runs, so the snippets need no
- * type information and the paths need not exist.
- */
+// Runs only the boundary rule, so snippets need no type info and paths need not exist.
 async function lintImport(code: string, filePath: string): Promise<(string | null)[]> {
     const config = (await new ESLint().calculateConfigForFile(filePath)) as {
         rules: Linter.RulesRecord
