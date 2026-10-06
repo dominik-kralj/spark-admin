@@ -101,6 +101,18 @@ blank lines but cannot add them, so spacing is on you:
 - In JSX, one blank line between sibling sections (header, filters, table,
   pagination), so each section reads as a block.
 
+Beyond formatting:
+
+- **Comments carry the _why_.** A comment earns its line with something the
+  code cannot say: a spec rule, a constraint, a gotcha, a pointer to an open
+  question. Names and types carry the _what_. One line is the norm. Doc
+  comments (`/** */`) go on exports whose name and type leave something
+  unsaid. Removed code is deleted; git keeps it.
+- **One condition per ternary.** Three or more outcomes become an early
+  return, a `switch`, or a lookup object (`no-nested-ternary`).
+- **Silent in production.** `src/` holds no `console` calls (`no-console`):
+  the API module carries the token and key, and a stray log is how they leak.
+
 ## Performance
 
 The `vercel-react-best-practices` skill (`.claude/skills/react-best-practices`)

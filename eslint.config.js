@@ -30,6 +30,8 @@ export default defineConfig([
         },
         rules: {
             '@typescript-eslint/restrict-template-expressions': ['error', { allowNumber: true }],
+            'no-nested-ternary': 'error',
+            'no-console': 'error',
         },
     },
     {
