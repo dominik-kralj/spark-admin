@@ -1,0 +1,45 @@
+# API assumptions
+
+The spec defines no Admin endpoints. Everything below is what this frontend
+assumes, for the backend team to confirm or correct. The code that depends on
+each item lives in `src/api/`; update this file in the same change as that code.
+
+## Transport
+
+| Item       | Assumption                                                                                                                                | Source                                                                  |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| Origin     | `VITE_API_BASE_URL`, HTTPS                                                                                                                | spec: "Svi pozivi na WebAPI moraju ići preko HTTPS"                     |
+| Base path  | `/api/v1/admin`; endpoint paths below are relative to it                                                                                  | spec: `AdminController` with `[Route("api/v1/[controller]")]`           |
+| API key    | `X-API-KEY: <VITE_API_KEY>` on every request, including login                                                                             | spec: X-API-KEY Autorizacija                                            |
+| Auth       | `Authorization: Bearer <JWT>` on every request once signed in                                                                             | spec: JWT Security token; handoff                                       |
+| Bodies     | JSON both ways. Requests send `Content-Type: application/json` only when they have a body; every request sends `Accept: application/json` | assumed                                                                 |
+| Casing     | camelCase property names (ASP.NET Core `System.Text.Json` default), e.g. `zoneId`, `tenantId`                                             | assumed; the spec's C# models are PascalCase and serialise to camelCase |
+| Date-times | ISO 8601 strings in UTC with a `Z` suffix (`2026-10-06T14:30:00Z`); shown in local time                                                   | assumed                                                                 |
+| Query      | Filters are query-string params; empty values (`undefined`, `null`, `''`) are left out                                                    | assumed                                                                 |
+| No content | `204` or an empty body for calls that return nothing (e.g. DELETE)                                                                        | assumed                                                                 |
+
+## Errors
+
+Error bodies are assumed to be ASP.NET Core `ProblemDetails`
+(`application/problem+json`), but the frontend **reads only the status code**.
+A missing, plain-text or HTML error body is handled the same way. Messages
+shown to the user come from `hr.ts`, by error kind, and never from the server.
+
+| Status             | `ApiError.kind`   | Notes                                           |
+| ------------------ | ----------------- | ----------------------------------------------- |
+| 400, 422           | `validation`      | field-level errors not read yet (open question) |
+| 401                | `unauthorized`    | missing/invalid API key or JWT; wrong login     |
+| 403                | `forbidden`       |                                                 |
+| 404                | `notFound`        |                                                 |
+| 409                | `conflict`        | e.g. duplicate, or a stale edit                 |
+| 429                | `rateLimited`     | spec: login is limited to 5 per IP per minute   |
+| 5xx, anything else | `server`          |                                                 |
+| no response        | `network`         | `fetch` rejected (offline, DNS, CORS)           |
+| 2xx, bad body      | `invalidResponse` | body is not JSON or fails the response schema   |
+
+A request cancelled through its `AbortSignal` (TanStack Query cancellation)
+rejects with the original `AbortError`, not an `ApiError`.
+
+## Endpoints
+
+None yet. Each feature adds its endpoints and payload shapes here.
