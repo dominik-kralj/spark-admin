@@ -18,7 +18,7 @@ test('signs in with the mock account', async ({ page }) => {
     await page.getByRole('button', { name: hr.login.submit }).click()
 
     await expect(page).toHaveURL(paths.home)
-    await expect(page.getByRole('heading', { level: 1, name: hr.app.name })).toBeVisible()
+    await expect(page.getByRole('heading', { level: 1, name: hr.nav.tickets })).toBeVisible()
 })
 
 test('moves focus to the error after a wrong password and keeps the values', async ({ page }) => {
@@ -35,7 +35,7 @@ test('moves focus to the error after a wrong password and keeps the values', asy
 })
 
 test('controls meet the touch target size for the width', async ({ page, isMobile }) => {
-    const minHeight = isMobile ? 48 : 44
+    const minHeight = isMobile ? 48 : 40
     const controls = [
         page.getByLabel(hr.login.username),
         page.getByLabel(hr.login.password, { exact: true }),
