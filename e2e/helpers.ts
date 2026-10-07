@@ -47,6 +47,14 @@ export async function expectFocusTrapped(page: Page, dialog: Locator): Promise<v
     }
 }
 
+/** `lower` starts below where `upper` ends, so the two never overlap. */
+export async function expectBelow(lower: Locator, upper: Locator): Promise<void> {
+    const lowerBox = await lower.boundingBox()
+    const upperBox = await upper.boundingBox()
+
+    expect(lowerBox?.y).toBeGreaterThanOrEqual((upperBox?.y ?? 0) + (upperBox?.height ?? 0))
+}
+
 export async function expectNoHorizontalScroll(page: Page): Promise<void> {
     const overflow = await page.evaluate(
         () => document.documentElement.scrollWidth - document.documentElement.clientWidth,

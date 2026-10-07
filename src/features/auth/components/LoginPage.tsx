@@ -15,8 +15,6 @@ import { emptyLoginForm, loginFormSchema } from '../validators/loginForm'
 
 import { LoginHeading } from './LoginHeading'
 
-const controlSize = { base: 'xl', md: 'lg', lg: 'md' } as const
-
 export function LoginPage() {
     const navigate = useNavigate()
     const location = useLocation()
@@ -49,7 +47,9 @@ export function LoginPage() {
             minH="100dvh"
             justify="center"
             p="6"
-            pt={{ base: '24', md: '28vh' }}
+            // Anchored to the top so an error pushes only what is below it; on a phone the
+            // offset puts the form (about 20rem tall) in the middle of the screen.
+            pt={{ base: 'max(1.5rem, calc(50dvh - 10rem))', md: '28vh' }}
             bg="bg"
         >
             <Stack asChild w="full" maxW="360px" gap="5">
@@ -101,7 +101,6 @@ export function LoginPage() {
                             {...register('username')}
                             aria-describedby={errors.username ? usernameErrorId : undefined}
                             autoComplete="username"
-                            size={controlSize}
                         />
                         <Field.ErrorText fontSize="caption">
                             <CircleAlert size="14" />
@@ -120,7 +119,6 @@ export function LoginPage() {
                                 aria-describedby={errors.password ? passwordErrorId : undefined}
                                 type={isPasswordVisible ? 'text' : 'password'}
                                 autoComplete="current-password"
-                                size={controlSize}
                             />
                             <IconButton
                                 aria-label={hr.login.showPassword}
@@ -129,7 +127,6 @@ export function LoginPage() {
                                     setIsPasswordVisible((isVisible) => !isVisible)
                                 }}
                                 variant="outline"
-                                size={controlSize}
                             >
                                 {isPasswordVisible ? <EyeOff /> : <Eye />}
                             </IconButton>
@@ -145,7 +142,6 @@ export function LoginPage() {
                         loading={isPending}
                         loadingText={hr.login.submit}
                         colorPalette="blue"
-                        size={controlSize}
                         mt="1"
                     >
                         {hr.login.submit}

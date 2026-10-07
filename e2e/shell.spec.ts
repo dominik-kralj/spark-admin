@@ -5,6 +5,7 @@ import { paths } from '../src/shared/paths'
 
 import { expectNoAxeViolations } from './axe'
 import {
+    expectBelow,
     expectFocusTrapped,
     expectNoHorizontalScroll,
     expectTouchTargets,
@@ -40,6 +41,10 @@ test.describe('phone menu drawer', () => {
             await waitForAnimations(drawer)
             await expectTouchTargets(drawer.getByRole('link'))
             await expectTouchTargets(drawer.getByRole('button'))
+            await expectBelow(
+                drawer.getByRole('link', { name: hr.nav.tickets }),
+                drawer.getByRole('button', { name: hr.shell.closeMenu }),
+            )
             await expectNoHorizontalScroll(page)
             await expectNoAxeViolations(page)
             await expectFocusTrapped(page, drawer)
@@ -108,6 +113,10 @@ test.describe('tablet rail', () => {
         await expect(menu).toBeVisible()
         await waitForAnimations(menu)
         await expectTouchTargets(menu.getByRole('link'))
+        await expectBelow(
+            menu.getByRole('button', { name: hr.shell.collapseMenu }),
+            menu.getByRole('link', { name: hr.nav.adminUsers, exact: true }),
+        )
         await expectNoAxeViolations(page)
         await expectFocusTrapped(page, menu)
 
