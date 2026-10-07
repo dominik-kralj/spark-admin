@@ -1,10 +1,12 @@
 // @vitest-environment node
 import { ESLint, Linter } from 'eslint'
-import { describe, expect, it } from 'vitest'
+import { beforeAll, describe, expect, it } from 'vitest'
+
+const eslint = new ESLint()
 
 // Runs only the boundary rule, so snippets need no type info and paths need not exist.
 async function lintImport(code: string, filePath: string): Promise<(string | null)[]> {
-    const config = (await new ESLint().calculateConfigForFile(filePath)) as {
+    const config = (await eslint.calculateConfigForFile(filePath)) as {
         rules: Linter.RulesRecord
     }
     const rule = config.rules['no-restricted-imports']
@@ -23,6 +25,11 @@ async function lintImport(code: string, filePath: string): Promise<(string | nul
 }
 
 describe('import boundaries', () => {
+    // Loading the flat config and its plugins is a one-off cost that can pass 5 s under load.
+    beforeAll(async () => {
+        await eslint.calculateConfigForFile('src/features/zones/ZonesPage.tsx')
+    }, 30_000)
+
     it('rejects a deep @/shared/api import from a feature', async () => {
         const messages = await lintImport(
             "import { request } from '@/shared/api/client'",
