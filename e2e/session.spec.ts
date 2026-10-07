@@ -5,6 +5,7 @@ import { hr } from '../src/shared/i18n/hr'
 import { paths } from '../src/shared/paths'
 
 import { expectNoAxeViolations } from './axe'
+import { signOut } from './helpers'
 
 const missingPath = '/nema-ove-stranice'
 
@@ -26,7 +27,7 @@ test('signs in to the requested page, survives a reload, and signs out for good'
     await expect(page.getByRole('heading', { level: 1, name: hr.notFound.title })).toBeVisible()
 
     await page.getByRole('link', { name: hr.notFound.home }).click()
-    await page.getByRole('button', { name: hr.shell.signOut }).click()
+    await signOut(page)
     await expect(page).toHaveURL(paths.login)
 
     await page.goBack()

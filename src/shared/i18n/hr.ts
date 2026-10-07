@@ -1,10 +1,10 @@
+const appName = 'SPARK Admin'
+
 /**
  * Every user-visible string in the app, including aria-labels, validation
  * messages and toasts. Components import from here; they hold no literals.
  * Screens add their own section as they are built.
  */
-const appName = 'SPARK Admin'
-
 export const hr = {
     app: {
         name: appName,
@@ -35,6 +35,11 @@ export const hr = {
         skipToContent: 'Preskoči na sadržaj',
         homeLink: `${appName}, početna stranica`,
         mainNav: 'Glavna navigacija',
+        menu: 'Izbornik',
+        openMenu: 'Otvori izbornik',
+        closeMenu: 'Zatvori izbornik',
+        expandMenu: 'Proširi izbornik',
+        collapseMenu: 'Sažmi izbornik',
         placeholder: 'Sadržaj stranice',
     },
     nav: {

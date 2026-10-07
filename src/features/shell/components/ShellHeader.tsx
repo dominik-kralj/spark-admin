@@ -1,18 +1,17 @@
-import { Button, Flex, HStack, Skeleton, Span } from '@chakra-ui/react'
-import { Landmark, LogOut, User } from 'lucide-react'
+import { Button, Flex, HStack } from '@chakra-ui/react'
+import { LogOut } from 'lucide-react'
 
 import { hr } from '@/shared/i18n/hr'
 
-import { useCityName } from '../api/useCityName'
+import { CityName } from './CityName'
+import { SignedInUser } from './SignedInUser'
 
-export interface ShellHeaderProps {
+export interface ShellUserProps {
     userName: string
     onSignOut: () => void
 }
 
-export function ShellHeader({ userName, onSignOut }: ShellHeaderProps) {
-    const cityName = useCityName()
-
+export function ShellHeader({ userName, onSignOut }: ShellUserProps) {
     return (
         <Flex
             as="header"
@@ -22,26 +21,15 @@ export function ShellHeader({ userName, onSignOut }: ShellHeaderProps) {
             justify="space-between"
             gap="2 4"
             py="2.5"
-            px="8"
+            px={{ base: '6', lg: '8' }}
             bg="bg"
             borderBottomWidth="1px"
             borderColor="border"
         >
-            <HStack gap="2" color="spark.heading" fontWeight="semibold">
-                {cityName.isPending && <Skeleton h="5" w="32" />}
-                {cityName.isSuccess && (
-                    <>
-                        <Landmark size="18" aria-hidden="true" />
-                        <Span>{cityName.data}</Span>
-                    </>
-                )}
-            </HStack>
+            <CityName />
 
             <HStack gap="4">
-                <HStack gap="2" color="gray.fg">
-                    <User size="18" aria-hidden="true" />
-                    <Span>{userName}</Span>
-                </HStack>
+                <SignedInUser name={userName} />
 
                 <Button variant="outline" size={{ base: 'lg', lg: 'sm' }} onClick={onSignOut}>
                     <LogOut aria-hidden="true" />
