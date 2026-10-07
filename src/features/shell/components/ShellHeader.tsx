@@ -6,12 +6,12 @@ import { hr } from '@/shared/i18n/hr'
 import { CityName } from './CityName'
 import { SignedInUser } from './SignedInUser'
 
-export interface ShellHeaderProps {
+export interface ShellUserProps {
     userName: string
     onSignOut: () => void
 }
 
-export function ShellHeader({ userName, onSignOut }: ShellHeaderProps) {
+export function ShellHeader({ userName, onSignOut }: ShellUserProps) {
     return (
         <Flex
             as="header"

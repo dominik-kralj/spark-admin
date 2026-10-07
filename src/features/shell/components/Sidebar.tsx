@@ -1,4 +1,4 @@
-import { Box, HStack } from '@chakra-ui/react'
+import { Box, Flex } from '@chakra-ui/react'
 import { Link } from 'react-router'
 
 import { hr } from '@/shared/i18n/hr'
@@ -18,19 +18,18 @@ export function Sidebar() {
             borderRightWidth="1px"
             borderColor="border"
         >
-            <HStack
+            <Flex
                 asChild
-                gap="2.5"
-                h="16"
+                align="center"
+                minH="16"
                 px="5"
                 borderBottomWidth="1px"
                 borderColor="border"
-                color="spark.heading"
             >
                 <Link to={paths.home} aria-label={hr.shell.homeLink}>
                     <Logo />
                 </Link>
-            </HStack>
+            </Flex>
 
             <Box as="nav" aria-label={hr.shell.mainNav} p="3">
                 <NavItems variant="sidebar" />

@@ -5,7 +5,7 @@ import { hr } from '../src/shared/i18n/hr'
 import { paths } from '../src/shared/paths'
 
 import { expectNoAxeViolations } from './axe'
-import { signOut } from './shell'
+import { signOut } from './helpers'
 
 const missingPath = '/nema-ove-stranice'
 

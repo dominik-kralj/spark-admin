@@ -4,9 +4,16 @@ import { hr } from '../src/shared/i18n/hr'
 import { paths } from '../src/shared/paths'
 
 import { expectNoAxeViolations } from './axe'
-import { expectNoHorizontalScroll, expectTouchTargets, signIn, waitForAnimations } from './shell'
+import {
+    expectFocusTrapped,
+    expectNoHorizontalScroll,
+    expectTouchTargets,
+    signIn,
+    waitForAnimations,
+    zoomText,
+} from './helpers'
 
-// 640 px is a 1280 px screen at 200 % zoom.
+// 640 px is a 1280 px screen at 200 % page zoom.
 const phoneWidths = [320, 375, 640]
 
 test.describe('phone menu drawer', () => {
@@ -17,6 +24,7 @@ test.describe('phone menu drawer', () => {
             await page.setViewportSize({ width, height: 812 })
             await signIn(page)
             const menuButton = page.getByRole('button', { name: hr.shell.openMenu })
+            const drawer = page.getByRole('dialog', { name: hr.shell.menu })
 
             await expectNoHorizontalScroll(page)
             await expectTouchTargets(menuButton)
@@ -28,31 +36,46 @@ test.describe('phone menu drawer', () => {
             await expect(menuButton).toBeFocused()
             await page.keyboard.press('Enter')
 
-            const drawer = page.getByRole('dialog', { name: hr.shell.menu })
             await expect(drawer).toBeVisible()
             await waitForAnimations(drawer)
             await expectTouchTargets(drawer.getByRole('link'))
             await expectTouchTargets(drawer.getByRole('button'))
             await expectNoHorizontalScroll(page)
             await expectNoAxeViolations(page)
-
-            // Focus stays inside the drawer however far the user tabs.
-            for (let i = 0; i < 15; i += 1) {
-                await page.keyboard.press('Tab')
-                await expect(drawer.locator(':focus')).toHaveCount(1)
-            }
+            await expectFocusTrapped(page, drawer)
 
             await page.keyboard.press('Escape')
             await expect(drawer).toBeHidden()
             await expect(menuButton).toBeFocused()
 
-            await menuButton.click()
-            await drawer.getByRole('link', { name: hr.nav.zones }).click()
+            await page.keyboard.press('Enter')
+            await expect(drawer).toBeVisible()
+            const zonesLink = drawer.getByRole('link', { name: hr.nav.zones })
+            while (!(await zonesLink.evaluate((link) => link === document.activeElement))) {
+                await page.keyboard.press('Tab')
+            }
+            await page.keyboard.press('Enter')
+
             await expect(page).toHaveURL(paths.zones)
             await expect(drawer).toBeHidden()
             await expect(page).toHaveTitle(hr.app.documentTitle(hr.nav.zones))
         })
     }
+
+    test('holds at 320 px with 200 % text zoom', async ({ page }) => {
+        await page.setViewportSize({ width: 320, height: 812 })
+        await signIn(page)
+        await zoomText(page)
+
+        await expectNoHorizontalScroll(page)
+
+        await page.getByRole('button', { name: hr.shell.openMenu }).click()
+        const drawer = page.getByRole('dialog', { name: hr.shell.menu })
+        await expect(drawer).toBeVisible()
+        await waitForAnimations(drawer)
+        await expectNoHorizontalScroll(page)
+        await expect(drawer.getByRole('button', { name: hr.shell.signOut })).toBeInViewport()
+    })
 })
 
 test.describe('tablet rail', () => {
@@ -63,6 +86,7 @@ test.describe('tablet rail', () => {
         await signIn(page)
         const rail = page.getByRole('navigation', { name: hr.shell.mainNav })
         const toggle = page.getByRole('button', { name: hr.shell.expandMenu })
+        const menu = page.getByRole('dialog', { name: hr.shell.menu })
 
         await expectNoHorizontalScroll(page)
         await expectTouchTargets(rail.getByRole('link'))
@@ -81,16 +105,25 @@ test.describe('tablet rail', () => {
         await expect(toggle).toBeFocused()
 
         await page.keyboard.press('Enter')
-        const menu = page.getByRole('dialog', { name: hr.shell.menu })
         await expect(menu).toBeVisible()
         await waitForAnimations(menu)
-        await expect(menu.locator(':focus')).toHaveCount(1)
         await expectTouchTargets(menu.getByRole('link'))
         await expectNoAxeViolations(page)
+        await expectFocusTrapped(page, menu)
 
         await page.keyboard.press('Escape')
         await expect(menu).toBeHidden()
         await expect(toggle).toBeFocused()
+    })
+
+    test('holds at 768 px with 200 % text zoom', async ({ page }) => {
+        await page.setViewportSize({ width: 768, height: 1024 })
+        await signIn(page)
+        await zoomText(page)
+
+        await expectNoHorizontalScroll(page)
+        await expect(page.getByRole('button', { name: hr.shell.signOut })).toBeInViewport()
+        await expect(page.getByRole('button', { name: hr.shell.expandMenu })).toBeInViewport()
     })
 })
 

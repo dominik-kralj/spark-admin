@@ -8,15 +8,15 @@ import { useShellLayout, type ShellLayout } from '../lib/useShellLayout'
 
 import { NavRail } from './NavRail'
 import { PhoneTopBar } from './PhoneTopBar'
-import { ShellHeader, type ShellHeaderProps } from './ShellHeader'
+import { ShellHeader, type ShellUserProps } from './ShellHeader'
 import { Sidebar } from './Sidebar'
 
-type AppShellProps = ShellHeaderProps
+type AppShellProps = ShellUserProps
 
 const columns: Record<ShellLayout, string> = {
     phone: 'minmax(0, 1fr)',
-    tablet: '72px minmax(0, 1fr)',
-    desktop: '248px minmax(0, 1fr)',
+    tablet: '4.5rem minmax(0, 1fr)',
+    desktop: '15.5rem minmax(0, 1fr)',
 }
 
 const sideNav: Record<ShellLayout, ReactNode> = {

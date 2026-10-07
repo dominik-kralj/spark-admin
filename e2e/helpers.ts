@@ -30,6 +30,23 @@ export async function waitForAnimations(target: Locator): Promise<void> {
     )
 }
 
+/** 200 % text zoom: the browser setting scales the root font size, not the viewport. */
+export async function zoomText(page: Page): Promise<void> {
+    await page.evaluate(() => {
+        document.documentElement.style.fontSize = '200%'
+    })
+}
+
+/** Tabs a few times past the end and checks focus never leaves the dialog. */
+export async function expectFocusTrapped(page: Page, dialog: Locator): Promise<void> {
+    const stops = await dialog.locator('a, button').count()
+
+    for (let i = 0; i < stops + 3; i += 1) {
+        await page.keyboard.press('Tab')
+        await expect(dialog.locator(':focus')).toHaveCount(1)
+    }
+}
+
 export async function expectNoHorizontalScroll(page: Page): Promise<void> {
     const overflow = await page.evaluate(
         () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
@@ -45,7 +62,7 @@ export async function expectTouchTargets(controls: Locator): Promise<void> {
 
         expect(box, name).not.toBeNull()
         // Layout can land a hair under a whole pixel (43.99998).
-        expect(Math.round(box?.width ?? 0), name).toBeGreaterThanOrEqual(44)
-        expect(Math.round(box?.height ?? 0), name).toBeGreaterThanOrEqual(44)
+        expect(box?.width, name).toBeGreaterThanOrEqual(43.99)
+        expect(box?.height, name).toBeGreaterThanOrEqual(43.99)
     }
 }

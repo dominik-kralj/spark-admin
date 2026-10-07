@@ -12,17 +12,21 @@ export function resetViewport(): void {
     viewportWidth = desktopWidth
 }
 
-function matches(query: string): boolean {
-    const minWidth = /min-width:\s*([\d.]+)(px|rem|em)/.exec(query)
-    if (!minWidth) return false
-
-    const [, value, unit] = minWidth
-    const minPx = unit === 'px' ? Number(value) : Number(value) * remInPx
-
-    return viewportWidth >= minPx
+function toPx(value: string, unit: string): number {
+    return unit === 'px' ? Number(value) : Number(value) * remInPx
 }
 
-/** jsdom has no matchMedia; this one answers min-width queries and never changes. */
+/** Answers min-width and max-width conditions, alone or joined with "and". */
+function matches(query: string): boolean {
+    const conditions = [...query.matchAll(/(min|max)-width:\s*([\d.]+)(px|rem|em)/g)]
+    if (conditions.length === 0) return false
+
+    return conditions.every(([, bound, value = '', unit = '']) =>
+        bound === 'min' ? viewportWidth >= toPx(value, unit) : viewportWidth <= toPx(value, unit),
+    )
+}
+
+/** jsdom has no matchMedia; this one answers width queries and never changes. */
 export function installMatchMedia(): void {
     window.matchMedia = (query: string): MediaQueryList => ({
         media: query,
