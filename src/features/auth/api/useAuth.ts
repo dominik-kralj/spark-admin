@@ -1,56 +1,42 @@
 import { useMutation } from '@tanstack/react-query'
 import { useRef, useState } from 'react'
-import { z } from 'zod'
 
-import { request } from './client'
-import { startSession, type Session } from './session'
+import { endSession, getSessionUser, request, startSession } from '@/shared/api'
 
-export interface Credentials {
-    username: string
-    password: string
-}
-
-const loginResponseSchema = z.object({
-    token: z.string().min(1),
-    user: z.object({
-        adminUserId: z.number(),
-        tenantId: z.number(),
-        username: z.string(),
-        name: z.string(),
-        surname: z.string(),
-    }),
-})
-
-export async function signIn(credentials: Credentials): Promise<Session> {
-    const { token, user } = await request('/login', {
-        method: 'POST',
-        body: credentials,
-        schema: loginResponseSchema,
-    })
-    const session: Session = {
-        user: {
-            id: user.adminUserId,
-            tenantId: user.tenantId,
-            username: user.username,
-            firstName: user.name,
-            lastName: user.surname,
-        },
-    }
-    startSession(token, session)
-
-    return session
-}
+import { loginResponseSchema, toSession, type Credentials } from '../validators/login'
+import { parseSessionUser, type Session } from '../validators/session'
 
 export interface SignInFailure {
     error: Error
     attempt: number
 }
 
-interface UseSignInOptions {
-    onSuccess: (session: Session) => void
+interface UseAuthOptions {
+    onSignIn?: (session: Session) => void
 }
 
-export function useSignIn({ onSuccess }: UseSignInOptions) {
+/** For route loaders, which can't call hooks. */
+export function getSession(): Session | null {
+    return parseSessionUser(getSessionUser())
+}
+
+function signOut(): void {
+    endSession('signedOut')
+}
+
+async function signIn(credentials: Credentials): Promise<Session> {
+    const response = await request('/login', {
+        method: 'POST',
+        body: credentials,
+        schema: loginResponseSchema,
+    })
+    const session = toSession(response)
+    startSession(response.token, session.user)
+
+    return session
+}
+
+export function useAuth({ onSignIn }: UseAuthOptions = {}) {
     // A ref, not mutation variables, so the password never enters the mutation cache.
     const credentialsRef = useRef<Credentials | null>(null)
     const [failure, setFailure] = useState<SignInFailure | null>(null)
@@ -64,7 +50,7 @@ export function useSignIn({ onSuccess }: UseSignInOptions) {
         },
         onSuccess: (session) => {
             setFailure(null)
-            onSuccess(session)
+            onSignIn?.(session)
         },
         onError: (error) => {
             setFailure((previous) => ({ error, attempt: (previous?.attempt ?? 0) + 1 }))
@@ -81,5 +67,5 @@ export function useSignIn({ onSuccess }: UseSignInOptions) {
         mutation.mutate()
     }
 
-    return { signIn: signInOnce, isPending: mutation.isPending, failure }
+    return { signIn: signInOnce, signOut, isPending: mutation.isPending, failure }
 }

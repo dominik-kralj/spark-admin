@@ -1,7 +1,6 @@
 import { z } from 'zod'
 
-import { request } from '@/api/client'
-import { startSession } from '@/api/session'
+import { request, startSession } from '@/shared/api'
 
 export const testUser = {
     id: 1,
@@ -13,7 +12,7 @@ export const testUser = {
 
 /** Starts a session as if the user had signed in, or reloaded a signed-in tab. */
 export function signInForTest(): void {
-    startSession('test-jwt', { user: testUser })
+    startSession('test-jwt', testUser)
 }
 
 /** Sends a signed-in request the way any screen would, ignoring its outcome. */

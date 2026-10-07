@@ -2,10 +2,10 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router'
 
-import { onSessionEnd, type SessionEndReason } from '@/api'
+import { onSessionEnd, type SessionEndReason } from '@/shared/api'
 import { paths } from '@/shared/paths'
 
-import { loginUrl, sessionExpiredState } from './sessionRedirects'
+import { loginUrl, sessionExpiredState } from '../lib/sessionRedirects'
 
 export function ProtectedLayout() {
     const navigate = useNavigate()

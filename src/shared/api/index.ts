@@ -1,10 +1,9 @@
-export { useSignIn, type SignInFailure, type Credentials } from './auth'
+export { request } from './client'
 export { ApiError, isApiError, type ApiErrorKind } from './errors'
 export {
-    getSession,
+    endSession,
+    getSessionUser,
     onSessionEnd,
-    signOut,
-    type AdminUser,
-    type Session,
+    startSession,
     type SessionEndReason,
 } from './session'

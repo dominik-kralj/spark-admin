@@ -1,23 +1,10 @@
 import { z } from 'zod'
 
-const adminUserSchema = z.object({
-    id: z.number(),
-    tenantId: z.number(),
-    username: z.string(),
-    firstName: z.string(),
-    lastName: z.string(),
-})
-
+// The user's shape belongs to the auth feature, which validates it on read.
 const storedSessionSchema = z.object({
     token: z.string().min(1),
-    user: adminUserSchema,
+    user: z.unknown(),
 })
-
-export type AdminUser = z.infer<typeof adminUserSchema>
-
-export interface Session {
-    user: AdminUser
-}
 
 export type SessionEndReason = 'signedOut' | 'expired'
 
@@ -39,18 +26,16 @@ function readStoredSession(): z.infer<typeof storedSessionSchema> | null {
     }
 }
 
-export function startSession(token: string, { user }: Session): void {
+export function startSession(token: string, user: unknown): void {
     sessionStorage.setItem(storageKey, JSON.stringify({ token, user }))
-}
-
-export function getSession(): Session | null {
-    const stored = readStoredSession()
-
-    return stored && { user: stored.user }
 }
 
 export function getAccessToken(): string | null {
     return readStoredSession()?.token ?? null
+}
+
+export function getSessionUser(): unknown {
+    return readStoredSession()?.user ?? null
 }
 
 /** Ends the session once; later calls, such as parallel 401s, do nothing. */
@@ -59,10 +44,6 @@ export function endSession(reason: SessionEndReason): void {
 
     sessionStorage.removeItem(storageKey)
     for (const listener of listeners) listener(reason)
-}
-
-export function signOut(): void {
-    endSession('signedOut')
 }
 
 export function onSessionEnd(listener: SessionEndListener): () => void {

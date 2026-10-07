@@ -8,7 +8,7 @@ import { testUser as user } from '@/test/session'
 
 import { request } from './client'
 import { ApiError, type ApiErrorKind } from './errors'
-import { getSession, onSessionEnd, startSession } from './session'
+import { getAccessToken, onSessionEnd, startSession } from './session'
 
 const base = `${config.apiBaseUrl}/api/v1/admin`
 const zoneSchema = z.object({ zoneId: z.number(), name: z.string() })
@@ -51,7 +51,7 @@ describe('request', () => {
                 return HttpResponse.json([])
             }),
         )
-        startSession('jwt-123', { user })
+        startSession('jwt-123', user)
 
         await request('/zones', { schema: z.array(zoneSchema) })
 
@@ -195,7 +195,7 @@ describe('request', () => {
 
     it('never puts the token or key in the error message', async () => {
         server.use(http.get(`${base}/zones`, () => HttpResponse.text('boom', { status: 500 })))
-        startSession('secret-jwt', { user })
+        startSession('secret-jwt', user)
 
         const error = await captureError(request('/zones', { schema: z.array(zoneSchema) }))
 
@@ -207,12 +207,12 @@ describe('request', () => {
         server.use(http.get(`${base}/zones`, () => new HttpResponse(null, { status: 401 })))
         const listener = vi.fn()
         const unsubscribe = onSessionEnd(listener)
-        startSession('jwt-old', { user })
+        startSession('jwt-old', user)
 
         const error = await captureError(request('/zones', { schema: z.array(zoneSchema) }))
 
         expect(error).toMatchObject({ kind: 'unauthorized' })
-        expect(getSession()).toBeNull()
+        expect(getAccessToken()).toBeNull()
         expect(listener).toHaveBeenCalledWith('expired')
         unsubscribe()
     })
@@ -242,16 +242,16 @@ describe('request', () => {
                 return new HttpResponse(null, { status: 401 })
             }),
         )
-        startSession('jwt-old', { user })
+        startSession('jwt-old', user)
         const pending = captureError(request('/zones', { schema: z.array(zoneSchema) }))
         await vi.waitFor(() => {
             expect(hasArrived).toBe(true)
         })
 
-        startSession('jwt-new', { user })
+        startSession('jwt-new', user)
         respond()
         await pending
 
-        expect(getSession()).toEqual({ user })
+        expect(getAccessToken()).toBe('jwt-new')
     })
 })

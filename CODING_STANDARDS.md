@@ -84,7 +84,7 @@ return <Badge hidden={!shouldShowBadge} />
 
 ## TypeScript
 
-- Precise domain types (from `@/api`), explicit `null` and optional
+- Precise domain types (from the feature's `validators/`), explicit `null` and optional
   behaviour. A field is optional because the domain says so, never to silence
   an error.
 - No `any` (typescript-eslint strict). Fix a type error at its source when the
@@ -147,7 +147,7 @@ skill (see `AGENTS.md`) covers the measured cases.
 ## Forms
 
 React Hook Form + Zod, following the Zone form: schema and form ↔ domain
-mapping in `<entity>FormSchema.ts`, shared plate/OIB/PIN pieces from
+mapping in the feature's `validators/<entity>Form.ts`, shared plate/OIB/PIN pieces from
 `shared/lib/validation.ts`. Edit forms load their draft with RHF's `values`
 or `reset`, not an effect that copies query data. New form abstractions only
 when asked.
@@ -183,13 +183,14 @@ amounts go through `shared/lib/format.ts`.
 
 ## Data fetching
 
-- TanStack Query hooks live in `src/api/`, with one query-key factory per
-  entity there, so keys are predictable and centralised.
+- TanStack Query hooks live in the feature's `api/use<Feature>.ts`, with one
+  query-key factory per entity there, so keys are predictable and centralised.
 - After a mutation, update or invalidate the narrowest key that keeps the UI
   correct (`setQueryData` for the edited row, the list key on create or delete).
 - Polling (Karte's new-ticket count) updates the count, never the visible
   rows; rows enter when the user acts.
-- Responses are parsed with Zod in `src/api/` before anything else sees them.
+- Responses are parsed with Zod in the feature's `validators/` before anything
+  else sees them.
 
 ## Before finishing
 

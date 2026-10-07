@@ -1,4 +1,4 @@
-import { isApiError } from '@/api'
+import { isApiError } from '@/shared/api'
 import { hr } from '@/shared/i18n/hr'
 
 export function loginErrorMessage(error: Error): string {

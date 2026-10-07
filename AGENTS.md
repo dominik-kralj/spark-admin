@@ -69,13 +69,16 @@ Feature-based. A feature folder owns everything for one area of the app:
 ```
 src/
   main.tsx, App.tsx        entry and root (router arrives in M1)
-  api/                     the single API module (see seams below)
-  features/<feature>/      e.g. zones/, tickets/, daily-tickets/, inspectors/
-    ZonesPage.tsx          route component
-    ZoneForm.tsx           feature components, one per file
-    zoneFormSchema.ts      form schema and form ↔ domain mapping
-    *.test.tsx             tests next to what they test
+  features/<feature>/      e.g. auth/, zones/, tickets/, daily-tickets/
+    api/useZones.ts        the feature's API calls and TanStack Query hooks
+    components/            route component and feature components, one per
+                           file (ZonesPage.tsx, ZoneForm.tsx)
+    validators/            Zod schemas, types derived from them, raw → domain
+                           and form ↔ domain mapping (zone.ts, zoneForm.ts)
+    lib/                   the feature's non-React helpers
+    *.test.tsx             tests next to what they test, in the same folder
   shared/                  used by two or more features
+    api/                   fetch client, ApiError, session store (see seams)
     ui/                    generic components (StatusChip, ConfirmDialog, …)
     lib/  i18n/  theme/    helpers, strings, Chakra system
     config.ts  providers.tsx
@@ -83,11 +86,9 @@ src/
   test/                    test setup and helpers
 ```
 
-- A feature imports from `@/api`, `@/shared/*` and its own folder, never from
-  another feature. Something two features need moves to `shared/`.
+- A feature imports from `@/shared/*` and its own folder, never from another
+  feature (lint-enforced). Something two features need moves to `shared/`.
 - Feature folders use kebab-case names; component files use PascalCase.
-- API calls stay in `src/api/` even though features own their screens: the
-  handoff requires one API module, so features never see raw field names.
 
 ## Code style
 
@@ -105,16 +106,20 @@ deduplicates); read `next/dynamic` as `React.lazy`.
 
 ## Architecture seams
 
-- **API module** (`src/api/`): the only place that knows raw backend field
-  names, endpoint paths, the `X-API-KEY` header and the JWT. It exports domain
-  types plus TanStack Query hooks, and it maps raw → domain at the boundary.
-  The spec's naming drift (`PaymentStatus` vs `VivaStatus`) is absorbed here.
-  Zod schemas that parse responses live here too.
+- **Feature API** (`features/<feature>/api/` + `validators/`):
+  each feature owns its endpoints and query hooks. Raw backend field names
+  live only in that feature's `validators/`, which parse responses with Zod
+  and map raw → domain; everything outside sees domain types. The spec's
+  naming drift (`PaymentStatus` vs `VivaStatus`) is absorbed there. This
+  replaces the handoff's "one API module" rule (see the note in `HANDOFF.md`).
+- **Shared API** (`src/shared/api/`): the fetch client (`request`), `ApiError`
+  and the session store; the only place that knows the `X-API-KEY` header and
+  the JWT. Holds nothing feature-specific. Import it through `@/shared/api`.
 - **Mock** (`src/mocks/`): MSW handlers and seed data, shaped like the raw
   API (from the spec's CREATE TABLEs), not like the domain types. That way the
   mapping layer gets exercised. Tests use the same handlers and override them
   per test for error and empty cases.
-- **Session** (`src/api/session.ts`): token and user live in `sessionStorage`,
+- **Session** (`src/shared/api/session.ts`): token and user live in `sessionStorage`,
   so a reload keeps a 10-hour shift signed in, while closing the tab signs out
   and tabs don't share a login. Against XSS it is no weaker than memory here: a
   script in the page can read either. A `401` on a signed-in request ends the

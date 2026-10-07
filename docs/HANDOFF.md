@@ -37,6 +37,9 @@ The backend (C# .NET Web API) is built by others and is not ready.
 - Keep all API types and calls in one module. The spec is inconsistent about
   names (PaymentStatus vs VivaStatus), so nothing outside that module may
   depend on raw field names.
+  _Changed (#45): each feature owns its calls and validators instead. Raw
+  field names stay inside a feature's `validators/`, so the naming drift is
+  still absorbed at one boundary per feature. See `AGENTS.md`._
 - Read the API base URL and key from environment config. Never hardcode them.
 
 ## Screens
