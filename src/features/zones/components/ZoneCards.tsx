@@ -7,6 +7,14 @@ import type { Zone } from '../validators/zone'
 
 const { columns } = hr.zones
 
+function cardFields(zone: Zone) {
+    return [
+        { label: columns.price, value: formatAmount(zone.price) },
+        { label: columns.dailyTicketPrice, value: formatAmount(zone.dailyTicketPrice) },
+        { label: columns.durationMinutes, value: formatMinutes(zone.durationMinutes) },
+    ]
+}
+
 export function ZoneCards({ zones }: { zones: Zone[] }) {
     return (
         <Stack as="ul" hideFrom="md" aria-label={hr.zones.listLabel} gap="2" listStyleType="none">
@@ -27,30 +35,16 @@ export function ZoneCards({ zones }: { zones: Zone[] }) {
                     </Box>
 
                     <Grid as="dl" templateColumns="repeat(3, minmax(0, 1fr))" gap="3">
-                        <Box>
-                            <Text as="dt" fontSize="caption" color="fg.muted">
-                                {columns.price}
-                            </Text>
-                            <Text as="dd" whiteSpace="nowrap">
-                                {formatAmount(zone.price)}
-                            </Text>
-                        </Box>
-                        <Box>
-                            <Text as="dt" fontSize="caption" color="fg.muted">
-                                {columns.dailyTicketPrice}
-                            </Text>
-                            <Text as="dd" whiteSpace="nowrap">
-                                {formatAmount(zone.dailyTicketPrice)}
-                            </Text>
-                        </Box>
-                        <Box>
-                            <Text as="dt" fontSize="caption" color="fg.muted">
-                                {columns.durationMinutes}
-                            </Text>
-                            <Text as="dd" whiteSpace="nowrap">
-                                {formatMinutes(zone.durationMinutes)}
-                            </Text>
-                        </Box>
+                        {cardFields(zone).map(({ label, value }) => (
+                            <Box key={label}>
+                                <Text as="dt" fontSize="caption" color="fg.muted">
+                                    {label}
+                                </Text>
+                                <Text as="dd" whiteSpace="nowrap">
+                                    {value}
+                                </Text>
+                            </Box>
+                        ))}
                     </Grid>
                 </Stack>
             ))}

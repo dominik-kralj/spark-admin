@@ -56,7 +56,7 @@ describe('Zone list', () => {
         await renderRoute(paths.zones)
 
         expect(
-            await screen.findByRole('heading', { level: 1, name: hr.zones.title }),
+            await screen.findByRole('heading', { level: 1, name: hr.nav.zones }),
         ).toBeInTheDocument()
         expect(screen.getByRole('button', { name: hr.zones.add })).toBeInTheDocument()
         await waitFor(() => {
@@ -162,7 +162,7 @@ describe('Zone list', () => {
 
         expect(await screen.findByRole('status')).toHaveTextContent(hr.zones.loading)
         expect(screen.queryByRole('table')).not.toBeInTheDocument()
-        expect(screen.getByRole('heading', { level: 1, name: hr.zones.title })).toBeInTheDocument()
+        expect(screen.getByRole('heading', { level: 1, name: hr.nav.zones })).toBeInTheDocument()
     })
 
     it('shows the empty state with the add action when there are no zones', async () => {

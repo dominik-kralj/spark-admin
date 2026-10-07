@@ -3,9 +3,10 @@ import { Box, Table, Text } from '@chakra-ui/react'
 import { hr } from '@/shared/i18n/hr'
 import { formatAmount, formatMinutes } from '@/shared/lib/format'
 import type { SortDirection } from '@/shared/lib/useSortSearchParams'
-import { SortableColumnHeader } from '@/shared/ui/SortableColumnHeader'
 
 import type { Zone } from '../validators/zone'
+
+import { SortableColumnHeader } from './SortableColumnHeader'
 
 interface ZoneTableProps {
     zones: Zone[]

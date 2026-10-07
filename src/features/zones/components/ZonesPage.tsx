@@ -9,7 +9,7 @@ import { ZoneList } from './ZoneList'
 export function ZonesPage() {
     return (
         <Stack flex="1" minW="0" gap={{ base: '4', md: '5' }}>
-            <PageHeader title={hr.zones.title} action={<AddZoneButton />} />
+            <PageHeader title={hr.nav.zones} action={<AddZoneButton />} />
 
             <ZoneList />
         </Stack>

@@ -1,3 +1,4 @@
+// Relative: the Playwright specs import this file without the @/ alias.
 import { plural } from '../lib/plural'
 
 const appName = 'SPARK Admin'
@@ -55,7 +56,6 @@ export const hr = {
         adminUsers: 'Korisnici',
     },
     zones: {
-        title: 'Zone',
         add: 'Dodaj zonu',
         listLabel: 'Parkirne zone',
         columns: {

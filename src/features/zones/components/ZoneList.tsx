@@ -1,3 +1,4 @@
+import { Box } from '@chakra-ui/react'
 import { MapPin } from 'lucide-react'
 
 import { hr } from '@/shared/i18n/hr'
@@ -17,7 +18,6 @@ const sortKeys = ['code'] as const
 
 const defaultSort: Sort<(typeof sortKeys)[number]> = { key: 'code', direction: 'asc' }
 
-// Šifra, Naziv (wider), then the five number columns.
 const skeletonColumnWidths = [1, 2, 1, 1, 1, 1, 1]
 
 export function ZoneList() {
@@ -45,7 +45,12 @@ export function ZoneList() {
                 icon={<MapPin />}
                 title={hr.zones.empty.title}
                 description={hr.zones.empty.description}
-                action={<AddZoneButton />}
+                // The phone design keeps only the header's add button.
+                action={
+                    <Box hideBelow="md">
+                        <AddZoneButton />
+                    </Box>
+                }
             />
         )
     }

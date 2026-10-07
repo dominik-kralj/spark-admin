@@ -1,12 +1,11 @@
 import { chakra, Table } from '@chakra-ui/react'
-import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react'
+import { ArrowDown, ArrowUp } from 'lucide-react'
 
 import type { SortDirection } from '@/shared/lib/useSortSearchParams'
 
 interface SortableColumnHeaderProps {
     label: string
-    /** null when the list is sorted by another column. */
-    direction: SortDirection | null
+    direction: SortDirection
     onSort: () => void
 }
 
@@ -15,10 +14,10 @@ const ariaSort = { asc: 'ascending', desc: 'descending' } as const
 const sortIcon = { asc: ArrowUp, desc: ArrowDown } as const
 
 export function SortableColumnHeader({ label, direction, onSort }: SortableColumnHeaderProps) {
-    const Icon = direction === null ? ArrowUpDown : sortIcon[direction]
+    const Icon = sortIcon[direction]
 
     return (
-        <Table.ColumnHeader aria-sort={direction === null ? undefined : ariaSort[direction]}>
+        <Table.ColumnHeader aria-sort={ariaSort[direction]}>
             <chakra.button
                 type="button"
                 display="inline-flex"

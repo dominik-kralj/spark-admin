@@ -7,7 +7,7 @@ export const tableRecipe = defineSlotRecipe({
             h: '11',
             fontSize: 'caption',
             fontWeight: 'semibold',
-            color: 'spark.gray.700',
+            color: 'gray.fg',
             bg: 'bg.subtle',
             whiteSpace: 'nowrap',
             verticalAlign: 'middle',
