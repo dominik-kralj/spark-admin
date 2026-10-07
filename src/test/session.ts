@@ -1,8 +1,9 @@
 import { z } from 'zod'
 
+import type { AdminUser } from '@/features/auth/validators/session'
 import { request, startSession } from '@/shared/api'
 
-export const testUser = {
+export const testUser: AdminUser = {
     id: 1,
     tenantId: 1,
     username: 'ana',

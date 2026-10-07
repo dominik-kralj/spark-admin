@@ -106,9 +106,10 @@ describe('useAuth', () => {
         expect(getSession()).toBeNull()
     })
 
-    it('treats a stored user of the wrong shape as signed out', () => {
+    it('treats a stored user of the wrong shape as signed out and drops its token', async () => {
         startSession('jwt-1', { adminUserId: 4 })
 
         expect(getSession()).toBeNull()
+        await expect(authorizationOfNextRequest()).resolves.toBeNull()
     })
 })

@@ -9,4 +9,6 @@ export const loginFormSchema = z.object({
 
 export type LoginFormValues = z.input<typeof loginFormSchema>
 
+export type Credentials = z.output<typeof loginFormSchema>
+
 export const emptyLoginForm: LoginFormValues = { username: '', password: '' }

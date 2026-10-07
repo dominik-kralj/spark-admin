@@ -2,11 +2,6 @@ import { z } from 'zod'
 
 import type { Session } from './session'
 
-export interface Credentials {
-    username: string
-    password: string
-}
-
 export const loginResponseSchema = z.object({
     token: z.string().min(1),
     user: z.object({

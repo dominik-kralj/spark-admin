@@ -84,9 +84,9 @@ return <Badge hidden={!shouldShowBadge} />
 
 ## TypeScript
 
-- Precise domain types (from the feature's `validators/`), explicit `null` and optional
-  behaviour. A field is optional because the domain says so, never to silence
-  an error.
+- Precise domain types (from the feature's `validators/`), explicit `null`
+  and optional behaviour. A field is optional because the domain says so,
+  never to silence an error.
 - No `any` (typescript-eslint strict). Fix a type error at its source when the
   source is in scope; a narrow `as` is acceptable only where it is safer than
   changing unrelated code.
@@ -147,10 +147,10 @@ skill (see `AGENTS.md`) covers the measured cases.
 ## Forms
 
 React Hook Form + Zod, following the Zone form: schema and form ↔ domain
-mapping in the feature's `validators/<entity>Form.ts`, shared plate/OIB/PIN pieces from
-`shared/lib/validation.ts`. Edit forms load their draft with RHF's `values`
-or `reset`, not an effect that copies query data. New form abstractions only
-when asked.
+mapping in the feature's `validators/<entity>Form.ts`, shared plate/OIB/PIN
+pieces from `shared/lib/validation.ts`. Edit forms load their draft with
+RHF's `values` or `reset`, not an effect that copies query data. New form
+abstractions only when asked.
 
 ## Tables
 

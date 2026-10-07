@@ -76,7 +76,6 @@ src/
     validators/            Zod schemas, types derived from them, raw → domain
                            and form ↔ domain mapping (zone.ts, zoneForm.ts)
     lib/                   the feature's non-React helpers
-    *.test.tsx             tests next to what they test, in the same folder
   shared/                  used by two or more features
     api/                   fetch client, ApiError, session store (see seams)
     ui/                    generic components (StatusChip, ConfirmDialog, …)
@@ -87,8 +86,9 @@ src/
 ```
 
 - A feature imports from `@/shared/*` and its own folder, never from another
-  feature (lint-enforced). Something two features need moves to `shared/`.
+  feature (lint catches the `@/features/` alias; relative paths are on you). Something two features need moves to `shared/`.
 - Feature folders use kebab-case names; component files use PascalCase.
+- Tests (`*.test.ts(x)`) sit in the same folder as what they test.
 
 ## Code style
 

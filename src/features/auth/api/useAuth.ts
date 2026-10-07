@@ -3,7 +3,8 @@ import { useRef, useState } from 'react'
 
 import { endSession, getSessionUser, request, startSession } from '@/shared/api'
 
-import { loginResponseSchema, toSession, type Credentials } from '../validators/login'
+import { loginResponseSchema, toSession } from '../validators/login'
+import type { Credentials } from '../validators/loginForm'
 import { parseSessionUser, type Session } from '../validators/session'
 
 export interface SignInFailure {
@@ -17,7 +18,14 @@ interface UseAuthOptions {
 
 /** For route loaders, which can't call hooks. */
 export function getSession(): Session | null {
-    return parseSessionUser(getSessionUser())
+    const stored = getSessionUser()
+    if (stored === null) return null
+
+    const session = parseSessionUser(stored)
+    // Otherwise its token would still be sent while the app shows the login page.
+    if (session === null) endSession('signedOut')
+
+    return session
 }
 
 function signOut(): void {
