@@ -2,7 +2,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router'
 
-import { onSessionEnd, type SessionEndReason } from '@/shared/api'
+import { getSessionUser, onSessionEnd, type SessionEndReason } from '@/shared/api'
 import { paths } from '@/shared/paths'
 
 import { loginUrl, sessionExpiredState } from '../lib/sessionRedirects'
@@ -20,14 +20,20 @@ export function ProtectedLayout() {
             } else {
                 await navigate(paths.login, { replace: true })
             }
-            // After leaving, so mounted queries can't refetch into the cleared cache.
-            queryClient.clear()
         }
 
         return onSessionEnd((reason) => {
             void leaveApp(reason)
         })
-    }, [navigate, queryClient, currentUrl])
+    }, [navigate, currentUrl])
+
+    // On unmount, once the screens' queries are gone; signed in means StrictMode's rehearsal.
+    useEffect(
+        () => () => {
+            if (getSessionUser() === null) queryClient.clear()
+        },
+        [queryClient],
+    )
 
     return <Outlet />
 }
