@@ -43,7 +43,7 @@ export function MenuDrawer({ trigger, width, hasCloseButton = false, footer }: M
                         >
                             <Logo />
                             {hasCloseButton && (
-                                <Drawer.CloseTrigger asChild>
+                                <Drawer.CloseTrigger asChild position="static">
                                     <IconButton
                                         aria-label={hr.shell.closeMenu}
                                         variant="ghost"

@@ -47,7 +47,9 @@ export function LoginPage() {
             minH="100dvh"
             justify="center"
             p="6"
-            pt={{ base: '24', md: '28vh' }}
+            // Anchored to the top so an error pushes only what is below it; on a phone the
+            // offset puts the form (about 20rem tall) in the middle of the screen.
+            pt={{ base: 'max(1.5rem, calc(50dvh - 10rem))', md: '28vh' }}
             bg="bg"
         >
             <Stack asChild w="full" maxW="360px" gap="5">

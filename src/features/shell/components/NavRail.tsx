@@ -40,7 +40,7 @@ export function NavRail() {
                         </IconButton>
                     }
                     footer={
-                        <Drawer.CloseTrigger asChild>
+                        <Drawer.CloseTrigger asChild position="static">
                             <Button
                                 variant="ghost"
                                 size="xl"

@@ -51,6 +51,17 @@ test('controls are 48 px on a touch screen and 40 px with a mouse', async ({ pag
     }
 })
 
+test('sits in the middle of a phone screen', async ({ page, isMobile }) => {
+    test.skip(!isMobile, 'the centred layout is the phone one')
+    const heading = await page.getByRole('heading', { level: 1 }).boundingBox()
+    const submit = await page.getByRole('button', { name: hr.login.submit }).boundingBox()
+    const viewportHeight = page.viewportSize()?.height ?? 0
+
+    const above = heading?.y ?? 0
+    const below = viewportHeight - (submit?.y ?? 0) - (submit?.height ?? 0)
+    expect(Math.abs(above - below)).toBeLessThan(24)
+})
+
 test('a mouse keeps 40 px controls in a narrow window', async ({ page, isMobile }) => {
     test.skip(isMobile, 'mouse sizing runs in the desktop project')
     await page.setViewportSize({ width: 800, height: 900 })
