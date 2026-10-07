@@ -3,7 +3,7 @@ import type { z } from 'zod'
 import { config } from '@/shared/config'
 
 import { ApiError, kindForStatus } from './errors'
-import { getAccessToken } from './session'
+import { endSession, getAccessToken } from './session'
 
 const basePath = '/api/v1/admin'
 
@@ -41,6 +41,8 @@ export async function request<TSchema extends z.ZodType>(
     }
 
     if (!response.ok) {
+        // Without a token, a 401 is a wrong login, not an expired session.
+        if (response.status === 401 && token) endSession('expired')
         // The kind comes from the status alone, so a non-JSON body is fine to ignore.
         throw new ApiError(kindForStatus(response.status), { status: response.status })
     }

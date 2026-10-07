@@ -1,23 +1,25 @@
 import { Alert, Button, Field, Flex, HStack, IconButton, Input, Stack } from '@chakra-ui/react'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CircleAlert, Eye, EyeOff } from 'lucide-react'
+import { CircleAlert, Eye, EyeOff, Info } from 'lucide-react'
 import { useId, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useNavigate } from 'react-router'
+import { useLocation, useNavigate, useSearchParams } from 'react-router'
 
 import { useSignIn } from '@/api'
 import { hr } from '@/shared/i18n/hr'
 import { focusOnMount } from '@/shared/lib/focusOnMount'
-import { paths } from '@/shared/paths'
 
 import { emptyLoginForm, loginFormSchema } from './loginFormSchema'
 import { LoginHeading } from './LoginHeading'
 import { loginErrorMessage } from './loginErrorMessage'
+import { isSessionExpiredState, returnPathFrom } from './sessionRedirects'
 
 const controlSize = { base: 'xl', md: 'lg' } as const
 
 export function LoginPage() {
     const navigate = useNavigate()
+    const location = useLocation()
+    const [searchParams] = useSearchParams()
     const headingId = useId()
     const errorId = useId()
     // Chakra links field errors only via aria-errormessage, so inputs add aria-describedby.
@@ -36,7 +38,7 @@ export function LoginPage() {
     })
     const { signIn, isPending, failure } = useSignIn({
         onSuccess: () => {
-            void navigate(paths.home, { replace: true })
+            void navigate(returnPathFrom(searchParams), { replace: true })
         },
     })
 
@@ -58,6 +60,15 @@ export function LoginPage() {
                     onSubmit={(event) => void handleSubmit(signIn)(event)}
                 >
                     <LoginHeading id={headingId} />
+
+                    {!failure && isSessionExpiredState(location.state) && (
+                        <Alert.Root role="status" status="info">
+                            <Alert.Indicator>
+                                <Info />
+                            </Alert.Indicator>
+                            <Alert.Description>{hr.login.sessionExpired}</Alert.Description>
+                        </Alert.Root>
+                    )}
 
                     {failure && (
                         <Alert.Root

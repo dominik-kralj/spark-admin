@@ -25,17 +25,17 @@ Error bodies are assumed to be ASP.NET Core `ProblemDetails`
 A missing, plain-text or HTML error body is handled the same way. Messages
 shown to the user come from `hr.ts`, by error kind, and never from the server.
 
-| Status             | `ApiError.kind`   | Notes                                           |
-| ------------------ | ----------------- | ----------------------------------------------- |
-| 400, 422           | `validation`      | field-level errors not read yet (open question) |
-| 401                | `unauthorized`    | missing/invalid API key or JWT; wrong login     |
-| 403                | `forbidden`       |                                                 |
-| 404                | `notFound`        |                                                 |
-| 409                | `conflict`        | e.g. duplicate, or a stale edit                 |
-| 429                | `rateLimited`     | spec: login is limited to 5 per IP per minute   |
-| 5xx, anything else | `server`          |                                                 |
-| no response        | `network`         | `fetch` rejected (offline, DNS, CORS)           |
-| 2xx, bad body      | `invalidResponse` | body is not JSON or fails the response schema   |
+| Status             | `ApiError.kind`   | Notes                                                                                    |
+| ------------------ | ----------------- | ---------------------------------------------------------------------------------------- |
+| 400, 422           | `validation`      | field-level errors not read yet (open question)                                          |
+| 401                | `unauthorized`    | missing/invalid API key or JWT; wrong login. With a token sent, it also ends the session |
+| 403                | `forbidden`       |                                                                                          |
+| 404                | `notFound`        |                                                                                          |
+| 409                | `conflict`        | e.g. duplicate, or a stale edit                                                          |
+| 429                | `rateLimited`     | spec: login is limited to 5 per IP per minute                                            |
+| 5xx, anything else | `server`          |                                                                                          |
+| no response        | `network`         | `fetch` rejected (offline, DNS, CORS)                                                    |
+| 2xx, bad body      | `invalidResponse` | body is not JSON or fails the response schema                                            |
 
 A request cancelled through its `AbortSignal` (TanStack Query cancellation)
 rejects with the original `AbortError`, not an `ApiError`.
@@ -80,4 +80,6 @@ the `X-API-KEY` like every call.
 | User fields   | `adminUserId`, `tenantId`, `username`, `name`, `surname`                              | assumed; `name`/`surname` as on INSPECTORS   |
 | Wrong login   | `401` with no body; the UI does not say which value is wrong                          | spec: Inspector `Login` returns Unauthorized |
 | Rate limit    | `429` after 5 requests per IP per minute, fixed window; the mock counts every request | spec: `LoginPolicy`                          |
-| Token storage | memory only until #5 decides where the session lives                                  | #5                                           |
+| Token storage | `sessionStorage`, with the mapped user; see "Session" in `AGENTS.md`                  | #5                                           |
+| Expiry        | not read; a `401` on any signed-in request ends the session (JWT lasts 10 h)          | feature docs: Inspector JWT; #5              |
+| Logout        | local only: no endpoint is called, the token is dropped                               | assumed; the spec has no logout call         |

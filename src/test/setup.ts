@@ -13,6 +13,8 @@ afterEach(() => {
     cleanup()
     server.resetHandlers()
     resetLoginRateLimit()
+    // Absent in files that opt into the node environment.
+    if (typeof sessionStorage !== 'undefined') sessionStorage.clear()
 })
 afterAll(() => {
     server.close()
