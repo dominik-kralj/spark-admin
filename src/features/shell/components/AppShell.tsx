@@ -6,7 +6,9 @@ import { hr } from '@/shared/i18n/hr'
 import { ShellHeader, type ShellHeaderProps } from './ShellHeader'
 import { Sidebar } from './Sidebar'
 
-export function AppShell({ userName, onSignOut }: ShellHeaderProps) {
+type AppShellProps = ShellHeaderProps
+
+export function AppShell({ userName, onSignOut }: AppShellProps) {
     return (
         <Grid templateColumns="248px minmax(0, 1fr)" minH="100dvh">
             <SkipNavLink>{hr.shell.skipToContent}</SkipNavLink>

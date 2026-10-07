@@ -3,12 +3,14 @@
  * messages and toasts. Components import from here; they hold no literals.
  * Screens add their own section as they are built.
  */
+const appName = 'SPARK Admin'
+
 export const hr = {
     app: {
-        name: 'SPARK Admin',
+        name: appName,
         brand: 'SPARK',
         product: 'Admin',
-        documentTitle: (page: string) => `${page} – SPARK Admin`,
+        documentTitle: (page: string) => `${page} – ${appName}`,
     },
     login: {
         title: 'Prijava',
@@ -31,7 +33,7 @@ export const hr = {
     shell: {
         signOut: 'Odjava',
         skipToContent: 'Preskoči na sadržaj',
-        homeLink: 'SPARK Admin, početna stranica',
+        homeLink: `${appName}, početna stranica`,
         mainNav: 'Glavna navigacija',
         placeholder: 'Sadržaj stranice',
     },

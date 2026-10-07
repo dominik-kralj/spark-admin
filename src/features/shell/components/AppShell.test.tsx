@@ -72,9 +72,9 @@ describe('app shell', () => {
 
         const { queryClient } = await renderRoute(paths.tickets)
         await waitFor(() => {
-            expect(queryClient.getQueryCache().find({ queryKey: ['tenant'] })?.state.status).toBe(
-                'error',
-            )
+            expect(
+                queryClient.getQueryCache().find({ queryKey: ['tenant', 'name'] })?.state.status,
+            ).toBe('error')
         })
         const header = screen.getByRole('banner')
 
