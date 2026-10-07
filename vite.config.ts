@@ -19,6 +19,8 @@ export default defineConfig(({ mode }) => {
             environment: 'jsdom',
             setupFiles: ['./src/test/setup.ts'],
             css: false,
+            // Away from Zagreb and across midnight from it, so format tests catch local-time leaks.
+            env: { TZ: 'America/Los_Angeles' },
         },
     }
 })
