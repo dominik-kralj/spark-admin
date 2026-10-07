@@ -45,7 +45,7 @@ export async function request<TSchema extends z.ZodType>(
         if (response.status === 401 && token && token === getAccessToken()) {
             endSession('expired')
         }
-        // The kind comes from the status alone, so a non-JSON body is fine to ignore.
+        // The kind comes from the status alone; the body only marks form fields, so it may be missing.
         throw new ApiError(kindForStatus(response.status), {
             status: response.status,
             body: await readErrorBody(response),

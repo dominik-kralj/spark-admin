@@ -1,7 +1,7 @@
-import { QueryClient } from '@tanstack/react-query'
-import { render, waitFor, type RenderOptions } from '@testing-library/react'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { render, renderHook, waitFor, type RenderOptions } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import type { ReactElement } from 'react'
+import type { ReactElement, ReactNode } from 'react'
 import { createMemoryRouter } from 'react-router'
 import { RouterProvider } from 'react-router/dom'
 import { expect } from 'vitest'
@@ -9,17 +9,31 @@ import { expect } from 'vitest'
 import { createRoutes } from '@/routes'
 import { AppProviders } from '@/shared/providers'
 
-/** Renders inside the real providers, with a fresh non-retrying query client. */
-export function renderWithProviders(ui: ReactElement, options?: RenderOptions) {
-    const queryClient = new QueryClient({
+function createTestQueryClient(): QueryClient {
+    return new QueryClient({
         defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
     })
+}
+
+/** Renders inside the real providers, with a fresh non-retrying query client. */
+export function renderWithProviders(ui: ReactElement, options?: RenderOptions) {
+    const queryClient = createTestQueryClient()
 
     return {
         user: userEvent.setup(),
         queryClient,
         ...render(<AppProviders queryClient={queryClient}>{ui}</AppProviders>, options),
     }
+}
+
+/** Renders a hook with a fresh non-retrying query client and nothing else. */
+export function renderHookWithQueryClient<TResult>(hook: () => TResult) {
+    const queryClient = createTestQueryClient()
+    const wrapper = ({ children }: { children: ReactNode }) => (
+        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    )
+
+    return renderHook(hook, { wrapper })
 }
 
 export type RenderedRoute = Awaited<ReturnType<typeof renderRoute>>

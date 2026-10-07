@@ -12,24 +12,21 @@ import {
     type ZoneInput,
 } from '../validators/zone'
 
-export const zoneKeys = {
-    all: ['zones'] as const,
-    list: () => [...zoneKeys.all, 'list'] as const,
+const zoneKeys = {
+    list: ['zones', 'list'] as const,
 }
 
-export function zonesQueryOptions() {
-    return queryOptions({
-        queryKey: zoneKeys.list(),
-        queryFn: async ({ signal }) => {
-            const zones = await request('/zones', { schema: zoneListResponseSchema, signal })
+const zonesQuery = queryOptions({
+    queryKey: zoneKeys.list,
+    queryFn: async ({ signal }) => {
+        const zones = await request('/zones', { schema: zoneListResponseSchema, signal })
 
-            return zones.map(toZone)
-        },
-    })
-}
+        return zones.map(toZone)
+    },
+})
 
 export function useZones() {
-    return useQuery(zonesQueryOptions())
+    return useQuery(zonesQuery)
 }
 
 export function useCreateZone() {
@@ -44,7 +41,7 @@ export function useCreateZone() {
                     schema: zoneResponseSchema,
                 }),
             ),
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: zoneKeys.list() }),
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: zonesQuery.queryKey }),
     })
 }
 
@@ -61,7 +58,7 @@ export function useUpdateZone() {
                 }),
             ),
         onSuccess: (saved) => {
-            queryClient.setQueryData(zonesQueryOptions().queryKey, (zones) =>
+            queryClient.setQueryData(zonesQuery.queryKey, (zones) =>
                 zones?.map((zone) => (zone.id === saved.id ? saved : zone)),
             )
         },
@@ -74,6 +71,6 @@ export function useDeleteZone() {
     return useMutation({
         mutationFn: (id: number) =>
             request(`/zones/${String(id)}`, { method: 'DELETE', schema: z.undefined() }),
-        onSuccess: () => queryClient.invalidateQueries({ queryKey: zoneKeys.list() }),
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: zonesQuery.queryKey }),
     })
 }

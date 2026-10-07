@@ -61,12 +61,16 @@ export function resetZones(): void {
 
 resetZones()
 
-// The ZONES table's columns and CHECK constraints.
+const amountSchema = z
+    .number()
+    .min(0)
+    .refine((amount) => Math.round(amount * 100) / 100 === amount)
+
 const zoneBodySchema = z.object({
     zoneCode: z.string().trim().min(1).max(20),
     zoneName: z.string().trim().min(1).max(20),
-    price: z.number().min(0),
-    dailyTicketPrice: z.number().min(0),
+    price: amountSchema,
+    dailyTicketPrice: amountSchema,
     durationMinutes: z.int().positive(),
     maxExtensions: z.int().min(0),
     dpkIssueDelayMinutes: z.int().min(0),
@@ -94,14 +98,14 @@ function findZone(zoneId: number): ZoneRow | undefined {
 }
 
 // SQL Server's default collation compares case-insensitively.
-function isSame(a: string, b: string): boolean {
+function equalsIgnoringCase(a: string, b: string): boolean {
     return a.toLocaleUpperCase('hr') === b.toLocaleUpperCase('hr')
 }
 
 function duplicateField(body: ZoneBody, ownId: number | null): 'zoneCode' | 'zoneName' | null {
     const others = zones.filter((zone) => zone.tenantId === tenantId && zone.zoneId !== ownId)
-    if (others.some((zone) => isSame(zone.zoneCode, body.zoneCode))) return 'zoneCode'
-    if (others.some((zone) => isSame(zone.zoneName, body.zoneName))) return 'zoneName'
+    if (others.some((zone) => equalsIgnoringCase(zone.zoneCode, body.zoneCode))) return 'zoneCode'
+    if (others.some((zone) => equalsIgnoringCase(zone.zoneName, body.zoneName))) return 'zoneName'
 
     return null
 }
@@ -112,7 +116,8 @@ async function readZoneBody(request: Request, ownId: number | null): Promise<Bod
     const parsed = zoneBodySchema.safeParse(await request.json())
     if (!parsed.success) {
         const errors: Record<string, string[]> = {}
-        for (const issue of parsed.error.issues) errors[String(issue.path[0])] = ['invalid']
+        // ValidationProblemDetails puts errors about the body as a whole under '$'.
+        for (const issue of parsed.error.issues) errors[issue.path.join('.') || '$'] = ['invalid']
 
         return { response: HttpResponse.json({ status: 400, errors }, { status: 400 }) }
     }

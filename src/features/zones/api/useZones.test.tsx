@@ -1,10 +1,9 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { act, renderHook, waitFor } from '@testing-library/react'
+import { act, waitFor } from '@testing-library/react'
 import { http, HttpResponse } from 'msw'
-import type { ReactNode } from 'react'
 import { describe, expect, it } from 'vitest'
 
 import { apiUrl } from '@/mocks/url'
+import { renderHookWithQueryClient } from '@/test/render'
 import { server } from '@/test/server'
 import { signInForTest } from '@/test/session'
 
@@ -37,22 +36,13 @@ const newZone: ZoneInput = {
 
 function renderZoneHooks() {
     signInForTest()
-    const queryClient = new QueryClient({
-        defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
-    })
-    const wrapper = ({ children }: { children: ReactNode }) => (
-        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    )
 
-    return renderHook(
-        () => ({
-            zones: useZones(),
-            create: useCreateZone(),
-            update: useUpdateZone(),
-            remove: useDeleteZone(),
-        }),
-        { wrapper },
-    )
+    return renderHookWithQueryClient(() => ({
+        zones: useZones(),
+        create: useCreateZone(),
+        update: useUpdateZone(),
+        remove: useDeleteZone(),
+    }))
 }
 
 type ZoneHooks = ReturnType<typeof renderZoneHooks>['result']
@@ -148,6 +138,16 @@ describe('useCreateZone', () => {
             { field: 'durationMinutes', reason: 'invalid' },
         ])
     })
+
+    it('rejects a price with more than two decimals, like the DECIMAL(10,2) column', async () => {
+        const { result } = renderZoneHooks()
+
+        const error = await mutationError(() =>
+            result.current.create.mutateAsync({ ...newZone, dailyTicketPrice: 0.705 }),
+        )
+
+        expect(toZoneFieldErrors(error)).toEqual([{ field: 'dailyTicketPrice', reason: 'invalid' }])
+    })
 })
 
 describe('useUpdateZone', () => {
@@ -178,11 +178,27 @@ describe('useUpdateZone', () => {
         expect(toZoneFieldErrors(error)).toEqual([{ field: 'code', reason: 'duplicate' }])
     })
 
-    it('answers 404 for a zone that does not exist', async () => {
+    it('rejects invalid values with a 400 on each field', async () => {
         const { result } = renderZoneHooks()
 
         const error = await mutationError(() =>
-            result.current.update.mutateAsync({ ...firstZone, id: 999 }),
+            result.current.update.mutateAsync({ ...firstZone, name: '', maxExtensions: 1.5 }),
+        )
+
+        expect(toZoneFieldErrors(error)).toEqual([
+            { field: 'name', reason: 'invalid' },
+            { field: 'maxExtensions', reason: 'invalid' },
+        ])
+    })
+
+    it.each([
+        ['does not exist', 999],
+        ['belongs to another city', otherCityZoneId],
+    ])('answers 404 for a zone that %s', async (_case, id) => {
+        const { result } = renderZoneHooks()
+
+        const error = await mutationError(() =>
+            result.current.update.mutateAsync({ ...firstZone, id }),
         )
 
         expect(error).toMatchObject({ kind: 'notFound', status: 404 })

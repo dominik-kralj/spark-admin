@@ -78,7 +78,6 @@ const duplicateBodySchema = z.object({ code: z.literal('duplicate'), field: z.st
 
 const validationBodySchema = z.object({ errors: z.record(z.string(), z.unknown()) })
 
-/** Server errors that belong to one form field, keyed by domain field name. */
 export function toZoneFieldErrors(error: unknown): ZoneFieldError[] {
     if (!isApiError(error)) return []
 
