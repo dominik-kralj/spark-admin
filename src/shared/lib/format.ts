@@ -16,6 +16,8 @@ const amountFormat = new Intl.NumberFormat('hr-HR', {
     signDisplay: 'negative',
 })
 
+const integerFormat = new Intl.NumberFormat('hr-HR', { maximumFractionDigits: 0 })
+
 function zagrebParts(value: Date) {
     const parts = dateTimeFormat.formatToParts(value)
     const valueOf = (type: Intl.DateTimeFormatPartTypes) =>
@@ -48,4 +50,8 @@ export function formatAmount(amount: number): string {
         .join('')
 
     return `${digits} ${hr.format.currency}`
+}
+
+export function formatMinutes(minutes: number): string {
+    return `${integerFormat.format(minutes)} ${hr.format.minutes}`
 }

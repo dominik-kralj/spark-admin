@@ -6,6 +6,9 @@ import { PlaceholderPage } from '@/features/shell/components/PlaceholderPage'
 import { sections } from '@/features/shell/lib/sections'
 import { paths } from '@/shared/paths'
 
+// Sections with a real screen; the rest show a placeholder until they are built.
+const builtSections = new Set<string>([paths.zones])
+
 // Fresh objects per router: React Router caches lazy results on the route objects.
 export function createRoutes(): RouteObject[] {
     return [
@@ -31,10 +34,20 @@ export function createRoutes(): RouteObject[] {
                             },
                             children: [
                                 { index: true, loader: () => redirect(paths.home) },
-                                ...sections.map(({ path, label }) => ({
-                                    path,
-                                    element: <PlaceholderPage title={label} />,
-                                })),
+                                {
+                                    path: paths.zones,
+                                    lazy: {
+                                        Component: async () =>
+                                            (await import('@/features/zones/components/ZonesPage'))
+                                                .ZonesPage,
+                                    },
+                                },
+                                ...sections
+                                    .filter(({ path }) => !builtSections.has(path))
+                                    .map(({ path, label }) => ({
+                                        path,
+                                        element: <PlaceholderPage title={label} />,
+                                    })),
                             ],
                         },
                         {

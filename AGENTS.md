@@ -51,6 +51,22 @@ Zone files and copy their structure: list, form, query hooks, the three states,
 tests. If a later screen needs to depart from the pattern, change Zone first so
 the pattern stays single-sourced.
 
+The list pattern (`features/zones/components/`):
+
+- `ZonesPage`: `PageHeader` (h1, document title, the primary action) above
+  `ZoneList`; the page is `flex="1" minW="0"` inside the shell's `main`.
+- `ZoneList`: early returns for `LoadingState`, `ErrorState` (retry is
+  `refetch`), `EmptyState` with the one fixing action, then the data. Sorting
+  comes from `useSortSearchParams` (URL `sort` and `dir`; the default order
+  leaves the URL clean).
+- From `md`, `ZoneTable`: a `panel` with a labelled `Table`,
+  `SortableColumnHeader` for sortable columns, numbers right-aligned, and the
+  total as a footer. Below `md`, `ZoneCards`: a labelled `ul` of `panel` cards
+  with a `dl` of 3 to 4 fields. Both render; CSS shows one.
+- Tests: `ZonesPage.test.tsx` through the route and the mock (columns and
+  formatting, cards, sort and URL, loading, empty, error and retry, axe), and
+  `e2e/zones.spec.ts` (table at 1440 px, cards at 320 and 375 px).
+
 ## Gate
 
 Before you report anything as done, run `pnpm check` (typecheck, lint, format

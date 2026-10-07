@@ -59,7 +59,9 @@ describe('app shell on a phone', () => {
         const drawer = await screen.findByRole('dialog', { name: 'Izbornik' })
         await user.click(within(drawer).getByRole('link', { name: 'Zone' }))
 
-        expect(router.state.location.pathname).toBe('/zone')
+        await waitFor(() => {
+            expect(router.state.location.pathname).toBe('/zone')
+        })
         await waitFor(() => {
             expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
         })
