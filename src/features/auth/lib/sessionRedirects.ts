@@ -1,7 +1,8 @@
 import { redirect, type LoaderFunctionArgs } from 'react-router'
 
-import { getSession } from '@/api'
 import { paths } from '@/shared/paths'
+
+import { getSession } from '../api/useAuth'
 
 const returnParam = 'next'
 

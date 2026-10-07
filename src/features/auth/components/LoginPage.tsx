@@ -5,14 +5,15 @@ import { useId, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useLocation, useNavigate, useSearchParams } from 'react-router'
 
-import { useSignIn } from '@/api'
 import { hr } from '@/shared/i18n/hr'
 import { focusOnMount } from '@/shared/lib/focusOnMount'
 
-import { emptyLoginForm, loginFormSchema } from './loginFormSchema'
+import { useAuth } from '../api/useAuth'
+import { loginErrorMessage } from '../lib/loginErrorMessage'
+import { isSessionExpiredState, returnPathFrom } from '../lib/sessionRedirects'
+import { emptyLoginForm, loginFormSchema } from '../validators/loginForm'
+
 import { LoginHeading } from './LoginHeading'
-import { loginErrorMessage } from './loginErrorMessage'
-import { isSessionExpiredState, returnPathFrom } from './sessionRedirects'
 
 const controlSize = { base: 'xl', md: 'lg' } as const
 
@@ -36,8 +37,8 @@ export function LoginPage() {
         mode: 'onSubmit',
         reValidateMode: 'onChange',
     })
-    const { signIn, isPending, failure } = useSignIn({
-        onSuccess: () => {
+    const { signIn, isPending, failure } = useAuth({
+        onSignIn: () => {
             void navigate(returnPathFrom(searchParams), { replace: true })
         },
     })

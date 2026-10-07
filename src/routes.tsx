@@ -1,7 +1,7 @@
 import type { RouteObject } from 'react-router'
 
-import { ProtectedLayout } from '@/features/auth/ProtectedLayout'
-import { redirectIfSignedIn, requireSession } from '@/features/auth/sessionRedirects'
+import { ProtectedLayout } from '@/features/auth/components/ProtectedLayout'
+import { redirectIfSignedIn, requireSession } from '@/features/auth/lib/sessionRedirects'
 import { paths } from '@/shared/paths'
 
 // Fresh objects per router: React Router caches lazy results on the route objects.
@@ -16,7 +16,7 @@ export function createRoutes(): RouteObject[] {
                     loader: redirectIfSignedIn,
                     lazy: {
                         Component: async () =>
-                            (await import('@/features/auth/LoginPage')).LoginPage,
+                            (await import('@/features/auth/components/LoginPage')).LoginPage,
                     },
                 },
                 {

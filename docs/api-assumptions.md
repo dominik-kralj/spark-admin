@@ -2,7 +2,8 @@
 
 The spec defines no Admin endpoints. Everything below is what this frontend
 assumes, for the backend team to confirm or correct. The code that depends on
-each item lives in `src/api/`; update this file in the same change as that code.
+each item lives in the feature's `api/` and `validators/`, or in
+`src/shared/api/` for transport; update this file in the same change as that code.
 
 ## Transport
 
@@ -44,7 +45,7 @@ rejects with the original `AbortError`, not an `ApiError`.
 
 Each feature adds its endpoints and payload shapes here.
 
-### Login (`src/api/auth.ts`)
+### Login (`src/features/auth/api/useAuth.ts`)
 
 The spec has no Admin login (feature docs §5.12, `open-questions.md` #2). This
 mirrors the Inspector `Login` action, with username and password in place of
