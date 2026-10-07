@@ -52,6 +52,16 @@ export const hr = {
         citySettings: 'Postavke grada',
         adminUsers: 'Korisnici',
     },
+    listStates: {
+        retry: 'Pokušaj ponovno',
+        errors: {
+            network:
+                'Provjerite internetsku vezu i pokušajte ponovno. Ako se pogreška ponavlja, javite se administratoru sustava.',
+            forbidden:
+                'Nemate ovlasti za pregled ovih podataka. Ako mislite da biste ih trebali vidjeti, javite se administratoru sustava.',
+            server: 'Došlo je do pogreške na poslužitelju. Pokušajte ponovno za nekoliko minuta. Ako se pogreška ponavlja, javite se administratoru sustava.',
+        },
+    },
     format: {
         currency: 'EUR',
     },
