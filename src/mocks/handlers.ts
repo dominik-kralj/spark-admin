@@ -1,6 +1,7 @@
 import type { HttpHandler } from 'msw'
 
 import { authHandlers } from './auth'
+import { tenantHandlers } from './tenant'
 
 /** Mock Admin API. Handlers are added per screen, shaped like the spec's tables. */
-export const handlers: HttpHandler[] = [...authHandlers]
+export const handlers: HttpHandler[] = [...authHandlers, ...tenantHandlers]

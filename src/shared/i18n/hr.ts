@@ -8,8 +8,10 @@ export const hr = {
         name: 'SPARK Admin',
         brand: 'SPARK',
         product: 'Admin',
+        documentTitle: (page: string) => `${page} – SPARK Admin`,
     },
     login: {
+        title: 'Prijava',
         username: 'Korisničko ime',
         password: 'Lozinka',
         showPassword: 'Prikaži lozinku',
@@ -28,6 +30,20 @@ export const hr = {
     },
     shell: {
         signOut: 'Odjava',
+        skipToContent: 'Preskoči na sadržaj',
+        homeLink: 'SPARK Admin, početna stranica',
+        mainNav: 'Glavna navigacija',
+        placeholder: 'Sadržaj stranice',
+    },
+    nav: {
+        tickets: 'Karte',
+        dailyTickets: 'DPK',
+        zones: 'Zone',
+        privilegedOwners: 'Povlašteni korisnici',
+        inspectors: 'Kontrolori',
+        reports: 'Izvještaji',
+        citySettings: 'Postavke grada',
+        adminUsers: 'Korisnici',
     },
     notFound: {
         title: 'Stranica nije pronađena',

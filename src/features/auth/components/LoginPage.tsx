@@ -60,6 +60,8 @@ export function LoginPage() {
                     aria-describedby={failure ? errorId : undefined}
                     onSubmit={(event) => void handleSubmit(signIn)(event)}
                 >
+                    <title>{hr.app.documentTitle(hr.login.title)}</title>
+
                     <LoginHeading id={headingId} />
 
                     {!failure && isSessionExpiredState(location.state) && (
