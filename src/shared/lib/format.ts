@@ -16,20 +16,14 @@ const amountFormat = new Intl.NumberFormat('hr-HR', {
     signDisplay: 'negative',
 })
 
-const amountSymbols: Partial<Record<Intl.NumberFormatPartTypes, string>> = {
-    minusSign: '-',
-    group: '.',
-    decimal: ',',
-}
-
 function zagrebParts(value: Date) {
     const parts = dateTimeFormat.formatToParts(value)
-    const part = (type: Intl.DateTimeFormatPartTypes) =>
-        parts.find((item) => item.type === type)?.value ?? ''
+    const valueOf = (type: Intl.DateTimeFormatPartTypes) =>
+        parts.find((part) => part.type === type)?.value ?? ''
 
     return {
-        date: `${part('day')}.${part('month')}.${part('year')}`,
-        time: `${part('hour')}:${part('minute')}`,
+        date: `${valueOf('day')}.${valueOf('month')}.${valueOf('year')}`,
+        time: `${valueOf('hour')}:${valueOf('minute')}`,
     }
 }
 
@@ -48,10 +42,10 @@ export function formatDateTime(value: Date): string {
 }
 
 export function formatAmount(amount: number): string {
-    const number = amountFormat
+    const digits = amountFormat
         .formatToParts(amount)
-        .map((part) => amountSymbols[part.type] ?? part.value)
+        .map((part) => (part.type === 'minusSign' ? '-' : part.value))
         .join('')
 
-    return `${number} ${hr.format.currency}`
+    return `${digits} ${hr.format.currency}`
 }

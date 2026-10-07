@@ -51,6 +51,10 @@ describe('formatDateTime', () => {
     it('joins the Zagreb date and time with a space', () => {
         expect(formatDateTime(new Date('2026-10-06T22:30:00Z'))).toBe('07.10.2026 00:30')
     })
+
+    it('shows the first minute of the new year in Zagreb', () => {
+        expect(formatDateTime(new Date('2026-12-31T23:00:00Z'))).toBe('01.01.2027 00:00')
+    })
 })
 
 describe('formatAmount', () => {
@@ -68,6 +72,8 @@ describe('formatAmount', () => {
         expect(formatAmount(0.704)).toBe('0,70 EUR')
         expect(formatAmount(0.706)).toBe('0,71 EUR')
         expect(formatAmount(1.125)).toBe('1,13 EUR')
+        expect(formatAmount(1.005)).toBe('1,01 EUR')
+        expect(formatAmount(2.675)).toBe('2,68 EUR')
         expect(formatAmount(999.999)).toBe('1.000,00 EUR')
     })
 
