@@ -52,6 +52,9 @@ export const hr = {
         citySettings: 'Postavke grada',
         adminUsers: 'Korisnici',
     },
+    format: {
+        currency: 'EUR',
+    },
     notFound: {
         title: 'Stranica nije pronađena',
         description:
