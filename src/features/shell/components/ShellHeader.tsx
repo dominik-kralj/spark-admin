@@ -43,7 +43,7 @@ export function ShellHeader({ userName, onSignOut }: ShellHeaderProps) {
                     <Span>{userName}</Span>
                 </HStack>
 
-                <Button variant="outline" onClick={onSignOut}>
+                <Button variant="outline" size={{ base: 'lg', lg: 'sm' }} onClick={onSignOut}>
                     <LogOut aria-hidden="true" />
                     {hr.shell.signOut}
                 </Button>

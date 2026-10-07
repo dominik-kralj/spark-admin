@@ -15,7 +15,7 @@ import { emptyLoginForm, loginFormSchema } from '../validators/loginForm'
 
 import { LoginHeading } from './LoginHeading'
 
-const controlSize = { base: 'xl', md: 'lg' } as const
+const controlSize = { base: 'xl', md: 'lg', lg: 'md' } as const
 
 export function LoginPage() {
     const navigate = useNavigate()
