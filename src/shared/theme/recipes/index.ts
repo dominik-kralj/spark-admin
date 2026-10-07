@@ -1,5 +1,7 @@
 import { defineConfig } from '@chakra-ui/react'
 
+import { layerStyles } from '../layerStyles'
+
 import { alertRecipe } from './alert'
 import { buttonRecipe } from './button'
 import { emptyStateRecipe } from './emptyState'
@@ -9,6 +11,7 @@ import { skipNavLinkRecipe } from './skipNavLink'
 
 export const recipesConfig = defineConfig({
     theme: {
+        layerStyles,
         recipes: {
             button: buttonRecipe,
             input: inputRecipe,

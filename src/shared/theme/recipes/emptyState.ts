@@ -3,11 +3,11 @@ import { defineSlotRecipe } from '@chakra-ui/react'
 export const emptyStateRecipe = defineSlotRecipe({
     slots: ['root', 'content', 'indicator', 'title', 'description'],
     base: {
-        root: { bg: 'bg', borderWidth: '1px', borderColor: 'border', borderRadius: 'lg' },
+        root: { layerStyle: 'panel' },
         content: { textAlign: 'center' },
         indicator: { _icon: { boxSize: '7' } },
         title: { mt: '2', color: 'spark.heading' },
-        description: { maxW: '420px', textStyle: 'md' },
+        description: { maxW: '420px', textStyle: { base: 'sm', md: 'md' } },
     },
     variants: {
         size: {

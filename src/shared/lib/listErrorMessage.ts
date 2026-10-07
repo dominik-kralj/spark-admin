@@ -1,7 +1,7 @@
 import { isApiError } from '@/shared/api'
 import { hr } from '@/shared/i18n/hr'
 
-export function loadErrorMessage(error: Error): string {
+export function listErrorMessage(error: Error): string {
     if (!isApiError(error)) return hr.listStates.errors.server
 
     switch (error.kind) {

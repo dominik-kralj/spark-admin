@@ -2,40 +2,33 @@ import { Box, Grid, Skeleton, Stack, Text } from '@chakra-ui/react'
 
 interface LoadingStateProps {
     label: string
-    columns: number
+    /** Relative width of each table column, in fr. */
+    columnWidths: number[]
 }
 
 const tableRows = [1, 2, 3]
 const cards = [1, 2]
 
-export function LoadingState({ label, columns }: LoadingStateProps) {
-    const cells = Array.from({ length: columns }, (_, index) => index)
+export function LoadingState({ label, columnWidths }: LoadingStateProps) {
+    const gridTemplateColumns = columnWidths.map((width) => `${String(width)}fr`).join(' ')
 
     return (
-        <Box
-            aria-busy="true"
-            bg={{ md: 'bg' }}
-            borderWidth={{ md: '1px' }}
-            borderColor="border"
-            borderRadius="lg"
-            overflow="hidden"
-        >
+        <Box layerStyle={{ md: 'panel' }} overflow="hidden">
             <Box hideBelow="md" aria-hidden="true">
                 <Box h="11" bg="bg.subtle" />
                 {tableRows.map((row) => (
                     <Grid
                         key={row}
                         data-skeleton-row
-                        templateColumns={`repeat(${String(columns)}, minmax(0, 1fr))`}
+                        gridTemplateColumns={gridTemplateColumns}
                         gap="8"
                         alignItems="center"
-                        h="13"
+                        h="52px"
                         px="4"
                         borderTopWidth="1px"
-                        borderColor="border"
                     >
-                        {cells.map((cell) => (
-                            <Skeleton key={cell} h="3" />
+                        {columnWidths.map((_, column) => (
+                            <Skeleton key={column} h="3" />
                         ))}
                     </Grid>
                 ))}
@@ -43,15 +36,7 @@ export function LoadingState({ label, columns }: LoadingStateProps) {
 
             <Stack hideFrom="md" aria-hidden="true" gap="2">
                 {cards.map((card) => (
-                    <Stack
-                        key={card}
-                        gap="3.5"
-                        p="4"
-                        bg="bg"
-                        borderWidth="1px"
-                        borderColor="border"
-                        borderRadius="lg"
-                    >
+                    <Stack key={card} layerStyle="panel" gap="3.5" p="4">
                         <Skeleton w="120px" h="4" />
                         <Skeleton h="3" />
                         <Skeleton h="11" bg="bg.muted" borderRadius="md" />
@@ -65,7 +50,6 @@ export function LoadingState({ label, columns }: LoadingStateProps) {
                 px={{ md: '4' }}
                 py={{ md: '3' }}
                 borderTopWidth={{ md: '1px' }}
-                borderColor="border"
                 textStyle={{ base: 'sm', md: 'md' }}
                 color="fg.muted"
             >

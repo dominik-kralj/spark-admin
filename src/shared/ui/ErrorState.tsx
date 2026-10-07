@@ -2,7 +2,7 @@ import { Button, Icon } from '@chakra-ui/react'
 import { TriangleAlert } from 'lucide-react'
 
 import { hr } from '@/shared/i18n/hr'
-import { loadErrorMessage } from '@/shared/lib/loadErrorMessage'
+import { listErrorMessage } from '@/shared/lib/listErrorMessage'
 
 import { EmptyState } from './EmptyState'
 
@@ -23,7 +23,7 @@ export function ErrorState({ title, error, onRetry, isRetrying }: ErrorStateProp
                 </Icon>
             }
             title={title}
-            description={loadErrorMessage(error)}
+            description={listErrorMessage(error)}
             action={
                 <Button
                     colorPalette="blue"
