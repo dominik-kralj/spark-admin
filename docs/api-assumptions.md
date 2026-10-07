@@ -22,17 +22,33 @@ each item lives in the feature's `api/` and `validators/`, or in
 ## Errors
 
 Error bodies are assumed to be ASP.NET Core `ProblemDetails`
-(`application/problem+json`), but the frontend **reads only the status code**.
-A missing, plain-text or HTML error body is handled the same way. Messages
-shown to the user come from `hr.ts`, by error kind, and never from the server.
+(`application/problem+json`). The error kind comes from the **status code
+alone**; a missing, plain-text or HTML error body is handled the same way.
+Messages shown to the user come from `hr.ts`, by error kind, and never from the
+server.
+
+The client keeps a JSON error body on `ApiError.body` (undefined when the body
+is not JSON). Only a feature's `validators/` read it, to put an error on the
+right form field. Two shapes are read (`api-contract.md` D2, open question #5):
+
+```jsonc
+// 400: ValidationProblemDetails; keys are request property names.
+{ "status": 400, "errors": { "price": ["invalid"], "durationMinutes": ["invalid"] } }
+
+// 409 duplicate: the request property that clashes.
+{ "status": 409, "code": "duplicate", "field": "zoneCode" }
+```
+
+Any other body, or a key the feature does not know, gives no field error, and
+the form falls back to the message for the error kind.
 
 | Status             | `ApiError.kind`   | Notes                                                                                    |
 | ------------------ | ----------------- | ---------------------------------------------------------------------------------------- |
-| 400, 422           | `validation`      | field-level errors not read yet (open question)                                          |
+| 400, 422           | `validation`      | field errors read from `errors` where a feature maps them (above)                        |
 | 401                | `unauthorized`    | missing/invalid API key or JWT; wrong login. With a token sent, it also ends the session |
 | 403                | `forbidden`       |                                                                                          |
 | 404                | `notFound`        |                                                                                          |
-| 409                | `conflict`        | e.g. duplicate, or a stale edit                                                          |
+| 409                | `conflict`        | e.g. duplicate (`field` read where a feature maps it), or a stale edit                   |
 | 429                | `rateLimited`     | spec: login is limited to 5 per IP per minute                                            |
 | 5xx, anything else | `server`          |                                                                                          |
 | no response        | `network`         | `fetch` rejected (offline, DNS, CORS)                                                    |
@@ -102,3 +118,40 @@ rest. The proposed full shape is in `api-contract.md` (ADM-8).
 | Path    | `/tenant`, no id: the city comes from the JWT's `TenantId` claim                     | `api-contract.md` [proposed]    |
 | Field   | `tenantName`, the display name shown as-is ("Grad Samobor")                          | spec: `CITY_TENANTS.TenantName` |
 | Caching | read once per session; a failed call leaves the name out and the shell keeps working | assumed                         |
+
+### Zones (`src/features/zones/api/useZones.ts`)
+
+The shape is `api-contract.md` ADM-2: the ZONES columns in camelCase, without
+`tenantId`. Mapping to the domain `Zone` (`id`, `code`, `name`, …) is in
+`src/features/zones/validators/zone.ts`.
+
+```json
+{
+  "zoneId": 1,
+  "zoneCode": "ZONA1",
+  "zoneName": "Prva zona",
+  "price": 0.7,
+  "dailyTicketPrice": 15,
+  "durationMinutes": 60,
+  "maxExtensions": 2,
+  "dpkIssueDelayMinutes": 15
+}
+```
+
+| Call                     | Body                  | Success      | Errors                                                          |
+| ------------------------ | --------------------- | ------------ | --------------------------------------------------------------- |
+| `GET /zones`             |                       | `200 Zone[]` |                                                                 |
+| `POST /zones`            | zone without `zoneId` | `201 Zone`   | `400` field errors; `409 duplicate` on `zoneCode` or `zoneName` |
+| `PUT /zones/{zoneId}`    | zone without `zoneId` | `200 Zone`   | same, plus `404`                                                |
+| `DELETE /zones/{zoneId}` |                       | `204`        | `404`                                                           |
+
+| Item       | Assumption                                                                                                      | Source                                                       |
+| ---------- | --------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| List       | a plain array of the signed-in city's zones, sorted in the browser; no paging                                   | `api-contract.md` Lists                                      |
+| Tenant     | from the JWT; another city's zone answers `404`                                                                 | `api-contract.md` Transport                                  |
+| Money      | `price` and `dailyTicketPrice` are JSON numbers in EUR, kept as numbers in the domain; formatted only at render | spec: `DECIMAL(10,2)`                                        |
+| Limits     | code and name 1–20 characters; prices ≥ 0; `durationMinutes` integer > 0; the other two integers ≥ 0            | spec: ZONES columns and CHECKs                               |
+| Uniqueness | code and name each unique per city, compared case-insensitively (SQL Server default collation)                  | spec: `UQ_ZONES_Tenant_ZoneCode`, `UQ_ZONES_Tenant_ZoneName` |
+| Update     | `PUT` replaces all fields; the list cache takes the returned zone without a refetch                             | `api-contract.md` Writes                                     |
+| Delete     | always allowed in the mock. `409 zoneInUse` for a zone with tickets is proposed but not built (D9)              | `api-contract.md` ADM-2                                      |
+| `price`    | what it covers (per hour or per `durationMinutes`) is open (D9); the API only stores it                         | open question #11                                            |

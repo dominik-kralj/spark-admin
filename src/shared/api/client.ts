@@ -46,7 +46,10 @@ export async function request<TSchema extends z.ZodType>(
             endSession('expired')
         }
         // The kind comes from the status alone, so a non-JSON body is fine to ignore.
-        throw new ApiError(kindForStatus(response.status), { status: response.status })
+        throw new ApiError(kindForStatus(response.status), {
+            status: response.status,
+            body: await readErrorBody(response),
+        })
     }
 
     let data: unknown
@@ -64,6 +67,14 @@ export async function request<TSchema extends z.ZodType>(
     }
 
     return parsed.data
+}
+
+async function readErrorBody(response: Response): Promise<unknown> {
+    try {
+        return JSON.parse(await response.text()) as unknown
+    } catch {
+        return undefined
+    }
 }
 
 function buildUrl(path: string, query: Record<string, QueryValue> | undefined): string {

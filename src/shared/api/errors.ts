@@ -14,11 +14,17 @@ export class ApiError extends Error {
     override readonly name = 'ApiError'
     readonly kind: ApiErrorKind
     readonly status: number | undefined
+    /** The parsed JSON error body, for a feature's validators to read; undefined when not JSON. */
+    readonly body: unknown
 
-    constructor(kind: ApiErrorKind, { status, cause }: { status?: number; cause?: unknown } = {}) {
+    constructor(
+        kind: ApiErrorKind,
+        { status, cause, body }: { status?: number; cause?: unknown; body?: unknown } = {},
+    ) {
         super(status === undefined ? kind : `${kind} (HTTP ${status})`, { cause })
         this.kind = kind
         this.status = status
+        this.body = body
     }
 }
 
