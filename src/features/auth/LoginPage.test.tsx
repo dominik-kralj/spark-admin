@@ -7,7 +7,7 @@ import { apiUrl } from '@/mocks/url'
 import { hr } from '@/shared/i18n/hr'
 import { paths } from '@/shared/paths'
 import { expectNoAxeViolations } from '@/test/axe'
-import { renderRoute } from '@/test/render'
+import { renderRoute, type RenderedRoute } from '@/test/render'
 import { server } from '@/test/server'
 
 const loginUrl = apiUrl('/login')
@@ -25,7 +25,7 @@ function getForm() {
 }
 
 async function fillAndSubmit(
-    user: ReturnType<typeof renderRoute>['user'],
+    user: RenderedRoute['user'],
     { username, password }: { username: string; password: string },
 ) {
     const form = getForm()
@@ -36,7 +36,7 @@ async function fillAndSubmit(
 
 describe('LoginPage', () => {
     it('shows the logo heading and the form in focus order', async () => {
-        const { user } = renderRoute(paths.login)
+        const { user } = await renderRoute(paths.login)
 
         expect(screen.getByRole('heading', { level: 1, name: hr.app.name })).toBeInTheDocument()
         expect(screen.getByRole('form', { name: hr.app.name })).toBeInTheDocument()
@@ -60,7 +60,7 @@ describe('LoginPage', () => {
                 return HttpResponse.json(loginResponse)
             }),
         )
-        const { user } = renderRoute(paths.login)
+        const { user } = await renderRoute(paths.login)
 
         await user.click(getForm().submit)
 
@@ -74,7 +74,7 @@ describe('LoginPage', () => {
     })
 
     it('treats a username of only spaces as empty', async () => {
-        const { user } = renderRoute(paths.login)
+        const { user } = await renderRoute(paths.login)
 
         await fillAndSubmit(user, { username: '   ', password: 'x' })
 
@@ -82,7 +82,7 @@ describe('LoginPage', () => {
     })
 
     it('shows no field error on blur, only on submit, and clears it as the user types', async () => {
-        const { user } = renderRoute(paths.login)
+        const { user } = await renderRoute(paths.login)
         const { username, submit } = getForm()
 
         await user.click(username)
@@ -107,7 +107,7 @@ describe('LoginPage', () => {
                 return new Promise<never>(() => undefined)
             }),
         )
-        const { user } = renderRoute(paths.login)
+        const { user } = await renderRoute(paths.login)
 
         await fillAndSubmit(user, { username: 'ana', password: 'kriva' })
         await screen.findByRole('alert')
@@ -126,7 +126,7 @@ describe('LoginPage', () => {
                 return new HttpResponse(null, { status: requests === 1 ? 401 : 500 })
             }),
         )
-        const { user } = renderRoute(paths.login)
+        const { user } = await renderRoute(paths.login)
 
         await fillAndSubmit(user, { username: 'ana', password: 'kriva' })
         await screen.findByRole('alert')
@@ -139,7 +139,7 @@ describe('LoginPage', () => {
     })
 
     it('shows and hides the password with a pressed toggle', async () => {
-        const { user } = renderRoute(paths.login)
+        const { user } = await renderRoute(paths.login)
         const toggle = screen.getByRole('button', { name: hr.login.showPassword })
 
         expect(getForm().password).toHaveAttribute('type', 'password')
@@ -162,7 +162,7 @@ describe('LoginPage', () => {
                 return HttpResponse.json(loginResponse)
             }),
         )
-        const { user, router } = renderRoute(paths.login)
+        const { user, router } = await renderRoute(paths.login)
 
         await fillAndSubmit(user, { username: ' ana ', password: ' tajna 1 ' })
 
@@ -173,7 +173,7 @@ describe('LoginPage', () => {
     })
 
     it('signs in with the mock account', async () => {
-        const { user, router } = renderRoute(paths.login)
+        const { user, router } = await renderRoute(paths.login)
 
         await fillAndSubmit(user, mockAdminCredentials)
 
@@ -202,7 +202,7 @@ describe('LoginPage', () => {
         ['a network error', () => HttpResponse.error(), hr.login.errors.network],
     ])('announces %s and keeps the typed values', async (_, resolver, message) => {
         server.use(http.post(loginUrl, resolver))
-        const { user } = renderRoute(paths.login)
+        const { user } = await renderRoute(paths.login)
 
         await fillAndSubmit(user, { username: 'ana', password: 'kriva' })
 
@@ -217,7 +217,7 @@ describe('LoginPage', () => {
     })
 
     it('answers the sixth attempt in a minute with the rate-limit message', async () => {
-        const { user } = renderRoute(paths.login)
+        const { user } = await renderRoute(paths.login)
         const { username, password, submit } = getForm()
         await user.type(username, 'ana')
         await user.type(password, 'kriva')
@@ -240,7 +240,7 @@ describe('LoginPage', () => {
                 return new Promise<never>(() => undefined)
             }),
         )
-        const { user } = renderRoute(paths.login)
+        const { user } = await renderRoute(paths.login)
 
         await fillAndSubmit(user, { username: 'ana', password: 'tajna' })
 
@@ -253,7 +253,7 @@ describe('LoginPage', () => {
 
     it('keeps the password out of the query client', async () => {
         server.use(http.post(loginUrl, () => new HttpResponse(null, { status: 401 })))
-        const { user, queryClient } = renderRoute(paths.login)
+        const { user, queryClient } = await renderRoute(paths.login)
 
         await fillAndSubmit(user, { username: 'ana', password: 'tajna-123' })
         await screen.findByRole('alert')
@@ -265,7 +265,7 @@ describe('LoginPage', () => {
 
     it('has no axe violations, with and without an error', async () => {
         server.use(http.post(loginUrl, () => new HttpResponse(null, { status: 401 })))
-        const { user, container } = renderRoute(paths.login)
+        const { user, container } = await renderRoute(paths.login)
 
         await expectNoAxeViolations(container)
 

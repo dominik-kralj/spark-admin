@@ -1,13 +1,14 @@
 import { http, HttpResponse } from 'msw'
-import { afterEach, describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { z } from 'zod'
 
 import { config } from '@/shared/config'
 import { server } from '@/test/server'
+import { testUser as user } from '@/test/session'
 
 import { request } from './client'
 import { ApiError, type ApiErrorKind } from './errors'
-import { setAccessToken } from './session'
+import { getSession, onSessionEnd, startSession } from './session'
 
 const base = `${config.apiBaseUrl}/api/v1/admin`
 const zoneSchema = z.object({ zoneId: z.number(), name: z.string() })
@@ -21,10 +22,6 @@ async function captureError(promise: Promise<unknown>): Promise<unknown> {
 
     throw new Error('Expected the request to fail')
 }
-
-afterEach(() => {
-    setAccessToken(null)
-})
 
 describe('request', () => {
     it('sends the API key and JSON accept header, without a token when signed out', async () => {
@@ -54,7 +51,7 @@ describe('request', () => {
                 return HttpResponse.json([])
             }),
         )
-        setAccessToken('jwt-123')
+        startSession('jwt-123', { user })
 
         await request('/zones', { schema: z.array(zoneSchema) })
 
@@ -198,11 +195,63 @@ describe('request', () => {
 
     it('never puts the token or key in the error message', async () => {
         server.use(http.get(`${base}/zones`, () => HttpResponse.text('boom', { status: 500 })))
-        setAccessToken('secret-jwt')
+        startSession('secret-jwt', { user })
 
         const error = await captureError(request('/zones', { schema: z.array(zoneSchema) }))
 
         expect(String(error)).not.toContain('secret-jwt')
         expect(String(error)).not.toContain(config.apiKey)
+    })
+
+    it('ends the session as expired when a signed-in request gets a 401', async () => {
+        server.use(http.get(`${base}/zones`, () => new HttpResponse(null, { status: 401 })))
+        const listener = vi.fn()
+        const unsubscribe = onSessionEnd(listener)
+        startSession('jwt-old', { user })
+
+        const error = await captureError(request('/zones', { schema: z.array(zoneSchema) }))
+
+        expect(error).toMatchObject({ kind: 'unauthorized' })
+        expect(getSession()).toBeNull()
+        expect(listener).toHaveBeenCalledWith('expired')
+        unsubscribe()
+    })
+
+    it('leaves the session alone on a 401 to a request sent without a token', async () => {
+        server.use(http.post(`${base}/login`, () => new HttpResponse(null, { status: 401 })))
+        const listener = vi.fn()
+        const unsubscribe = onSessionEnd(listener)
+
+        await captureError(request('/login', { method: 'POST', body: {}, schema: z.unknown() }))
+
+        expect(listener).not.toHaveBeenCalled()
+        unsubscribe()
+    })
+
+    it("leaves a newer session alone when an older user's request gets a 401", async () => {
+        let respond: () => void = () => undefined
+        const responseGate = new Promise<void>((resolve) => {
+            respond = resolve
+        })
+        let hasArrived = false
+        server.use(
+            http.get(`${base}/zones`, async () => {
+                hasArrived = true
+                await responseGate
+
+                return new HttpResponse(null, { status: 401 })
+            }),
+        )
+        startSession('jwt-old', { user })
+        const pending = captureError(request('/zones', { schema: z.array(zoneSchema) }))
+        await vi.waitFor(() => {
+            expect(hasArrived).toBe(true)
+        })
+
+        startSession('jwt-new', { user })
+        respond()
+        await pending
+
+        expect(getSession()).toEqual({ user })
     })
 })

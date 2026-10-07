@@ -114,6 +114,12 @@ deduplicates); read `next/dynamic` as `React.lazy`.
   API (from the spec's CREATE TABLEs), not like the domain types. That way the
   mapping layer gets exercised. Tests use the same handlers and override them
   per test for error and empty cases.
+- **Session** (`src/api/session.ts`): token and user live in `sessionStorage`,
+  so a reload keeps a 10-hour shift signed in, while closing the tab signs out
+  and tabs don't share a login. Against XSS it is no weaker than memory here: a
+  script in the page can read either. A `401` on a signed-in request ends the
+  session; `ProtectedLayout` then goes to the login page and clears the query
+  cache, the one path for both logout and expiry.
 - **Config** (`src/shared/config.ts`): base URL and API key come from `import.meta.env.VITE_*`, read
   in one config file. `.env.example` lists every key.
 - **Theme** (`src/shared/theme/system.ts`): a copy of `docs/design/theme/theme.ts`.

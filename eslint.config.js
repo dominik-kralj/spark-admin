@@ -36,7 +36,7 @@ export default defineConfig([
     },
     {
         files: ['src/**/*.{ts,tsx}'],
-        ignores: ['src/api/**', 'src/mocks/**'],
+        ignores: ['src/api/**', 'src/mocks/**', 'src/test/**'],
         rules: {
             'no-restricted-imports': [
                 'error',

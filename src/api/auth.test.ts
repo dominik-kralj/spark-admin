@@ -1,5 +1,5 @@
 import { http, HttpResponse } from 'msw'
-import { afterEach, describe, expect, it } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { z } from 'zod'
 
 import { config } from '@/shared/config'
@@ -7,13 +7,8 @@ import { server } from '@/test/server'
 
 import { signIn } from './auth'
 import { request } from './client'
-import { setAccessToken } from './session'
 
 const base = `${config.apiBaseUrl}/api/v1/admin`
-
-afterEach(() => {
-    setAccessToken(null)
-})
 
 describe('signIn', () => {
     it('posts the credentials and maps the user to the domain', async () => {

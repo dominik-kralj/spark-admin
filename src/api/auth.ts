@@ -3,23 +3,11 @@ import { useRef, useState } from 'react'
 import { z } from 'zod'
 
 import { request } from './client'
-import { setAccessToken } from './session'
+import { startSession, type Session } from './session'
 
 export interface Credentials {
     username: string
     password: string
-}
-
-export interface AdminUser {
-    id: number
-    tenantId: number
-    username: string
-    firstName: string
-    lastName: string
-}
-
-export interface Session {
-    user: AdminUser
 }
 
 const loginResponseSchema = z.object({
@@ -39,9 +27,7 @@ export async function signIn(credentials: Credentials): Promise<Session> {
         body: credentials,
         schema: loginResponseSchema,
     })
-    setAccessToken(token)
-
-    return {
+    const session: Session = {
         user: {
             id: user.adminUserId,
             tenantId: user.tenantId,
@@ -50,6 +36,9 @@ export async function signIn(credentials: Credentials): Promise<Session> {
             lastName: user.surname,
         },
     }
+    startSession(token, session)
+
+    return session
 }
 
 export interface SignInFailure {
