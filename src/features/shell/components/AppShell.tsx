@@ -1,24 +1,53 @@
 import { Flex, Grid, SkipNavContent, SkipNavLink } from '@chakra-ui/react'
+import type { ReactNode } from 'react'
 import { Outlet } from 'react-router'
 
 import { hr } from '@/shared/i18n/hr'
 
+import { useShellLayout, type ShellLayout } from '../lib/useShellLayout'
+
+import { NavRail } from './NavRail'
+import { PhoneTopBar } from './PhoneTopBar'
 import { ShellHeader, type ShellHeaderProps } from './ShellHeader'
 import { Sidebar } from './Sidebar'
 
 type AppShellProps = ShellHeaderProps
 
+const columns: Record<ShellLayout, string> = {
+    phone: 'minmax(0, 1fr)',
+    tablet: '72px minmax(0, 1fr)',
+    desktop: '248px minmax(0, 1fr)',
+}
+
+const sideNav: Record<ShellLayout, ReactNode> = {
+    phone: null,
+    tablet: <NavRail />,
+    desktop: <Sidebar />,
+}
+
 export function AppShell({ userName, onSignOut }: AppShellProps) {
+    const layout = useShellLayout()
+
+    // main keeps its place in the tree at every width, so a resize never remounts the page.
     return (
-        <Grid templateColumns="248px minmax(0, 1fr)" minH="100dvh">
+        <Grid templateColumns={columns[layout]} minH="100dvh">
             <SkipNavLink>{hr.shell.skipToContent}</SkipNavLink>
 
-            <Sidebar />
+            {sideNav[layout]}
 
             <Flex direction="column" minW="0">
-                <ShellHeader userName={userName} onSignOut={onSignOut} />
+                {layout === 'phone' ? (
+                    <PhoneTopBar userName={userName} onSignOut={onSignOut} />
+                ) : (
+                    <ShellHeader userName={userName} onSignOut={onSignOut} />
+                )}
 
-                <SkipNavContent as="main" display="flex" flex="1" p="8">
+                <SkipNavContent
+                    as="main"
+                    display="flex"
+                    flex="1"
+                    p={{ base: '4', md: '6', lg: '8' }}
+                >
                     <Outlet />
                 </SkipNavContent>
             </Flex>

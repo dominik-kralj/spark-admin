@@ -5,12 +5,16 @@ import { afterAll, afterEach, beforeAll } from 'vitest'
 import { resetLoginRateLimit } from '@/mocks/auth'
 
 import { server } from './server'
+import { installMatchMedia, resetViewport } from './viewport'
 
 beforeAll(() => {
     server.listen({ onUnhandledFrame: 'error' })
+    // Absent in files that opt into the node environment.
+    if (typeof window !== 'undefined') installMatchMedia()
 })
 afterEach(() => {
     cleanup()
+    resetViewport()
     server.resetHandlers()
     resetLoginRateLimit()
     // Absent in files that opt into the node environment.
