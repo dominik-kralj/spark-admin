@@ -136,6 +136,43 @@ test.describe('tablet rail', () => {
     })
 })
 
+test.describe('skip link', () => {
+    for (const width of [375, 768, 1440]) {
+        test(`covers the whole top bar when focused at ${width} px`, async ({ page, isMobile }) => {
+            test.skip(isMobile !== width < 1024, 'touch widths run in the phone project')
+            await page.setViewportSize({ width, height: 900 })
+            await signIn(page)
+            const skipLink = page.getByRole('link', { name: hr.shell.skipToContent })
+            const topBar = page.getByRole('banner')
+
+            await topBar.waitFor()
+            await page.keyboard.press('Tab')
+            await expect(skipLink).toBeFocused()
+
+            expect(await skipLink.boundingBox()).toMatchObject({ x: 0, y: 0, width })
+            const cornerControl =
+                width < 768
+                    ? page.getByRole('button', { name: hr.shell.openMenu })
+                    : page.getByRole('link', { name: hr.shell.homeLink })
+            const cornerBox = await cornerControl.boundingBox()
+            const hidesCorner = await skipLink.evaluate((link, box) => {
+                if (!box) return false
+                const corners = [
+                    { x: box.x + 1, y: box.y + 1 },
+                    { x: box.x + box.width - 1, y: box.y + box.height - 1 },
+                ]
+
+                return corners.every(({ x, y }) => link.contains(document.elementFromPoint(x, y)))
+            }, cornerBox)
+            expect(hidesCorner).toBe(true)
+            await expect(skipLink).toHaveCSS('outline-style', 'solid')
+            await expect(skipLink).toHaveCSS('outline-width', '2px')
+            await expect(skipLink).toHaveCSS('outline-offset', '-4px')
+            await expectNoAxeViolations(page)
+        })
+    }
+})
+
 test.describe('desktop sidebar', () => {
     test.skip(({ isMobile }) => isMobile, 'the sidebar runs in the desktop project')
 
