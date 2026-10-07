@@ -27,8 +27,7 @@ export function ProtectedLayout() {
         })
     }, [navigate, currentUrl])
 
-    // On unmount, not after navigate(): until React unmounts the screens, their queries can
-    // refill the cache. The session check skips StrictMode's rehearsal unmount.
+    // On unmount, once the screens' queries are gone; signed in means StrictMode's rehearsal.
     useEffect(
         () => () => {
             if (getSessionUser() === null) queryClient.clear()
