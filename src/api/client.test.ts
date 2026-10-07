@@ -4,13 +4,13 @@ import { z } from 'zod'
 
 import { config } from '@/shared/config'
 import { server } from '@/test/server'
+import { testUser as user } from '@/test/session'
 
 import { request } from './client'
 import { ApiError, type ApiErrorKind } from './errors'
 import { getSession, onSessionEnd, startSession } from './session'
 
 const base = `${config.apiBaseUrl}/api/v1/admin`
-const user = { id: 1, tenantId: 1, username: 'ana', firstName: 'Ana', lastName: 'Kovač' }
 const zoneSchema = z.object({ zoneId: z.number(), name: z.string() })
 
 async function captureError(promise: Promise<unknown>): Promise<unknown> {
@@ -226,5 +226,32 @@ describe('request', () => {
 
         expect(listener).not.toHaveBeenCalled()
         unsubscribe()
+    })
+
+    it("leaves a newer session alone when an older user's request gets a 401", async () => {
+        let respond: () => void = () => undefined
+        const responseGate = new Promise<void>((resolve) => {
+            respond = resolve
+        })
+        let hasArrived = false
+        server.use(
+            http.get(`${base}/zones`, async () => {
+                hasArrived = true
+                await responseGate
+
+                return new HttpResponse(null, { status: 401 })
+            }),
+        )
+        startSession('jwt-old', { user })
+        const pending = captureError(request('/zones', { schema: z.array(zoneSchema) }))
+        await vi.waitFor(() => {
+            expect(hasArrived).toBe(true)
+        })
+
+        startSession('jwt-new', { user })
+        respond()
+        await pending
+
+        expect(getSession()).toEqual({ user })
     })
 })

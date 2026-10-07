@@ -4,8 +4,7 @@ import { ProtectedLayout } from '@/features/auth/ProtectedLayout'
 import { redirectIfSignedIn, requireSession } from '@/features/auth/sessionRedirects'
 import { paths } from '@/shared/paths'
 
-// A factory: React Router caches lazy results on the route objects, so a shared
-// array would leave every router after the first without its lazy components.
+// Fresh objects per router: React Router caches lazy results on the route objects.
 export function createRoutes(): RouteObject[] {
     return [
         {

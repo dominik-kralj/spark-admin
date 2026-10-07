@@ -7,7 +7,7 @@ import { apiUrl } from '@/mocks/url'
 import { hr } from '@/shared/i18n/hr'
 import { paths } from '@/shared/paths'
 import { expectNoAxeViolations } from '@/test/axe'
-import { renderRoute } from '@/test/render'
+import { renderRoute, type RenderedRoute } from '@/test/render'
 import { server } from '@/test/server'
 
 const loginUrl = apiUrl('/login')
@@ -25,7 +25,7 @@ function getForm() {
 }
 
 async function fillAndSubmit(
-    user: Awaited<ReturnType<typeof renderRoute>>['user'],
+    user: RenderedRoute['user'],
     { username, password }: { username: string; password: string },
 ) {
     const form = getForm()

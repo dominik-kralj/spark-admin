@@ -22,6 +22,8 @@ export function renderWithProviders(ui: ReactElement, options?: RenderOptions) {
     }
 }
 
+export type RenderedRoute = Awaited<ReturnType<typeof renderRoute>>
+
 /** Resolves once the first route, its loader and its lazy module have rendered. */
 export async function renderRoute(path: string) {
     const router = createMemoryRouter(createRoutes(), { initialEntries: [path] })

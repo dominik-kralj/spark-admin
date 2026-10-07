@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from 'vitest'
 
-import { endSession, getAccessToken, getSession, onSessionEnd, startSession } from './session'
+import { testUser as user } from '@/test/session'
 
-const user = { id: 1, tenantId: 1, username: 'ana', firstName: 'Ana', lastName: 'Kovač' }
+import { endSession, getAccessToken, getSession, onSessionEnd, startSession } from './session'
 
 describe('session', () => {
     it('is empty before sign-in', () => {

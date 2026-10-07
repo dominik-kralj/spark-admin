@@ -26,7 +26,6 @@ type SessionEndListener = (reason: SessionEndReason) => void
 const storageKey = 'spark-admin.session'
 const listeners = new Set<SessionEndListener>()
 
-// See "Session" in AGENTS.md for why sessionStorage.
 function readStoredSession(): z.infer<typeof storedSessionSchema> | null {
     const raw = sessionStorage.getItem(storageKey)
     if (raw === null) return null

@@ -7,16 +7,22 @@ import { apiUrl } from '@/mocks/url'
 import { hr } from '@/shared/i18n/hr'
 import { paths } from '@/shared/paths'
 import { expectNoAxeViolations } from '@/test/axe'
-import { renderRoute } from '@/test/render'
+import { renderRoute, type RenderedRoute } from '@/test/render'
 import { server } from '@/test/server'
 import { sendSignedInRequest, signInForTest } from '@/test/session'
 
 const protectedPath = '/nepostojeca-stranica?stranica=2'
 
-function currentUrl(router: Awaited<ReturnType<typeof renderRoute>>['router']): string {
+function currentUrl(router: RenderedRoute['router']): string {
     const { pathname, search } = router.state.location
 
     return pathname + search
+}
+
+async function signInWithMockAccount(user: RenderedRoute['user']) {
+    await user.type(screen.getByLabelText(hr.login.username), mockAdminCredentials.username)
+    await user.type(screen.getByLabelText(hr.login.password), mockAdminCredentials.password)
+    await user.click(screen.getByRole('button', { name: hr.login.submit }))
 }
 
 describe('protected routes', () => {
@@ -32,9 +38,7 @@ describe('protected routes', () => {
     it('returns to the requested URL after sign-in', async () => {
         const { user, router } = await renderRoute(protectedPath)
 
-        await user.type(screen.getByLabelText(hr.login.username), mockAdminCredentials.username)
-        await user.type(screen.getByLabelText(hr.login.password), mockAdminCredentials.password)
-        await user.click(screen.getByRole('button', { name: hr.login.submit }))
+        await signInWithMockAccount(user)
 
         await waitFor(() => {
             expect(currentUrl(router)).toBe(protectedPath)
@@ -44,9 +48,7 @@ describe('protected routes', () => {
     it('ignores a return URL that points off the site', async () => {
         const { user, router } = await renderRoute(`${paths.login}?next=//evil.example`)
 
-        await user.type(screen.getByLabelText(hr.login.username), mockAdminCredentials.username)
-        await user.type(screen.getByLabelText(hr.login.password), mockAdminCredentials.password)
-        await user.click(screen.getByRole('button', { name: hr.login.submit }))
+        await signInWithMockAccount(user)
 
         await waitFor(() => {
             expect(currentUrl(router)).toBe(paths.home)

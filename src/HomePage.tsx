@@ -10,7 +10,6 @@ export function HomePage() {
                 {hr.app.name}
             </Heading>
 
-            {/* Moves into the header with the app shell (#6). */}
             <Button variant="outline" mt="6" onClick={signOut}>
                 {hr.shell.signOut}
             </Button>

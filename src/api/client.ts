@@ -41,8 +41,10 @@ export async function request<TSchema extends z.ZodType>(
     }
 
     if (!response.ok) {
-        // Without a token, a 401 is a wrong login, not an expired session.
-        if (response.status === 401 && token) endSession('expired')
+        // Only the session that sent the token expired; no token means a wrong login.
+        if (response.status === 401 && token && token === getAccessToken()) {
+            endSession('expired')
+        }
         // The kind comes from the status alone, so a non-JSON body is fine to ignore.
         throw new ApiError(kindForStatus(response.status), { status: response.status })
     }
