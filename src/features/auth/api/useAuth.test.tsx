@@ -1,12 +1,11 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { act, renderHook, waitFor } from '@testing-library/react'
+import { act, waitFor } from '@testing-library/react'
 import { http, HttpResponse } from 'msw'
-import type { ReactNode } from 'react'
 import { describe, expect, it, vi } from 'vitest'
 
 import { mockAdminCredentials } from '@/mocks/adminUsers'
 import { apiUrl } from '@/mocks/url'
 import { startSession } from '@/shared/api'
+import { renderHookWithQueryClient } from '@/test/render'
 import { server } from '@/test/server'
 import { sendSignedInRequest } from '@/test/session'
 
@@ -22,12 +21,7 @@ const session = {
 }
 
 function renderUseAuth(onSignIn: (session: Session) => void = vi.fn()) {
-    const queryClient = new QueryClient({ defaultOptions: { mutations: { retry: false } } })
-    const wrapper = ({ children }: { children: ReactNode }) => (
-        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    )
-
-    return renderHook(() => useAuth({ onSignIn }), { wrapper })
+    return renderHookWithQueryClient(() => useAuth({ onSignIn }))
 }
 
 function authorizationOfNextRequest(): Promise<string | null> {

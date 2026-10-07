@@ -154,6 +154,25 @@ describe('request', () => {
         expect(error).toMatchObject({ kind: 'unauthorized', status: 401 })
     })
 
+    it('keeps a JSON error body for the feature to read', async () => {
+        const problem = { status: 409, code: 'duplicate', field: 'zoneCode' }
+        server.use(http.post(`${base}/zones`, () => HttpResponse.json(problem, { status: 409 })))
+
+        const error = await captureError(
+            request('/zones', { method: 'POST', body: {}, schema: zoneSchema }),
+        )
+
+        expect(error).toMatchObject({ kind: 'conflict', body: problem })
+    })
+
+    it('leaves the body undefined when an error body is not JSON', async () => {
+        server.use(http.get(`${base}/zones`, () => HttpResponse.text('boom', { status: 500 })))
+
+        const error = await captureError(request('/zones', { schema: z.array(zoneSchema) }))
+
+        expect(error).toMatchObject({ kind: 'server', body: undefined })
+    })
+
     it('gives invalidResponse when the body does not match the schema', async () => {
         server.use(http.get(`${base}/zones/1`, () => HttpResponse.json({ zoneId: '1' })))
 
