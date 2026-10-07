@@ -84,3 +84,21 @@ the `X-API-KEY` like every call.
 | Token storage | `sessionStorage`, with the mapped user; see "Session" in `AGENTS.md`                  | #5                                           |
 | Expiry        | not read; a `401` on any signed-in request ends the session (JWT lasts 10 h)          | feature docs: Inspector JWT; #5              |
 | Logout        | local only: no endpoint is called, the token is dropped                               | assumed; the spec has no logout call         |
+
+### City name (`src/features/shell/api/useCityName.ts`)
+
+The shell header shows the city's name. Postavke grada (#32) will own the full
+tenant shape; until then the shell reads only `tenantName` and ignores the
+rest. The proposed full shape is in `api-contract.md` (ADM-8).
+
+`GET /tenant`, `200`:
+
+```json
+{ "tenantName": "Grad Samobor", "…": "other CITY_TENANTS fields" }
+```
+
+| Item    | Assumption                                                                           | Source                          |
+| ------- | ------------------------------------------------------------------------------------ | ------------------------------- |
+| Path    | `/tenant`, no id: the city comes from the JWT's `TenantId` claim                     | `api-contract.md` [proposed]    |
+| Field   | `tenantName`, the display name shown as-is ("Grad Samobor")                          | spec: `CITY_TENANTS.TenantName` |
+| Caching | read once per session; a failed call leaves the name out and the shell keeps working | assumed                         |

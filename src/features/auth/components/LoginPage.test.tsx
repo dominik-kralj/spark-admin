@@ -51,6 +51,14 @@ describe('LoginPage', () => {
         expect(getForm().submit).toHaveFocus()
     })
 
+    it('names the browser tab after the page', async () => {
+        await renderRoute(paths.login)
+
+        await waitFor(() => {
+            expect(document.title).toBe('Prijava – SPARK Admin')
+        })
+    })
+
     it('shows a required message on each empty field and sends nothing', async () => {
         let requests = 0
         server.use(

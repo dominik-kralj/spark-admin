@@ -28,7 +28,7 @@ export function getSession(): Session | null {
     return session
 }
 
-function signOut(): void {
+export function signOut(): void {
     endSession('signedOut')
 }
 

@@ -16,6 +16,9 @@ describe('NotFoundPage', () => {
             screen.getByRole('heading', { level: 1, name: hr.notFound.title }),
         ).toBeInTheDocument()
         expect(screen.getByText(hr.notFound.description)).toBeInTheDocument()
+        await waitFor(() => {
+            expect(document.title).toBe('Stranica nije pronađena – SPARK Admin')
+        })
 
         await user.click(screen.getByRole('link', { name: hr.notFound.home }))
 

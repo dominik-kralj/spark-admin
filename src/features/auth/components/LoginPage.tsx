@@ -15,7 +15,7 @@ import { emptyLoginForm, loginFormSchema } from '../validators/loginForm'
 
 import { LoginHeading } from './LoginHeading'
 
-const controlSize = { base: 'xl', md: 'lg' } as const
+const controlSize = { base: 'xl', md: 'lg', lg: 'md' } as const
 
 export function LoginPage() {
     const navigate = useNavigate()
@@ -60,6 +60,8 @@ export function LoginPage() {
                     aria-describedby={failure ? errorId : undefined}
                     onSubmit={(event) => void handleSubmit(signIn)(event)}
                 >
+                    <title>{hr.app.documentTitle(hr.login.title)}</title>
+
                     <LoginHeading id={headingId} />
 
                     {!failure && isSessionExpiredState(location.state) && (

@@ -8,6 +8,8 @@ import { paths } from '@/shared/paths'
 export function NotFoundPage() {
     return (
         <Flex as="main" minH="100dvh" align="center" justify="center" p="6" bg="bg">
+            <title>{hr.app.documentTitle(hr.notFound.title)}</title>
+
             <Stack align="center" gap="2" maxW="420px" textAlign="center">
                 <SearchX size="28" aria-hidden="true" />
                 <Heading as="h1" mt="2" fontSize="lg" color="spark.heading">
