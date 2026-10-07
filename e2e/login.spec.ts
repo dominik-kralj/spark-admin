@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
 
 import { mockAdminCredentials } from '../src/mocks/adminUsers'
 import { hr } from '../src/shared/i18n/hr'
@@ -34,17 +34,28 @@ test('moves focus to the error after a wrong password and keeps the values', asy
     await expectNoAxeViolations(page)
 })
 
-test('controls meet the touch target size for the width', async ({ page, isMobile }) => {
-    const minHeight = isMobile ? 48 : 40
-    const controls = [
+function loginControls(page: Page) {
+    return [
         page.getByLabel(hr.login.username),
         page.getByLabel(hr.login.password, { exact: true }),
         page.getByRole('button', { name: hr.login.showPassword }),
         page.getByRole('button', { name: hr.login.submit }),
     ]
+}
 
-    for (const control of controls) {
-        const box = await control.boundingBox()
-        expect(box?.height).toBeGreaterThanOrEqual(minHeight)
+test('controls are 48 px on a touch screen and 40 px with a mouse', async ({ page, isMobile }) => {
+    const height = isMobile ? 48 : 40
+
+    for (const control of loginControls(page)) {
+        expect((await control.boundingBox())?.height).toBeCloseTo(height, 0)
+    }
+})
+
+test('a mouse keeps 40 px controls in a narrow window', async ({ page, isMobile }) => {
+    test.skip(isMobile, 'mouse sizing runs in the desktop project')
+    await page.setViewportSize({ width: 800, height: 900 })
+
+    for (const control of loginControls(page)) {
+        expect((await control.boundingBox())?.height).toBeCloseTo(40, 0)
     }
 })

@@ -15,8 +15,6 @@ import { emptyLoginForm, loginFormSchema } from '../validators/loginForm'
 
 import { LoginHeading } from './LoginHeading'
 
-const controlSize = { base: 'xl', md: 'lg', lg: 'md' } as const
-
 export function LoginPage() {
     const navigate = useNavigate()
     const location = useLocation()
@@ -101,7 +99,6 @@ export function LoginPage() {
                             {...register('username')}
                             aria-describedby={errors.username ? usernameErrorId : undefined}
                             autoComplete="username"
-                            size={controlSize}
                         />
                         <Field.ErrorText fontSize="caption">
                             <CircleAlert size="14" />
@@ -120,7 +117,6 @@ export function LoginPage() {
                                 aria-describedby={errors.password ? passwordErrorId : undefined}
                                 type={isPasswordVisible ? 'text' : 'password'}
                                 autoComplete="current-password"
-                                size={controlSize}
                             />
                             <IconButton
                                 aria-label={hr.login.showPassword}
@@ -129,7 +125,6 @@ export function LoginPage() {
                                     setIsPasswordVisible((isVisible) => !isVisible)
                                 }}
                                 variant="outline"
-                                size={controlSize}
                             >
                                 {isPasswordVisible ? <EyeOff /> : <Eye />}
                             </IconButton>
@@ -145,7 +140,6 @@ export function LoginPage() {
                         loading={isPending}
                         loadingText={hr.login.submit}
                         colorPalette="blue"
-                        size={controlSize}
                         mt="1"
                     >
                         {hr.login.submit}
