@@ -97,6 +97,24 @@ export const hr = {
             notSaved: 'Zona nije spremljena. Ispravite označena polja.',
             saved: (code: string) => `Zona ${code} je spremljena`,
         },
+        delete: {
+            button: 'Obriši',
+            deleteZone: (code: string) => `Obriši zonu ${code}`,
+            formButton: 'Obriši zonu',
+            title: (code: string) => `Obrisati zonu ${code}?`,
+            description: (code: string, name: string) =>
+                `Zona ${code} (${name}) trajno će se obrisati. Ovu radnju nije moguće poništiti.`,
+            confirm: 'Obriši zonu',
+            deleted: (code: string) => `Zona ${code} je obrisana`,
+            failed: 'Zona nije obrisana.',
+            errors: {
+                network:
+                    'Poslužitelj nije odgovorio. Provjerite internetsku vezu i pokušajte ponovno.',
+                forbidden: 'Nemate ovlasti za brisanje zona.',
+                notFound: 'Zona više ne postoji. Možda ju je netko u međuvremenu obrisao.',
+                server: 'Došlo je do pogreške na poslužitelju. Pokušajte ponovno za nekoliko minuta.',
+            },
+        },
         loading: 'Učitavanje zona…',
         empty: {
             title: 'Još nema zona',

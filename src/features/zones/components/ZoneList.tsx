@@ -24,9 +24,10 @@ const skeletonColumnWidths = [1, 2, 1, 1, 1, 1, 1, 1]
 interface ZoneListProps {
     onAdd: () => void
     onEdit: (zone: Zone) => void
+    onDelete: (zone: Zone) => void
 }
 
-export function ZoneList({ onAdd, onEdit }: ZoneListProps) {
+export function ZoneList({ onAdd, onEdit, onDelete }: ZoneListProps) {
     const t = useStrings()
     const zones = useZones()
     const { sort, sortBy } = useSortSearchParams(sortKeys, defaultSort)
@@ -73,8 +74,9 @@ export function ZoneList({ onAdd, onEdit }: ZoneListProps) {
                     sortBy('code')
                 }}
                 onEdit={onEdit}
+                onDelete={onDelete}
             />
-            <ZoneCards zones={sortedZones} onEdit={onEdit} />
+            <ZoneCards zones={sortedZones} onEdit={onEdit} onDelete={onDelete} />
         </>
     )
 }

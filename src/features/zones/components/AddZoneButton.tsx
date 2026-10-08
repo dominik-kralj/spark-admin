@@ -1,13 +1,19 @@
 import { Button } from '@chakra-ui/react'
+import type { Ref } from 'react'
 import { Plus } from 'lucide-react'
 
 import { useStrings } from '@/shared/i18n/useStrings'
 
-export function AddZoneButton({ onClick }: { onClick: () => void }) {
+interface AddZoneButtonProps {
+    onClick: () => void
+    ref?: Ref<HTMLButtonElement>
+}
+
+export function AddZoneButton({ onClick, ref }: AddZoneButtonProps) {
     const t = useStrings()
 
     return (
-        <Button colorPalette="blue" onClick={onClick}>
+        <Button ref={ref} colorPalette="blue" onClick={onClick}>
             <Plus aria-hidden="true" />
             {t.zones.add}
         </Button>

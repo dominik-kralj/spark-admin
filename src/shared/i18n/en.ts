@@ -90,6 +90,25 @@ export const en: Dictionary = {
             notSaved: 'The zone was not saved. Fix the marked fields.',
             saved: (code: string) => `Zone ${code} saved`,
         },
+        delete: {
+            button: 'Delete',
+            deleteZone: (code: string) => `Delete zone ${code}`,
+            formButton: 'Delete zone',
+            title: (code: string) => `Delete zone ${code}?`,
+            description: (code: string, name: string) =>
+                `Zone ${code} (${name}) will be deleted permanently. This cannot be undone.`,
+            confirm: 'Delete zone',
+            deleted: (code: string) => `Zone ${code} deleted`,
+            failed: 'The zone was not deleted.',
+            errors: {
+                network:
+                    'The server did not respond. Check your internet connection and try again.',
+                forbidden: 'You do not have permission to delete zones.',
+                notFound:
+                    'This zone no longer exists. Someone may have deleted it in the meantime.',
+                server: 'Something went wrong on the server. Try again in a few minutes.',
+            },
+        },
         loading: 'Loading zones…',
         empty: {
             title: 'No zones yet',

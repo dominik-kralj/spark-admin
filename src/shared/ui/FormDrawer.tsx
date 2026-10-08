@@ -15,8 +15,12 @@ interface FormDrawerProps {
     isDirty: boolean
     isSaving: boolean
     isSaveDisabled?: boolean
+    /** Sits apart from Spremi: on the left on desktop, last on a phone. */
+    destructiveAction?: ReactNode
     onClose: () => void
     onSubmit: SubmitEventHandler<HTMLFormElement>
+    /** Where focus goes on close when the opening button no longer exists. */
+    finalFocusEl?: () => HTMLElement | null
     children: ReactNode
 }
 
@@ -26,8 +30,10 @@ export function FormDrawer({
     isDirty,
     isSaving,
     isSaveDisabled = false,
+    destructiveAction,
     onClose,
     onSubmit,
+    finalFocusEl,
     children,
 }: FormDrawerProps) {
     const t = useStrings()
@@ -46,6 +52,7 @@ export function FormDrawer({
                     if (!open) requestClose()
                 }}
                 initialFocusEl={() => titleRef.current}
+                finalFocusEl={finalFocusEl}
                 lazyMount
                 unmountOnExit
             >
@@ -90,22 +97,29 @@ export function FormDrawer({
                                     >
                                         <Stack
                                             direction={{ base: 'column-reverse', md: 'row' }}
-                                            justify="flex-end"
+                                            justify="space-between"
                                             gap={{ base: '2', md: '3' }}
                                             w="full"
                                         >
-                                            <Button variant="outline" onClick={requestClose}>
-                                                {t.forms.cancel}
-                                            </Button>
-                                            <Button
-                                                type="submit"
-                                                colorPalette="blue"
-                                                loading={isSaving}
-                                                disabled={isSaveDisabled}
-                                                loadingText={t.forms.save}
+                                            {destructiveAction}
+                                            <Stack
+                                                direction={{ base: 'column-reverse', md: 'row' }}
+                                                gap={{ base: '2', md: '3' }}
+                                                ms={{ md: 'auto' }}
                                             >
-                                                {t.forms.save}
-                                            </Button>
+                                                <Button variant="outline" onClick={requestClose}>
+                                                    {t.forms.cancel}
+                                                </Button>
+                                                <Button
+                                                    type="submit"
+                                                    colorPalette="blue"
+                                                    loading={isSaving}
+                                                    disabled={isSaveDisabled}
+                                                    loadingText={t.forms.save}
+                                                >
+                                                    {t.forms.save}
+                                                </Button>
+                                            </Stack>
                                         </Stack>
                                     </Drawer.Footer>
                                 </form>

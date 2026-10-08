@@ -1,5 +1,6 @@
-import { Input, SimpleGrid, Text } from '@chakra-ui/react'
+import { Button, Input, SimpleGrid, Text } from '@chakra-ui/react'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Trash2 } from 'lucide-react'
 import type { HTMLAttributes } from 'react'
 import { useForm } from 'react-hook-form'
 
@@ -37,9 +38,17 @@ interface ZoneFormDrawerProps {
     isOpen: boolean
     zone: Zone | null
     onClose: () => void
+    onDelete: (zone: Zone) => void
+    finalFocusEl: () => HTMLElement | null
 }
 
-export function ZoneFormDrawer({ isOpen, zone, onClose }: ZoneFormDrawerProps) {
+export function ZoneFormDrawer({
+    isOpen,
+    zone,
+    onClose,
+    onDelete,
+    finalFocusEl,
+}: ZoneFormDrawerProps) {
     const t = useStrings()
     const createZone = useCreateZone()
     const updateZone = useUpdateZone()
@@ -81,7 +90,22 @@ export function ZoneFormDrawer({ isOpen, zone, onClose }: ZoneFormDrawerProps) {
             isDirty={isDirty}
             isSaving={isSubmitting}
             isSaveDisabled={!isAdding && !isDirty}
+            destructiveAction={
+                !isAdding && (
+                    <Button
+                        variant="ghost"
+                        color="fg.error"
+                        onClick={() => {
+                            onDelete(zone)
+                        }}
+                    >
+                        <Trash2 aria-hidden="true" />
+                        {t.zones.delete.formButton}
+                    </Button>
+                )
+            }
             onClose={onClose}
+            finalFocusEl={finalFocusEl}
             onSubmit={(event) => void handleSubmit(save)(event)}
         >
             <Text color="fg.muted">{t.zones.form.intro}</Text>
