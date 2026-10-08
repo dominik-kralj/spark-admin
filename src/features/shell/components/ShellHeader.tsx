@@ -1,7 +1,7 @@
 import { Button, Flex, HStack } from '@chakra-ui/react'
 import { LogOut } from 'lucide-react'
 
-import { hr } from '@/shared/i18n/hr'
+import { useStrings } from '@/shared/i18n/useStrings'
 
 import { CityName } from './CityName'
 import { SignedInUser } from './SignedInUser'
@@ -12,6 +12,8 @@ export interface ShellUserProps {
 }
 
 export function ShellHeader({ userName, onSignOut }: ShellUserProps) {
+    const t = useStrings()
+
     return (
         <Flex
             as="header"
@@ -33,7 +35,7 @@ export function ShellHeader({ userName, onSignOut }: ShellUserProps) {
 
                 <Button variant="outline" size="sm" onClick={onSignOut}>
                     <LogOut aria-hidden="true" />
-                    {hr.shell.signOut}
+                    {t.shell.signOut}
                 </Button>
             </HStack>
         </Flex>

@@ -161,7 +161,8 @@ renders the same domain fields as the table.
 ## Strings
 
 Every user-visible string, aria-labels included, goes in `shared/i18n/hr.ts`
-in the same change that uses it (handoff hard requirement). Dates, times and
+and `shared/i18n/en.ts` in the same change that uses it (handoff hard
+requirement), and components read it through `useStrings()`. Dates, times and
 amounts go through `shared/lib/format.ts`.
 
 ## Styling
@@ -203,4 +204,4 @@ Run through this before the gate:
 - Is every comment one the code can't do without?
 - Any avoidable nesting, duplicated state, `useEffect`, variable, comment,
   cast or memo hook?
-- Is every user-visible string in `hr.ts`?
+- Is every user-visible string in `hr.ts` and `en.ts`, read through `useStrings()`?

@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 
 import { apiUrl } from '@/mocks/url'
 import { hr } from '@/shared/i18n/hr'
+import { languagePickerLabel } from '@/shared/i18n/language'
 import { paths } from '@/shared/paths'
 import { expectNoAxeViolations } from '@/test/axe'
 import { renderRoute } from '@/test/render'
@@ -35,7 +36,7 @@ describe('app shell', () => {
         ).toBeInTheDocument()
     })
 
-    it('starts the focus order with a skip link to main, then logo, nav and Odjava', async () => {
+    it('starts the focus order with a skip link to main, then logo, nav, language and Odjava', async () => {
         const { user, container } = await renderRoute(paths.tickets)
         await screen.findByText('Grad Samobor')
 
@@ -51,6 +52,10 @@ describe('app shell', () => {
             await user.tab()
             expect(screen.getByRole('link', { name: label })).toHaveFocus()
         }
+        await user.tab()
+        expect(
+            screen.getByRole('button', { name: `${languagePickerLabel}: Hrvatski` }),
+        ).toHaveFocus()
         await user.tab()
         expect(screen.getByRole('button', { name: hr.shell.signOut })).toHaveFocus()
 

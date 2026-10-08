@@ -1,10 +1,9 @@
 import { z } from 'zod'
 
-import { hr } from '@/shared/i18n/hr'
-
+// One rule per field, so the page shows each field's message from the active dictionary.
 export const loginFormSchema = z.object({
-    username: z.string().trim().min(1, hr.login.usernameRequired),
-    password: z.string().min(1, hr.login.passwordRequired),
+    username: z.string().trim().min(1),
+    password: z.string().min(1),
 })
 
 export type LoginFormValues = z.input<typeof loginFormSchema>

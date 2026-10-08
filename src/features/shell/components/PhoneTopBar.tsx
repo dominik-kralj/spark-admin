@@ -1,7 +1,8 @@
 import { Button, Flex, IconButton, Stack } from '@chakra-ui/react'
 import { LogOut, Menu } from 'lucide-react'
 
-import { hr } from '@/shared/i18n/hr'
+import { useStrings } from '@/shared/i18n/useStrings'
+import { LanguageMenu } from '@/shared/ui/LanguageMenu'
 
 import { CityName } from './CityName'
 import { MenuDrawer } from './MenuDrawer'
@@ -9,6 +10,8 @@ import type { ShellUserProps } from './ShellHeader'
 import { SignedInUser } from './SignedInUser'
 
 export function PhoneTopBar({ userName, onSignOut }: ShellUserProps) {
+    const t = useStrings()
+
     return (
         <Flex
             as="header"
@@ -25,7 +28,7 @@ export function PhoneTopBar({ userName, onSignOut }: ShellUserProps) {
                 width="19rem"
                 hasCloseButton
                 trigger={
-                    <IconButton aria-label={hr.shell.openMenu} variant="ghost" size="lg">
+                    <IconButton aria-label={t.shell.openMenu} variant="ghost" size="lg">
                         <Menu />
                     </IconButton>
                 }
@@ -35,9 +38,10 @@ export function PhoneTopBar({ userName, onSignOut }: ShellUserProps) {
                             <CityName />
                             <SignedInUser name={userName} />
                         </Stack>
+                        <LanguageMenu variant="row" portalled={false} />
                         <Button variant="outline" size="xl" onClick={onSignOut}>
                             <LogOut aria-hidden="true" />
-                            {hr.shell.signOut}
+                            {t.shell.signOut}
                         </Button>
                     </Stack>
                 }

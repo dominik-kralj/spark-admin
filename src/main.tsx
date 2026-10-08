@@ -10,6 +10,7 @@ import { createRoot } from 'react-dom/client'
 
 import { App } from '@/App'
 import { config } from '@/shared/config'
+import { getLanguage } from '@/shared/i18n/language'
 import { AppProviders } from '@/shared/providers'
 
 async function enableMockApi() {
@@ -19,6 +20,9 @@ async function enableMockApi() {
 
     await worker.start({ onUnhandledFrame: 'bypass' })
 }
+
+// Before the first paint, so a reload in English never shows lang="hr" from index.html.
+document.documentElement.lang = getLanguage()
 
 const root = document.getElementById('root')
 

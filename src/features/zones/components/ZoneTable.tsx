@@ -1,6 +1,6 @@
 import { Box, Table, Text } from '@chakra-ui/react'
 
-import { hr } from '@/shared/i18n/hr'
+import { useStrings } from '@/shared/i18n/useStrings'
 import { formatAmount, formatMinutes } from '@/shared/lib/format'
 import type { SortDirection } from '@/shared/lib/useSortSearchParams'
 
@@ -14,13 +14,14 @@ interface ZoneTableProps {
     onSortByCode: () => void
 }
 
-const { columns } = hr.zones
-
 export function ZoneTable({ zones, codeSortDirection, onSortByCode }: ZoneTableProps) {
+    const t = useStrings()
+    const { columns } = t.zones
+
     return (
         <Box hideBelow="md" layerStyle="panel" overflow="hidden">
             <Table.ScrollArea>
-                <Table.Root aria-label={hr.zones.listLabel}>
+                <Table.Root aria-label={t.zones.listLabel}>
                     <Table.Header>
                         <Table.Row>
                             <SortableColumnHeader
@@ -68,7 +69,7 @@ export function ZoneTable({ zones, codeSortDirection, onSortByCode }: ZoneTableP
             </Table.ScrollArea>
 
             <Text px="4" py="3" borderTopWidth="1px" textStyle="sm" color="fg.muted">
-                {hr.zones.total(zones.length)}
+                {t.zones.total(zones.length)}
             </Text>
         </Box>
     )

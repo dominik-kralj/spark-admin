@@ -1,13 +1,12 @@
 import { Box, Grid, Stack, Text } from '@chakra-ui/react'
 
-import { hr } from '@/shared/i18n/hr'
+import { useStrings } from '@/shared/i18n/useStrings'
+import type { Dictionary } from '@/shared/i18n/dictionary'
 import { formatAmount, formatMinutes } from '@/shared/lib/format'
 
 import type { Zone } from '../validators/zone'
 
-const { columns } = hr.zones
-
-function cardFields(zone: Zone) {
+function cardFields(zone: Zone, columns: Dictionary['zones']['columns']) {
     return [
         { label: columns.price, value: formatAmount(zone.price) },
         { label: columns.dailyTicketPrice, value: formatAmount(zone.dailyTicketPrice) },
@@ -16,8 +15,10 @@ function cardFields(zone: Zone) {
 }
 
 export function ZoneCards({ zones }: { zones: Zone[] }) {
+    const t = useStrings()
+
     return (
-        <Stack as="ul" hideFrom="md" aria-label={hr.zones.listLabel} gap="2" listStyleType="none">
+        <Stack as="ul" hideFrom="md" aria-label={t.zones.listLabel} gap="2" listStyleType="none">
             {zones.map((zone) => (
                 <Stack as="li" key={zone.id} layerStyle="panel" gap="3" p="4">
                     <Box>
@@ -35,7 +36,7 @@ export function ZoneCards({ zones }: { zones: Zone[] }) {
                     </Box>
 
                     <Grid as="dl" templateColumns="repeat(3, minmax(0, 1fr))" gap="3">
-                        {cardFields(zone).map(({ label, value }) => (
+                        {cardFields(zone, t.zones.columns).map(({ label, value }) => (
                             <Box key={label}>
                                 <Text as="dt" fontSize="caption" color="fg.muted">
                                     {label}

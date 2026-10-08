@@ -1,7 +1,7 @@
 import { Flex, Heading } from '@chakra-ui/react'
 import type { ReactNode } from 'react'
 
-import { hr } from '@/shared/i18n/hr'
+import { useStrings } from '@/shared/i18n/useStrings'
 
 interface PageHeaderProps {
     title: string
@@ -9,9 +9,11 @@ interface PageHeaderProps {
 }
 
 export function PageHeader({ title, action }: PageHeaderProps) {
+    const t = useStrings()
+
     return (
         <Flex wrap="wrap" align="center" justify="space-between" columnGap="4" rowGap="3">
-            <title>{hr.app.documentTitle(title)}</title>
+            <title>{t.app.documentTitle(title)}</title>
 
             <Heading
                 as="h1"

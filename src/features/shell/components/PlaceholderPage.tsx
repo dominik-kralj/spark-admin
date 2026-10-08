@@ -1,12 +1,16 @@
 import { Center, Stack } from '@chakra-ui/react'
 
-import { hr } from '@/shared/i18n/hr'
+import { useStrings } from '@/shared/i18n/useStrings'
 import { PageHeader } from '@/shared/ui/PageHeader'
 
-export function PlaceholderPage({ title }: { title: string }) {
+import type { Section } from '../lib/sections'
+
+export function PlaceholderPage({ labelKey }: { labelKey: Section['labelKey'] }) {
+    const t = useStrings()
+
     return (
         <Stack gap="4" flex="1">
-            <PageHeader title={title} />
+            <PageHeader title={t.nav[labelKey]} />
 
             <Center
                 flex="1"
@@ -17,7 +21,7 @@ export function PlaceholderPage({ title }: { title: string }) {
                 borderRadius="l3"
                 color="fg.muted"
             >
-                {hr.shell.placeholder}
+                {t.shell.placeholder}
             </Center>
         </Stack>
     )

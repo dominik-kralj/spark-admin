@@ -1,7 +1,7 @@
 import { Box } from '@chakra-ui/react'
 import { MapPin } from 'lucide-react'
 
-import { hr } from '@/shared/i18n/hr'
+import { useStrings } from '@/shared/i18n/useStrings'
 import { useSortSearchParams, type Sort } from '@/shared/lib/useSortSearchParams'
 import { EmptyState } from '@/shared/ui/EmptyState'
 import { ErrorState } from '@/shared/ui/ErrorState'
@@ -21,17 +21,18 @@ const defaultSort: Sort<(typeof sortKeys)[number]> = { key: 'code', direction: '
 const skeletonColumnWidths = [1, 2, 1, 1, 1, 1, 1]
 
 export function ZoneList() {
+    const t = useStrings()
     const zones = useZones()
     const { sort, sortBy } = useSortSearchParams(sortKeys, defaultSort)
 
     if (zones.isPending) {
-        return <LoadingState label={hr.zones.loading} columnWidths={skeletonColumnWidths} />
+        return <LoadingState label={t.zones.loading} columnWidths={skeletonColumnWidths} />
     }
 
     if (zones.isError) {
         return (
             <ErrorState
-                title={hr.zones.errorTitle}
+                title={t.zones.errorTitle}
                 error={zones.error}
                 onRetry={() => void zones.refetch()}
                 isRetrying={zones.isFetching}
@@ -43,8 +44,8 @@ export function ZoneList() {
         return (
             <EmptyState
                 icon={<MapPin />}
-                title={hr.zones.empty.title}
-                description={hr.zones.empty.description}
+                title={t.zones.empty.title}
+                description={t.zones.empty.description}
                 // The phone design keeps only the header's add button.
                 action={
                     <Box hideBelow="md">

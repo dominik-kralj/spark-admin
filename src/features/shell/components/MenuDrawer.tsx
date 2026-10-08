@@ -2,7 +2,7 @@ import { Box, Drawer, HStack, IconButton, Portal } from '@chakra-ui/react'
 import { X } from 'lucide-react'
 import { useState, type ReactElement, type ReactNode } from 'react'
 
-import { hr } from '@/shared/i18n/hr'
+import { useStrings } from '@/shared/i18n/useStrings'
 
 import { Logo } from './Logo'
 import { NavItems } from './NavItems'
@@ -16,6 +16,7 @@ interface MenuDrawerProps {
 }
 
 export function MenuDrawer({ trigger, width, hasCloseButton = false, footer }: MenuDrawerProps) {
+    const t = useStrings()
     const [isOpen, setIsOpen] = useState(false)
 
     return (
@@ -31,7 +32,7 @@ export function MenuDrawer({ trigger, width, hasCloseButton = false, footer }: M
             <Portal>
                 <Drawer.Backdrop bg="spark.scrim" />
                 <Drawer.Positioner>
-                    <Drawer.Content aria-label={hr.shell.menu} w={width} maxW="calc(100vw - 16px)">
+                    <Drawer.Content aria-label={t.shell.menu} w={width} maxW="calc(100vw - 16px)">
                         <HStack
                             justify="space-between"
                             minH="14"
@@ -45,7 +46,7 @@ export function MenuDrawer({ trigger, width, hasCloseButton = false, footer }: M
                             {hasCloseButton && (
                                 <Drawer.CloseTrigger asChild position="static">
                                     <IconButton
-                                        aria-label={hr.shell.closeMenu}
+                                        aria-label={t.shell.closeMenu}
                                         variant="ghost"
                                         size="lg"
                                     >
@@ -55,7 +56,7 @@ export function MenuDrawer({ trigger, width, hasCloseButton = false, footer }: M
                             )}
                         </HStack>
 
-                        <Box as="nav" aria-label={hr.shell.mainNav} flex="1" overflowY="auto" p="2">
+                        <Box as="nav" aria-label={t.shell.mainNav} flex="1" overflowY="auto" p="2">
                             <NavItems
                                 variant="drawer"
                                 onNavigate={() => {

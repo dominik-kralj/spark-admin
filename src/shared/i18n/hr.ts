@@ -5,8 +5,8 @@ const appName = 'SPARK Admin'
 
 /**
  * Every user-visible string in the app, including aria-labels, validation
- * messages and toasts. Components import from here; they hold no literals.
- * Screens add their own section as they are built.
+ * messages and toasts: the default language, and the shape en.ts must match.
+ * Components read it through useStrings(); screens add their section as they are built.
  */
 export const hr = {
     app: {
@@ -86,10 +86,6 @@ export const hr = {
                 'Nemate ovlasti za pregled ovih podataka. Ako mislite da biste ih trebali vidjeti, javite se administratoru sustava.',
             server: 'Došlo je do pogreške na poslužitelju. Pokušajte ponovno za nekoliko minuta. Ako se pogreška ponavlja, javite se administratoru sustava.',
         },
-    },
-    format: {
-        currency: 'EUR',
-        minutes: 'min',
     },
     notFound: {
         title: 'Stranica nije pronađena',

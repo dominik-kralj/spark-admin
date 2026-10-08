@@ -1,7 +1,8 @@
 import { ChakraProvider } from '@chakra-ui/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { useState, type ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 
+import { useLanguage } from '@/shared/i18n/useStrings'
 import { system } from '@/shared/theme/system'
 
 interface AppProvidersProps {
@@ -11,6 +12,11 @@ interface AppProvidersProps {
 
 export function AppProviders({ children, queryClient }: AppProvidersProps) {
     const [client] = useState(() => queryClient ?? new QueryClient())
+    const language = useLanguage()
+
+    useEffect(() => {
+        document.documentElement.lang = language
+    }, [language])
 
     return (
         <ChakraProvider value={system}>
