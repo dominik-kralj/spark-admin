@@ -19,13 +19,11 @@ export function DiscardChangesDialog({ isOpen, onDiscard, onKeepEditing }: Disca
             placement="center"
         >
             <Portal>
-                <Dialog.Backdrop bg="spark.scrim" />
+                <Dialog.Backdrop />
                 <Dialog.Positioner px="4">
                     <Dialog.Content maxW="md">
                         <Dialog.Header>
-                            <Dialog.Title color="spark.heading">
-                                {t.forms.discard.title}
-                            </Dialog.Title>
+                            <Dialog.Title>{t.forms.discard.title}</Dialog.Title>
                         </Dialog.Header>
 
                         <Dialog.Body>

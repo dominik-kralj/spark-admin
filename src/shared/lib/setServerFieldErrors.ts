@@ -2,7 +2,6 @@ import type { FieldValues, Path, UseFormSetError } from 'react-hook-form'
 
 import type { ServerFieldError } from '@/shared/api'
 
-/** Sets each error on its field and focuses the first; false when there was none to set. */
 export function setServerFieldErrors<TValues extends FieldValues>(
     setError: UseFormSetError<TValues>,
     fieldErrors: Partial<Record<Path<TValues>, ServerFieldError>>,

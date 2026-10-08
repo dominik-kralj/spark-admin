@@ -5,7 +5,7 @@ import { useStrings } from '@/shared/i18n/useStrings'
 import { focusOnMount } from '@/shared/lib/focusOnMount'
 import { formErrorMessage } from '@/shared/lib/formErrorMessage'
 
-/** A save error that belongs to no field. Key it by attempt, so a repeated failure takes focus again. */
+/** Clear the error before each attempt, so a repeated failure mounts it, and takes focus, again. */
 export function FormAlert({ error }: { error: Error }) {
     const t = useStrings()
 

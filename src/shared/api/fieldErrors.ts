@@ -7,7 +7,6 @@ export type ServerFieldError = 'invalid' | 'duplicate'
 const validationBodySchema = z.object({ errors: z.record(z.string(), z.unknown()) })
 const duplicateBodySchema = z.object({ code: z.literal('duplicate'), field: z.string() })
 
-/** The request properties the server named, mapped to form fields. See docs/api-assumptions.md. */
 function rawFieldErrors(error: unknown): Record<string, ServerFieldError> {
     if (!isApiError(error)) return {}
 
@@ -26,10 +25,7 @@ function rawFieldErrors(error: unknown): Record<string, ServerFieldError> {
     return {}
 }
 
-/**
- * `formFields` maps raw request property names, from a feature's validators, to form fields,
- * in form order: the result keeps that order, so its first entry is the first field on screen.
- */
+/** List `formFields` (raw request property → form field) in form order: the result keeps it. */
 export function fieldErrorsFrom<TField extends string>(
     error: unknown,
     formFields: Readonly<Record<string, TField>>,

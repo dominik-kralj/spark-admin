@@ -6,11 +6,12 @@ import { useStrings } from '@/shared/i18n/useStrings'
 import { useUnsavedChangesGuard } from '@/shared/lib/useUnsavedChangesGuard'
 
 import { DiscardChangesDialog } from './DiscardChangesDialog'
+import { NavigationGuard } from './NavigationGuard'
 
 interface FormDrawerProps {
     isOpen: boolean
     title: string
-    /** While true, closing or leaving the page asks first; a successful save closes through onClose directly. */
+    /** After a successful save, close with onClose before navigating, or the guard still asks. */
     isDirty: boolean
     isSaving: boolean
     onClose: () => void
@@ -29,7 +30,7 @@ export function FormDrawer({
 }: FormDrawerProps) {
     const t = useStrings()
     const titleRef = useRef<HTMLHeadingElement>(null)
-    const { guardLeave, dialog } = useUnsavedChangesGuard(isOpen && isDirty)
+    const { guardLeave, dialog } = useUnsavedChangesGuard(isDirty)
 
     function requestClose() {
         guardLeave(onClose)
@@ -47,7 +48,7 @@ export function FormDrawer({
                 unmountOnExit
             >
                 <Portal>
-                    <Drawer.Backdrop bg="spark.scrim" />
+                    <Drawer.Backdrop />
                     <Drawer.Positioner>
                         <Drawer.Content w="full" maxW={{ base: '100vw', md: '560px' }}>
                             <Flex
@@ -68,12 +69,7 @@ export function FormDrawer({
                                         <X />
                                     </IconButton>
                                 </Drawer.CloseTrigger>
-                                <Drawer.Title
-                                    ref={titleRef}
-                                    tabIndex={-1}
-                                    textStyle="lg"
-                                    color="spark.heading"
-                                >
+                                <Drawer.Title ref={titleRef} tabIndex={-1} textStyle="lg">
                                     {title}
                                 </Drawer.Title>
                             </Flex>
@@ -117,6 +113,7 @@ export function FormDrawer({
             </Drawer.Root>
 
             <DiscardChangesDialog {...dialog} />
+            {isOpen && <NavigationGuard hasUnsavedChanges={isDirty} />}
         </>
     )
 }

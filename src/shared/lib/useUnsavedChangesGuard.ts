@@ -1,7 +1,4 @@
 import { useState } from 'react'
-import { useBeforeUnload, useBlocker } from 'react-router'
-
-import { getSessionUser } from '@/shared/api'
 
 export interface DiscardDialogState {
     isOpen: boolean
@@ -9,18 +6,9 @@ export interface DiscardDialogState {
     onKeepEditing: () => void
 }
 
-/**
- * Asks before changes are lost: on a close the form routes through `guardLeave`, on a route
- * change, and (through the browser's own prompt) on a reload or a closed tab.
- */
+/** For closes inside the page; route changes and reloads go through NavigationGuard. */
 export function useUnsavedChangesGuard(hasUnsavedChanges: boolean) {
     const [pendingLeave, setPendingLeave] = useState<(() => void) | null>(null)
-    // Once the session has ended nothing can be saved, so the redirect to login goes through.
-    const blocker = useBlocker(() => hasUnsavedChanges && getSessionUser() !== null)
-
-    useBeforeUnload((event) => {
-        if (hasUnsavedChanges) event.preventDefault()
-    })
 
     function guardLeave(leave: () => void): void {
         if (hasUnsavedChanges) {
@@ -31,15 +19,13 @@ export function useUnsavedChangesGuard(hasUnsavedChanges: boolean) {
     }
 
     const dialog: DiscardDialogState = {
-        isOpen: pendingLeave !== null || blocker.state === 'blocked',
+        isOpen: pendingLeave !== null,
         onDiscard: () => {
             setPendingLeave(null)
-            if (blocker.state === 'blocked') blocker.proceed()
             pendingLeave?.()
         },
         onKeepEditing: () => {
             setPendingLeave(null)
-            if (blocker.state === 'blocked') blocker.reset()
         },
     }
 

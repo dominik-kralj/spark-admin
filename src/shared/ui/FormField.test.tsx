@@ -42,6 +42,16 @@ describe('FormField', () => {
         expect(input).toHaveAccessibleErrorMessage(error)
     })
 
+    it('treats an empty error as no error', () => {
+        renderWithProviders(
+            <FormField label="OIB" error="">
+                {(control) => <Input {...control} />}
+            </FormField>,
+        )
+
+        expect(screen.getByRole('textbox', { name: 'OIB' })).not.toHaveAttribute('aria-invalid')
+    })
+
     it('has no axe violations with helper and error text', async () => {
         const { container } = renderWithProviders(
             <FormField label="OIB" helperText={helper} error={error}>

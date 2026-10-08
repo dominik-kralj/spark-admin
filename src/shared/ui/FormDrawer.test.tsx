@@ -1,6 +1,6 @@
 import { Input } from '@chakra-ui/react'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { screen, waitFor, within } from '@testing-library/react'
+import { fireEvent, screen, waitFor, within } from '@testing-library/react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { createMemoryRouter } from 'react-router'
@@ -10,7 +10,7 @@ import { z } from 'zod'
 
 import { ApiError, endSession, fieldErrorsFrom } from '@/shared/api'
 import { hr } from '@/shared/i18n/hr'
-import { setServerFieldErrors } from '@/shared/lib/serverFieldErrors'
+import { setServerFieldErrors } from '@/shared/lib/setServerFieldErrors'
 import { expectNoAxeViolations } from '@/test/axe'
 import { renderWithProviders } from '@/test/render'
 import { signInForTest } from '@/test/session'
@@ -100,10 +100,34 @@ function TestForm({ save }: { save: Save }) {
     )
 }
 
+// A second, closed drawer on the page, as a list with add and edit forms will have.
+function ClosedFormDrawer() {
+    return (
+        <FormDrawer
+            isOpen={false}
+            title="Uredi zonu"
+            isDirty={false}
+            isSaving={false}
+            onClose={() => undefined}
+            onSubmit={() => undefined}
+        >
+            {null}
+        </FormDrawer>
+    )
+}
+
 function renderTestForm(save: Save = () => Promise.resolve()) {
     const router = createMemoryRouter(
         [
-            { path: '/zone', element: <TestForm save={save} /> },
+            {
+                path: '/zone',
+                element: (
+                    <>
+                        <TestForm save={save} />
+                        <ClosedFormDrawer />
+                    </>
+                ),
+            },
             { path: '/karte', element: <h1>Karte</h1> },
             { path: '/prijava', element: <h1>Prijava</h1> },
         ],
@@ -210,6 +234,16 @@ describe('FormDrawer', () => {
         await openDirtyDrawer(rendered)
 
         await rendered.user.keyboard('{Escape}')
+
+        expect(await discardDialog()).toBeInTheDocument()
+    })
+
+    it('asks before discarding changes on a click outside the drawer', async () => {
+        const rendered = renderTestForm()
+        await openDirtyDrawer(rendered)
+
+        // The backdrop takes no pointer events; the drawer listens for a press outside itself.
+        fireEvent.pointerDown(document.body)
 
         expect(await discardDialog()).toBeInTheDocument()
     })

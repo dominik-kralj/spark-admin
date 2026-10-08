@@ -9,9 +9,7 @@ export interface FieldControlProps {
 interface FormFieldProps {
     label: string
     helperText?: string
-    /** The message from the dictionary; undefined while the field is valid. */
     error?: string | undefined
-    /** Spread the props on the control, so it is described by the helper and the error. */
     children: (control: FieldControlProps) => ReactNode
 }
 
@@ -23,13 +21,13 @@ export function FormField({ label, helperText, error, children }: FormFieldProps
 
     return (
         <Field.Root
-            invalid={error !== undefined}
+            invalid={Boolean(error)}
             ids={{ helperText: helperTextId, errorText: errorTextId }}
         >
             <Field.Label>{label}</Field.Label>
             {children({ 'aria-describedby': describedBy.join(' ') || undefined })}
-            {helperText && <Field.HelperText fontSize="caption">{helperText}</Field.HelperText>}
-            <Field.ErrorText fontSize="caption">
+            {helperText && <Field.HelperText>{helperText}</Field.HelperText>}
+            <Field.ErrorText>
                 <CircleAlert size="14" />
                 {error}
             </Field.ErrorText>
