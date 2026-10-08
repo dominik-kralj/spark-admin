@@ -69,6 +69,33 @@ export const en: Dictionary = {
         errorTitle: 'Zones could not be loaded',
         total: (count: number) => `${String(count)} ${count === 1 ? 'zone' : 'zones'} in total`,
     },
+    forms: {
+        close: 'Close form',
+        cancel: 'Cancel',
+        save: 'Save',
+        discard: {
+            title: 'Discard unsaved changes?',
+            description: 'Your changes have not been saved. If you leave now, you will lose them.',
+            confirm: 'Discard changes',
+            keepEditing: 'Keep editing',
+        },
+        serverFieldErrors: {
+            invalid: 'The server did not accept this value. Check what you entered.',
+            duplicate: 'This value already exists. Enter a different one.',
+        },
+        saveFailed: 'Your changes were not saved.',
+        errors: {
+            network:
+                'The server did not respond. What you entered is still in the form. Check your internet connection and try again.',
+            validation: 'The server did not accept the form. Check the fields and try again.',
+            forbidden:
+                'You do not have permission to make this change. If you think you should, contact your system administrator.',
+            notFound: 'This record no longer exists. Someone may have deleted it in the meantime.',
+            conflict:
+                'This record was changed in the meantime. Close the form, open it again and redo your change.',
+            server: 'Something went wrong on the server. What you entered is still in the form. Try again in a few minutes.',
+        },
+    },
     listStates: {
         retry: 'Try again',
         errors: {

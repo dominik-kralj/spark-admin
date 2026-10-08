@@ -4,7 +4,10 @@ import { layerStyles } from '../layerStyles'
 
 import { alertRecipe } from './alert'
 import { buttonRecipe } from './button'
+import { dialogRecipe } from './dialog'
+import { drawerRecipe } from './drawer'
 import { emptyStateRecipe } from './emptyState'
+import { fieldRecipe } from './field'
 import { inputRecipe } from './input'
 import { skeletonRecipe } from './skeleton'
 import { skipNavLinkRecipe } from './skipNavLink'
@@ -19,6 +22,13 @@ export const recipesConfig = defineConfig({
             skeleton: skeletonRecipe,
             skipNavLink: skipNavLinkRecipe,
         },
-        slotRecipes: { alert: alertRecipe, emptyState: emptyStateRecipe, table: tableRecipe },
+        slotRecipes: {
+            alert: alertRecipe,
+            dialog: dialogRecipe,
+            drawer: drawerRecipe,
+            emptyState: emptyStateRecipe,
+            field: fieldRecipe,
+            table: tableRecipe,
+        },
     },
 })
