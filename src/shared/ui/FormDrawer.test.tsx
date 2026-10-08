@@ -10,13 +10,14 @@ import { z } from 'zod'
 
 import { ApiError, endSession, fieldErrorsFrom } from '@/shared/api'
 import { hr } from '@/shared/i18n/hr'
+import { errorMessage } from '@/shared/lib/errorMessage'
 import { setServerFieldErrors } from '@/shared/lib/setServerFieldErrors'
 import { expectNoAxeViolations } from '@/test/axe'
 import { giveElementsLayout } from '@/test/layout'
 import { renderWithProviders } from '@/test/render'
 import { signInForTest } from '@/test/session'
 
-import { FormAlert } from './FormAlert'
+import { ErrorAlert } from './ErrorAlert'
 import { FormDrawer } from './FormDrawer'
 import { FormField } from './FormField'
 
@@ -89,7 +90,13 @@ function TestForm({ save }: { save: Save }) {
                 }}
                 onSubmit={(event) => void handleSubmit(submit)(event)}
             >
-                {saveError && <FormAlert error={saveError} />}
+                {saveError && (
+                    <ErrorAlert
+                        title={hr.forms.saveFailed}
+                        message={errorMessage(saveError, hr.forms.errors)}
+                        takesFocus
+                    />
+                )}
                 <FormField label="Šifra" error={message(errors.code?.type)}>
                     {(control) => <Input {...register('code')} {...control} />}
                 </FormField>

@@ -1,5 +1,5 @@
-import { Box, Button, Grid, Stack, Text } from '@chakra-ui/react'
-import { Pencil } from 'lucide-react'
+import { Box, Button, Grid, HStack, Stack, Text } from '@chakra-ui/react'
+import { Pencil, Trash2 } from 'lucide-react'
 
 import { useStrings } from '@/shared/i18n/useStrings'
 import type { Dictionary } from '@/shared/i18n/dictionary'
@@ -18,9 +18,10 @@ function cardFields(zone: Zone, columns: Dictionary['zones']['columns']) {
 interface ZoneCardsProps {
     zones: Zone[]
     onEdit: (zone: Zone) => void
+    onDelete: (zone: Zone) => void
 }
 
-export function ZoneCards({ zones, onEdit }: ZoneCardsProps) {
+export function ZoneCards({ zones, onEdit, onDelete }: ZoneCardsProps) {
     const t = useStrings()
 
     return (
@@ -54,16 +55,31 @@ export function ZoneCards({ zones, onEdit }: ZoneCardsProps) {
                         ))}
                     </Grid>
 
-                    <Button
-                        aria-label={t.zones.editZone(zone.code)}
-                        variant="outline"
-                        onClick={() => {
-                            onEdit(zone)
-                        }}
-                    >
-                        <Pencil aria-hidden="true" />
-                        {t.zones.edit}
-                    </Button>
+                    <HStack gap="2">
+                        <Button
+                            aria-label={t.zones.editZone(zone.code)}
+                            variant="outline"
+                            flex="1"
+                            onClick={() => {
+                                onEdit(zone)
+                            }}
+                        >
+                            <Pencil aria-hidden="true" />
+                            {t.zones.edit}
+                        </Button>
+                        <Button
+                            aria-label={t.zones.delete.deleteZone(zone.code)}
+                            variant="outline"
+                            colorPalette="red"
+                            flex="1"
+                            onClick={() => {
+                                onDelete(zone)
+                            }}
+                        >
+                            <Trash2 aria-hidden="true" />
+                            {t.zones.delete.button}
+                        </Button>
+                    </HStack>
                 </Stack>
             ))}
         </Stack>

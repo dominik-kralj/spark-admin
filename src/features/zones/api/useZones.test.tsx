@@ -216,11 +216,13 @@ describe('useDeleteZone', () => {
     it.each([
         ['does not exist', 999],
         ['belongs to another city', otherCityZoneId],
-    ])('answers 404 for a zone that %s', async (_case, zoneId) => {
+    ])('treats a 404 for a zone that %s as already deleted', async (_case, zoneId) => {
         const { result } = renderZoneHooks()
 
-        const error = await mutationError(() => result.current.remove.mutateAsync(zoneId))
+        await act(async () => {
+            await result.current.remove.mutateAsync(zoneId)
+        })
 
-        expect(error).toMatchObject({ kind: 'notFound', status: 404 })
+        expect(result.current.remove.isSuccess).toBe(true)
     })
 })

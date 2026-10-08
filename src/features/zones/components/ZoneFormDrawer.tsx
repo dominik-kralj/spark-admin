@@ -1,12 +1,14 @@
-import { Input, SimpleGrid, Text } from '@chakra-ui/react'
+import { Button, Input, SimpleGrid, Text } from '@chakra-ui/react'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Trash2 } from 'lucide-react'
 import type { HTMLAttributes } from 'react'
 import { useForm } from 'react-hook-form'
 
 import { useStrings } from '@/shared/i18n/useStrings'
+import { errorMessage } from '@/shared/lib/errorMessage'
 import { setServerFieldErrors } from '@/shared/lib/setServerFieldErrors'
 import { toaster } from '@/shared/lib/toaster'
-import { FormAlert } from '@/shared/ui/FormAlert'
+import { ErrorAlert } from '@/shared/ui/ErrorAlert'
 import { FormDrawer } from '@/shared/ui/FormDrawer'
 import { FormField } from '@/shared/ui/FormField'
 
@@ -20,8 +22,6 @@ import {
     zoneFormSchema,
     type ValidZoneFormValues,
 } from '../validators/zoneForm'
-
-import { FormErrorNotice } from './FormErrorNotice'
 
 const fields: { name: ZoneField; inputMode: HTMLAttributes<HTMLInputElement>['inputMode'] }[] = [
     { name: 'code', inputMode: 'text' },
@@ -37,9 +37,17 @@ interface ZoneFormDrawerProps {
     isOpen: boolean
     zone: Zone | null
     onClose: () => void
+    onDelete: (zone: Zone) => void
+    finalFocusEl: () => HTMLElement | null
 }
 
-export function ZoneFormDrawer({ isOpen, zone, onClose }: ZoneFormDrawerProps) {
+export function ZoneFormDrawer({
+    isOpen,
+    zone,
+    onClose,
+    onDelete,
+    finalFocusEl,
+}: ZoneFormDrawerProps) {
     const t = useStrings()
     const createZone = useCreateZone()
     const updateZone = useUpdateZone()
@@ -81,14 +89,35 @@ export function ZoneFormDrawer({ isOpen, zone, onClose }: ZoneFormDrawerProps) {
             isDirty={isDirty}
             isSaving={isSubmitting}
             isSaveDisabled={!isAdding && !isDirty}
+            destructiveAction={
+                !isAdding && (
+                    <Button
+                        variant="ghost"
+                        colorPalette="red"
+                        onClick={() => {
+                            onDelete(zone)
+                        }}
+                    >
+                        <Trash2 aria-hidden="true" />
+                        {t.zones.delete.formButton}
+                    </Button>
+                )
+            }
             onClose={onClose}
+            finalFocusEl={finalFocusEl}
             onSubmit={(event) => void handleSubmit(save)(event)}
         >
             <Text color="fg.muted">{t.zones.form.intro}</Text>
 
-            {saveError && !hasFieldErrors && <FormAlert error={saveError} />}
+            {saveError && !hasFieldErrors && (
+                <ErrorAlert
+                    title={t.forms.saveFailed}
+                    message={errorMessage(saveError, t.forms.errors)}
+                    takesFocus
+                />
+            )}
 
-            {hasInvalidFields && <FormErrorNotice message={t.zones.form.notSaved} />}
+            {hasInvalidFields && <ErrorAlert message={t.zones.form.notSaved} />}
 
             <SimpleGrid columns={{ base: 1, md: 2 }} columnGap="4" rowGap="5">
                 {fields.map(({ name, inputMode }) => (
