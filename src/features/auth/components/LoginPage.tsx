@@ -154,7 +154,7 @@ export function LoginPage() {
 
             {/* Last in focus order, so the form still starts at the username. */}
             <Box position="absolute" top="4" right="4">
-                <LanguageMenu variant="header" />
+                <LanguageMenu variant="compact" />
             </Box>
         </Flex>
     )

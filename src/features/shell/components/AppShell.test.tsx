@@ -53,7 +53,9 @@ describe('app shell', () => {
             expect(screen.getByRole('link', { name: label })).toHaveFocus()
         }
         await user.tab()
-        expect(screen.getByRole('button', { name: `${languagePickerLabel}: HR` })).toHaveFocus()
+        expect(
+            screen.getByRole('button', { name: `${languagePickerLabel}: Hrvatski` }),
+        ).toHaveFocus()
         await user.tab()
         expect(screen.getByRole('button', { name: hr.shell.signOut })).toHaveFocus()
 

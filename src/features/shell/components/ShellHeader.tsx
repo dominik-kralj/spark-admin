@@ -2,7 +2,6 @@ import { Button, Flex, HStack } from '@chakra-ui/react'
 import { LogOut } from 'lucide-react'
 
 import { useStrings } from '@/shared/i18n/useStrings'
-import { LanguageMenu } from '@/shared/ui/LanguageMenu'
 
 import { CityName } from './CityName'
 import { SignedInUser } from './SignedInUser'
@@ -32,7 +31,6 @@ export function ShellHeader({ userName, onSignOut }: ShellUserProps) {
             <CityName />
 
             <HStack gap="4">
-                <LanguageMenu variant="header" />
                 <SignedInUser name={userName} />
 
                 <Button variant="outline" size="sm" onClick={onSignOut}>

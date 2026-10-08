@@ -11,13 +11,16 @@ import {
 import { useLanguage } from '@/shared/i18n/useStrings'
 
 interface LanguageMenuProps {
-    variant: 'header' | 'drawerRow'
+    /** compact shows the code (login); row shows the name at full width (sidebar, drawers). */
+    variant: 'compact' | 'row'
+    /** False inside a drawer: a portal would put the menu outside its focus trap. */
+    portalled?: boolean
 }
 
-export function LanguageMenu({ variant }: LanguageMenuProps) {
+export function LanguageMenu({ variant, portalled = true }: LanguageMenuProps) {
     const language = useLanguage()
-    const isDrawerRow = variant === 'drawerRow'
-    const currentLabel = isDrawerRow ? languageNames[language] : language.toUpperCase()
+    const currentLabel = variant === 'compact' ? language.toUpperCase() : languageNames[language]
+    const name = `${languagePickerLabel}: ${currentLabel}`
 
     const menu = (
         <Menu.Positioner>
@@ -43,18 +46,17 @@ export function LanguageMenu({ variant }: LanguageMenuProps) {
         <Menu.Root>
             <Menu.Trigger asChild>
                 <Button
+                    aria-label={name}
                     variant="outline"
-                    size={isDrawerRow ? 'xl' : 'sm'}
-                    w={isDrawerRow ? 'full' : undefined}
-                    aria-label={`${languagePickerLabel}: ${currentLabel}`}
+                    size={variant === 'row' ? 'md' : 'sm'}
+                    w={variant === 'row' ? 'full' : undefined}
                 >
                     <Globe aria-hidden="true" />
                     {currentLabel}
                 </Button>
             </Menu.Trigger>
 
-            {/* In the drawer, a portal would put the menu outside its focus trap. */}
-            {isDrawerRow ? menu : <Portal>{menu}</Portal>}
+            {portalled ? <Portal>{menu}</Portal> : menu}
         </Menu.Root>
     )
 }

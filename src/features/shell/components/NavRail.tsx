@@ -1,10 +1,11 @@
-import { Box, Button, Center, Drawer, Flex, IconButton, Image } from '@chakra-ui/react'
+import { Box, Button, Center, Drawer, Flex, IconButton, Image, Stack } from '@chakra-ui/react'
 import { PanelLeftClose, PanelLeftOpen } from 'lucide-react'
 import { Link } from 'react-router'
 
 import sparkMark from '@/shared/assets/spark-mark.svg'
 import { useStrings } from '@/shared/i18n/useStrings'
 import { paths } from '@/shared/paths'
+import { LanguageMenu } from '@/shared/ui/LanguageMenu'
 
 import { MenuDrawer } from './MenuDrawer'
 import { NavItems } from './NavItems'
@@ -42,20 +43,23 @@ export function NavRail() {
                         </IconButton>
                     }
                     footer={
-                        <Drawer.CloseTrigger asChild position="static">
-                            <Button
-                                variant="ghost"
-                                size="xl"
-                                w="full"
-                                justifyContent="flex-start"
-                                px="3"
-                                color="gray.fg"
-                                fontWeight="normal"
-                            >
-                                <PanelLeftClose aria-hidden="true" />
-                                {t.shell.collapseMenu}
-                            </Button>
-                        </Drawer.CloseTrigger>
+                        <Stack gap="2">
+                            <LanguageMenu variant="row" portalled={false} />
+                            <Drawer.CloseTrigger asChild position="static">
+                                <Button
+                                    variant="ghost"
+                                    size="xl"
+                                    w="full"
+                                    justifyContent="flex-start"
+                                    px="3"
+                                    color="gray.fg"
+                                    fontWeight="normal"
+                                >
+                                    <PanelLeftClose aria-hidden="true" />
+                                    {t.shell.collapseMenu}
+                                </Button>
+                            </Drawer.CloseTrigger>
+                        </Stack>
                     }
                 />
             </Center>

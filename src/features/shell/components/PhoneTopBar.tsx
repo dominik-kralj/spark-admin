@@ -38,7 +38,7 @@ export function PhoneTopBar({ userName, onSignOut }: ShellUserProps) {
                             <CityName />
                             <SignedInUser name={userName} />
                         </Stack>
-                        <LanguageMenu variant="drawerRow" />
+                        <LanguageMenu variant="row" portalled={false} />
                         <Button variant="outline" size="xl" onClick={onSignOut}>
                             <LogOut aria-hidden="true" />
                             {t.shell.signOut}

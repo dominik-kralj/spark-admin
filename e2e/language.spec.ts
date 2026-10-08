@@ -20,7 +20,7 @@ test.describe('language on a desktop', () => {
     test('switches to English from the keyboard and keeps it after a reload', async ({ page }) => {
         await signIn(page)
         await page.goto(paths.zones)
-        const picker = page.getByRole('button', { name: `${languagePickerLabel}: HR` })
+        const picker = page.getByRole('button', { name: `${languagePickerLabel}: Hrvatski` })
 
         await picker.focus()
         await page.keyboard.press('Enter')
@@ -34,12 +34,39 @@ test.describe('language on a desktop', () => {
         await expect(page.getByRole('heading', { level: 1, name: en.nav.zones })).toBeVisible()
         await expect(page.locator('html')).toHaveAttribute('lang', 'en')
         await expect(page).toHaveTitle('Zones – SPARK Admin')
-        await expect(page.getByRole('button', { name: `${languagePickerLabel}: EN` })).toBeFocused()
+        await expect(
+            page.getByRole('button', { name: `${languagePickerLabel}: English` }),
+        ).toBeFocused()
         await expectNoAxeViolations(page)
 
         await page.reload()
 
         await expect(page.getByRole('heading', { level: 1, name: en.nav.zones })).toBeVisible()
+    })
+})
+
+test.describe('language on a scaled laptop', () => {
+    test.skip(({ isMobile }) => isMobile, 'a mouse layout; runs in the desktop project')
+
+    // 1280 × 720 at 150 % Windows scaling, less the browser bar: the tablet rail.
+    test('keeps the rail free of a scrollbar, with the menu in its expanded drawer', async ({
+        page,
+    }) => {
+        await page.setViewportSize({ width: 853, height: 560 })
+        await signIn(page)
+        const nav = page.getByRole('navigation', { name: hr.shell.mainNav })
+
+        const overflow = await nav.evaluate(
+            (element) => element.scrollHeight - element.clientHeight,
+        )
+        expect(overflow).toBeLessThanOrEqual(0)
+
+        await page.getByRole('button', { name: hr.shell.expandMenu }).click()
+        await expect(
+            page
+                .getByRole('dialog', { name: hr.shell.menu })
+                .getByRole('button', { name: `${languagePickerLabel}: Hrvatski` }),
+        ).toBeVisible()
     })
 })
 

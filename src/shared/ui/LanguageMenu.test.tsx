@@ -29,12 +29,16 @@ describe('language switch', () => {
         expect(document.documentElement.lang).toBe('hr')
     })
 
-    it('switches the app to English from the header, and remembers it after a reload', async () => {
+    it('switches the app to English from the sidebar, and remembers it after a reload', async () => {
         signInForTest()
         const { user, container, unmount } = await renderRoute(paths.zones)
         await screen.findByRole('table')
 
-        await chooseEnglish(user, { scope: screen.getByRole('banner') })
+        expect(
+            within(screen.getByRole('banner')).queryByRole('button', { name: /Language/ }),
+        ).not.toBeInTheDocument()
+
+        await chooseEnglish(user, { trigger: `${languagePickerLabel}: Hrvatski` })
 
         expect(
             await screen.findByRole('heading', { level: 1, name: en.nav.zones }),
@@ -43,7 +47,7 @@ describe('language switch', () => {
         expect(screen.getByRole('table', { name: en.zones.listLabel })).toBeInTheDocument()
         expect(screen.getByRole('button', { name: en.shell.signOut })).toBeInTheDocument()
         expect(
-            screen.getByRole('button', { name: `${languagePickerLabel}: EN` }),
+            screen.getByRole('button', { name: `${languagePickerLabel}: English` }),
         ).toBeInTheDocument()
         expect(document.documentElement.lang).toBe('en')
         await waitFor(() => {
@@ -56,6 +60,23 @@ describe('language switch', () => {
 
         expect(
             await screen.findByRole('heading', { level: 1, name: en.nav.zones }),
+        ).toBeInTheDocument()
+    })
+
+    it('offers the switch in the expanded tablet menu, not on the rail itself', async () => {
+        signInForTest()
+        setViewportWidth(768)
+        const { user } = await renderRoute(paths.zones)
+        expect(
+            screen.queryByRole('button', { name: `${languagePickerLabel}: Hrvatski` }),
+        ).not.toBeInTheDocument()
+
+        await user.click(screen.getByRole('button', { name: hr.shell.expandMenu }))
+        const drawer = await screen.findByRole('dialog', { name: hr.shell.menu })
+        await chooseEnglish(user, { scope: drawer, trigger: `${languagePickerLabel}: Hrvatski` })
+
+        expect(
+            await within(drawer).findByRole('button', { name: en.shell.collapseMenu }),
         ).toBeInTheDocument()
     })
 
