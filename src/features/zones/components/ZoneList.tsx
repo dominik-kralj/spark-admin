@@ -9,6 +9,7 @@ import { LoadingState } from '@/shared/ui/LoadingState'
 
 import { useZones } from '../api/useZones'
 import { sortZonesByCode } from '../lib/sortZones'
+import type { Zone } from '../validators/zone'
 
 import { AddZoneButton } from './AddZoneButton'
 import { ZoneCards } from './ZoneCards'
@@ -18,9 +19,14 @@ const sortKeys = ['code'] as const
 
 const defaultSort: Sort<(typeof sortKeys)[number]> = { key: 'code', direction: 'asc' }
 
-const skeletonColumnWidths = [1, 2, 1, 1, 1, 1, 1]
+const skeletonColumnWidths = [1, 2, 1, 1, 1, 1, 1, 1]
 
-export function ZoneList() {
+interface ZoneListProps {
+    onAdd: () => void
+    onEdit: (zone: Zone) => void
+}
+
+export function ZoneList({ onAdd, onEdit }: ZoneListProps) {
     const t = useStrings()
     const zones = useZones()
     const { sort, sortBy } = useSortSearchParams(sortKeys, defaultSort)
@@ -49,7 +55,7 @@ export function ZoneList() {
                 // The phone design keeps only the header's add button.
                 action={
                     <Box hideBelow="md">
-                        <AddZoneButton />
+                        <AddZoneButton onClick={onAdd} />
                     </Box>
                 }
             />
@@ -66,8 +72,9 @@ export function ZoneList() {
                 onSortByCode={() => {
                     sortBy('code')
                 }}
+                onEdit={onEdit}
             />
-            <ZoneCards zones={sortedZones} />
+            <ZoneCards zones={sortedZones} onEdit={onEdit} />
         </>
     )
 }

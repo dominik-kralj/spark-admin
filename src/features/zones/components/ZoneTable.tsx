@@ -1,4 +1,5 @@
-import { Box, Table, Text } from '@chakra-ui/react'
+import { Box, IconButton, Table, Text } from '@chakra-ui/react'
+import { Pencil } from 'lucide-react'
 
 import { useStrings } from '@/shared/i18n/useStrings'
 import { formatAmount, formatMinutes } from '@/shared/lib/format'
@@ -12,9 +13,10 @@ interface ZoneTableProps {
     zones: Zone[]
     codeSortDirection: SortDirection
     onSortByCode: () => void
+    onEdit: (zone: Zone) => void
 }
 
-export function ZoneTable({ zones, codeSortDirection, onSortByCode }: ZoneTableProps) {
+export function ZoneTable({ zones, codeSortDirection, onSortByCode, onEdit }: ZoneTableProps) {
     const t = useStrings()
     const { columns } = t.zones
 
@@ -43,6 +45,9 @@ export function ZoneTable({ zones, codeSortDirection, onSortByCode }: ZoneTableP
                             <Table.ColumnHeader textAlign="end">
                                 {columns.dpkIssueDelayMinutes}
                             </Table.ColumnHeader>
+                            <Table.ColumnHeader textAlign="end">
+                                {t.zones.actions}
+                            </Table.ColumnHeader>
                         </Table.Row>
                     </Table.Header>
 
@@ -61,6 +66,18 @@ export function ZoneTable({ zones, codeSortDirection, onSortByCode }: ZoneTableP
                                 <Table.Cell textAlign="end">{zone.maxExtensions}</Table.Cell>
                                 <Table.Cell textAlign="end">
                                     {formatMinutes(zone.dpkIssueDelayMinutes)}
+                                </Table.Cell>
+                                <Table.Cell textAlign="end">
+                                    <IconButton
+                                        aria-label={t.zones.editZone(zone.code)}
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => {
+                                            onEdit(zone)
+                                        }}
+                                    >
+                                        <Pencil />
+                                    </IconButton>
                                 </Table.Cell>
                             </Table.Row>
                         ))}

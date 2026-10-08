@@ -18,6 +18,7 @@ const columnHeaders = [
     'Trajanje',
     'Najviše produljenja',
     'Čekanje za DPK',
+    'Radnje',
 ]
 
 function rawZone(zoneCode: string, zoneId: number) {
@@ -71,8 +72,8 @@ describe('Zone list', () => {
         const headers = within(table).getAllByRole('columnheader')
         expect(headers.map((header) => header.textContent)).toEqual(columnHeaders)
         expect(bodyRows(table).map(rowCells)).toEqual([
-            ['2A', 'Druga zona A', '0,50 EUR', '15,00 EUR', '60 min', '3', '20 min'],
-            ['ZONA1', 'Prva zona', '0,70 EUR', '15,00 EUR', '60 min', '2', '15 min'],
+            ['2A', 'Druga zona A', '0,50 EUR', '15,00 EUR', '60 min', '3', '20 min', ''],
+            ['ZONA1', 'Prva zona', '0,70 EUR', '15,00 EUR', '60 min', '2', '15 min', ''],
         ])
         expect(screen.getByText('Ukupno 2 zone')).toBeInTheDocument()
     })

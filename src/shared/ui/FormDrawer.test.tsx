@@ -12,6 +12,7 @@ import { ApiError, endSession, fieldErrorsFrom } from '@/shared/api'
 import { hr } from '@/shared/i18n/hr'
 import { setServerFieldErrors } from '@/shared/lib/setServerFieldErrors'
 import { expectNoAxeViolations } from '@/test/axe'
+import { giveElementsLayout } from '@/test/layout'
 import { renderWithProviders } from '@/test/render'
 import { signInForTest } from '@/test/session'
 
@@ -166,10 +167,7 @@ async function discardDialog() {
 describe('FormDrawer', () => {
     beforeEach(() => {
         signInForTest()
-        // Chakra's focus trap skips elements without layout, which in jsdom is all of them.
-        vi.spyOn(HTMLElement.prototype, 'getClientRects').mockReturnValue(
-            Object.assign([new DOMRect(0, 0, 100, 20)], { item: () => null }),
-        )
+        giveElementsLayout()
     })
 
     it('moves focus to its title on open, and back to the opening button on close', async () => {

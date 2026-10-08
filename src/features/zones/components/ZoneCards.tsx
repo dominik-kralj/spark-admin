@@ -1,4 +1,5 @@
-import { Box, Grid, Stack, Text } from '@chakra-ui/react'
+import { Box, Button, Grid, Stack, Text } from '@chakra-ui/react'
+import { Pencil } from 'lucide-react'
 
 import { useStrings } from '@/shared/i18n/useStrings'
 import type { Dictionary } from '@/shared/i18n/dictionary'
@@ -14,7 +15,12 @@ function cardFields(zone: Zone, columns: Dictionary['zones']['columns']) {
     ]
 }
 
-export function ZoneCards({ zones }: { zones: Zone[] }) {
+interface ZoneCardsProps {
+    zones: Zone[]
+    onEdit: (zone: Zone) => void
+}
+
+export function ZoneCards({ zones, onEdit }: ZoneCardsProps) {
     const t = useStrings()
 
     return (
@@ -47,6 +53,17 @@ export function ZoneCards({ zones }: { zones: Zone[] }) {
                             </Box>
                         ))}
                     </Grid>
+
+                    <Button
+                        aria-label={t.zones.editZone(zone.code)}
+                        variant="outline"
+                        onClick={() => {
+                            onEdit(zone)
+                        }}
+                    >
+                        <Pencil />
+                        {t.zones.edit}
+                    </Button>
                 </Stack>
             ))}
         </Stack>

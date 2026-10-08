@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-import { isApiError } from '@/shared/api'
+import { fieldErrorsFrom, type ServerFieldError } from '@/shared/api'
 
 export const zoneResponseSchema = z.object({
     zoneId: z.number(),
@@ -34,11 +34,6 @@ export type ZoneInput = Omit<Zone, 'id'>
 
 export type ZoneField = keyof ZoneInput
 
-export interface ZoneFieldError {
-    field: ZoneField
-    reason: 'duplicate' | 'invalid'
-}
-
 export function toZone(raw: ZoneResponse): Zone {
     return {
         id: raw.zoneId,
@@ -64,7 +59,8 @@ export function toZoneRequest(input: ZoneInput): ZoneRequest {
     }
 }
 
-const fieldForRawName: Record<string, ZoneField> = {
+// In form order, so the first error is the first field on screen.
+const zoneFieldForRawName: Record<keyof ZoneRequest, ZoneField> = {
     zoneCode: 'code',
     zoneName: 'name',
     price: 'price',
@@ -74,30 +70,6 @@ const fieldForRawName: Record<string, ZoneField> = {
     dpkIssueDelayMinutes: 'dpkIssueDelayMinutes',
 }
 
-const duplicateBodySchema = z.object({ code: z.literal('duplicate'), field: z.string() })
-
-const validationBodySchema = z.object({ errors: z.record(z.string(), z.unknown()) })
-
-export function toZoneFieldErrors(error: unknown): ZoneFieldError[] {
-    if (!isApiError(error)) return []
-
-    if (error.kind === 'conflict') {
-        const parsed = duplicateBodySchema.safeParse(error.body)
-        const field = parsed.success ? fieldForRawName[parsed.data.field] : undefined
-
-        return field === undefined ? [] : [{ field, reason: 'duplicate' }]
-    }
-
-    if (error.kind === 'validation') {
-        const parsed = validationBodySchema.safeParse(error.body)
-        if (!parsed.success) return []
-
-        return Object.keys(parsed.data.errors).flatMap((rawName) => {
-            const field = fieldForRawName[rawName]
-
-            return field === undefined ? [] : [{ field, reason: 'invalid' as const }]
-        })
-    }
-
-    return []
+export function toZoneFieldErrors(error: unknown): Partial<Record<ZoneField, ServerFieldError>> {
+    return fieldErrorsFrom(error, zoneFieldForRawName)
 }

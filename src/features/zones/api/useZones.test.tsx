@@ -122,7 +122,7 @@ describe('useCreateZone', () => {
         const error = await mutationError(() => result.current.create.mutateAsync(input))
 
         expect(error).toMatchObject({ kind: 'conflict', status: 409 })
-        expect(toZoneFieldErrors(error)).toEqual([{ field, reason: 'duplicate' }])
+        expect(toZoneFieldErrors(error)).toEqual({ [field]: 'duplicate' })
     })
 
     it('rejects invalid values with a 400 on each field', async () => {
@@ -133,10 +133,7 @@ describe('useCreateZone', () => {
         )
 
         expect(error).toMatchObject({ kind: 'validation', status: 400 })
-        expect(toZoneFieldErrors(error)).toEqual([
-            { field: 'price', reason: 'invalid' },
-            { field: 'durationMinutes', reason: 'invalid' },
-        ])
+        expect(toZoneFieldErrors(error)).toEqual({ price: 'invalid', durationMinutes: 'invalid' })
     })
 
     it('rejects a price with more than two decimals, like the DECIMAL(10,2) column', async () => {
@@ -146,7 +143,7 @@ describe('useCreateZone', () => {
             result.current.create.mutateAsync({ ...newZone, dailyTicketPrice: 0.705 }),
         )
 
-        expect(toZoneFieldErrors(error)).toEqual([{ field: 'dailyTicketPrice', reason: 'invalid' }])
+        expect(toZoneFieldErrors(error)).toEqual({ dailyTicketPrice: 'invalid' })
     })
 })
 
@@ -175,7 +172,7 @@ describe('useUpdateZone', () => {
             result.current.update.mutateAsync({ ...second, code: firstZone.code }),
         )
 
-        expect(toZoneFieldErrors(error)).toEqual([{ field: 'code', reason: 'duplicate' }])
+        expect(toZoneFieldErrors(error)).toEqual({ code: 'duplicate' })
     })
 
     it('rejects invalid values with a 400 on each field', async () => {
@@ -185,10 +182,7 @@ describe('useUpdateZone', () => {
             result.current.update.mutateAsync({ ...firstZone, name: '', maxExtensions: 1.5 }),
         )
 
-        expect(toZoneFieldErrors(error)).toEqual([
-            { field: 'name', reason: 'invalid' },
-            { field: 'maxExtensions', reason: 'invalid' },
-        ])
+        expect(toZoneFieldErrors(error)).toEqual({ name: 'invalid', maxExtensions: 'invalid' })
     })
 
     it.each([

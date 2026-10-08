@@ -12,6 +12,7 @@ import { inputRecipe } from './input'
 import { skeletonRecipe } from './skeleton'
 import { skipNavLinkRecipe } from './skipNavLink'
 import { tableRecipe } from './table'
+import { toastRecipe } from './toast'
 
 export const recipesConfig = defineConfig({
     theme: {
@@ -29,6 +30,7 @@ export const recipesConfig = defineConfig({
             emptyState: emptyStateRecipe,
             field: fieldRecipe,
             table: tableRecipe,
+            toast: toastRecipe,
         },
     },
 })
