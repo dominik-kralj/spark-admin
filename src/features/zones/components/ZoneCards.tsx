@@ -70,7 +70,7 @@ export function ZoneCards({ zones, onEdit, onDelete }: ZoneCardsProps) {
                         <Button
                             aria-label={t.zones.delete.deleteZone(zone.code)}
                             variant="outline"
-                            color="fg.error"
+                            colorPalette="red"
                             flex="1"
                             onClick={() => {
                                 onDelete(zone)

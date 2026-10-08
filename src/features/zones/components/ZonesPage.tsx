@@ -18,30 +18,35 @@ interface OverlayState {
     key: number
 }
 
-const closed: OverlayState = { isOpen: false, zone: null, key: 0 }
+const closedOverlay: OverlayState = { isOpen: false, zone: null, key: 0 }
 
-function opened(zone: Zone | null) {
+function openOverlay(zone: Zone | null) {
     return (current: OverlayState): OverlayState => ({ isOpen: true, zone, key: current.key + 1 })
 }
 
-function close(current: OverlayState): OverlayState {
+function closeOverlay(current: OverlayState): OverlayState {
     return { ...current, isOpen: false }
 }
 
 export function ZonesPage() {
     const t = useStrings()
-    const [form, setForm] = useState(closed)
-    const [deletion, setDeletion] = useState(closed)
+    const [form, setForm] = useState(closedOverlay)
+    const [deleteDialog, setDeleteDialog] = useState(closedOverlay)
     const addButtonRef = useRef<HTMLButtonElement>(null)
     const wasDeletedRef = useRef(false)
 
-    function openAddForm() {
-        setForm(opened(null))
+    function openForm(zone: Zone | null) {
+        wasDeletedRef.current = false
+        setForm(openOverlay(zone))
     }
 
-    function openDeletion(zone: Zone) {
+    function openAddForm() {
+        openForm(null)
+    }
+
+    function openDeleteDialog(zone: Zone) {
         wasDeletedRef.current = false
-        setDeletion(opened(zone))
+        setDeleteDialog(openOverlay(zone))
     }
 
     // The deleted zone's buttons are gone, so focus goes to the page's next action instead.
@@ -56,36 +61,30 @@ export function ZonesPage() {
                 action={<AddZoneButton ref={addButtonRef} onClick={openAddForm} />}
             />
 
-            <ZoneList
-                onAdd={openAddForm}
-                onEdit={(zone) => {
-                    setForm(opened(zone))
-                }}
-                onDelete={openDeletion}
-            />
+            <ZoneList onAdd={openAddForm} onEdit={openForm} onDelete={openDeleteDialog} />
 
             <ZoneFormDrawer
                 key={`form-${String(form.key)}`}
                 isOpen={form.isOpen}
                 zone={form.zone}
                 onClose={() => {
-                    setForm(close)
+                    setForm(closeOverlay)
                 }}
-                onDelete={openDeletion}
+                onDelete={openDeleteDialog}
                 finalFocusEl={focusAfterDelete}
             />
 
             <ZoneDeleteDialog
-                key={`delete-${String(deletion.key)}`}
-                isOpen={deletion.isOpen}
-                zone={deletion.zone}
+                key={`delete-${String(deleteDialog.key)}`}
+                isOpen={deleteDialog.isOpen}
+                zone={deleteDialog.zone}
                 onCancel={() => {
-                    setDeletion(close)
+                    setDeleteDialog(closeOverlay)
                 }}
                 onDeleted={() => {
                     wasDeletedRef.current = true
-                    setDeletion(close)
-                    setForm(close)
+                    setDeleteDialog(closeOverlay)
+                    setForm(closeOverlay)
                 }}
                 finalFocusEl={focusAfterDelete}
             />

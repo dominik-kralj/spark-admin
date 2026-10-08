@@ -15,7 +15,6 @@ interface FormDrawerProps {
     isDirty: boolean
     isSaving: boolean
     isSaveDisabled?: boolean
-    /** Sits apart from Spremi: on the left on desktop, last on a phone. */
     destructiveAction?: ReactNode
     onClose: () => void
     onSubmit: SubmitEventHandler<HTMLFormElement>

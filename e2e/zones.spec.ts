@@ -181,6 +181,24 @@ test.describe('Zone delete', () => {
         await expect(page.getByRole('button', { name: hr.zones.add })).toBeFocused()
     })
 
+    test('deletes a zone from its card on a phone', async ({ page, isMobile }) => {
+        test.skip(!isMobile, 'cards run in the phone project')
+        await signIn(page)
+        await page.goto(paths.zones)
+        const list = page.getByRole('list', { name: hr.zones.listLabel })
+        const deleteButton = list.getByRole('button', { name: hr.zones.delete.deleteZone('2A') })
+
+        await expectTouchTargets(deleteButton)
+        await deleteButton.click()
+        const dialog = page.getByRole('alertdialog', { name: hr.zones.delete.title('2A') })
+        await waitForAnimations(dialog)
+        await expectNoAxeViolations(page)
+        await dialog.getByRole('button', { name: hr.zones.delete.confirm }).click()
+
+        await expect(list.getByRole('listitem')).toHaveCount(1)
+        await expect(page.getByRole('button', { name: hr.zones.add })).toBeFocused()
+    })
+
     test('deletes a zone from its edit form on a phone', async ({ page, isMobile }) => {
         test.skip(!isMobile, 'the full-screen form runs in the phone project')
         await signIn(page)

@@ -1,12 +1,12 @@
-import { Alert } from '@chakra-ui/react'
-import { CircleAlert } from 'lucide-react'
+import { useRef } from 'react'
 
 import { useStrings } from '@/shared/i18n/useStrings'
+import { errorMessage } from '@/shared/lib/errorMessage'
 import { toaster } from '@/shared/lib/toaster'
 import { ConfirmDialog } from '@/shared/ui/ConfirmDialog'
+import { ErrorAlert } from '@/shared/ui/ErrorAlert'
 
 import { useDeleteZone } from '../api/useZones'
-import { deleteErrorMessage } from '../lib/deleteErrorMessage'
 import type { Zone } from '../validators/zone'
 
 interface ZoneDeleteDialogProps {
@@ -26,6 +26,8 @@ export function ZoneDeleteDialog({
 }: ZoneDeleteDialogProps) {
     const t = useStrings()
     const deleteZone = useDeleteZone()
+    // isPending reaches the button a tick after mutate; this stops a press in between.
+    const isRequestedRef = useRef(false)
 
     if (zone === null) return null
 
@@ -40,19 +42,19 @@ export function ZoneDeleteDialog({
             isConfirming={deleteZone.isPending}
             error={
                 deleteZone.error && (
-                    <Alert.Root role="alert" status="error">
-                        <Alert.Indicator>
-                            <CircleAlert />
-                        </Alert.Indicator>
-                        <Alert.Description>
-                            <strong>{t.zones.delete.failed}</strong>{' '}
-                            {deleteErrorMessage(deleteZone.error, t)}
-                        </Alert.Description>
-                    </Alert.Root>
+                    <ErrorAlert
+                        title={t.zones.delete.failed}
+                        message={errorMessage(deleteZone.error, t.zones.delete.errors)}
+                    />
                 )
             }
             onConfirm={() => {
+                if (isRequestedRef.current) return
+                isRequestedRef.current = true
                 deleteZone.mutate(zone.id, {
+                    onSettled: () => {
+                        isRequestedRef.current = false
+                    },
                     onSuccess: () => {
                         toaster.success({ title: t.zones.delete.deleted(zone.code) })
                         onDeleted()

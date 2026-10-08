@@ -89,7 +89,7 @@ export function ZoneTable({
                                         <IconButton
                                             aria-label={t.zones.delete.deleteZone(zone.code)}
                                             variant="outline"
-                                            color="fg.error"
+                                            colorPalette="red"
                                             size="sm"
                                             onClick={() => {
                                                 onDelete(zone)

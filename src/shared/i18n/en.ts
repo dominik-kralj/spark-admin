@@ -104,8 +104,6 @@ export const en: Dictionary = {
                 network:
                     'The server did not respond. Check your internet connection and try again.',
                 forbidden: 'You do not have permission to delete zones.',
-                notFound:
-                    'This zone no longer exists. Someone may have deleted it in the meantime.',
                 server: 'Something went wrong on the server. Try again in a few minutes.',
             },
         },

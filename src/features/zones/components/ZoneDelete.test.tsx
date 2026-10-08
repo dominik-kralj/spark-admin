@@ -1,8 +1,10 @@
 import { screen, waitFor, within } from '@testing-library/react'
 import { delay, http, HttpResponse } from 'msw'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { z } from 'zod'
 
 import { apiUrl } from '@/mocks/url'
+import { request } from '@/shared/api'
 import { hr } from '@/shared/i18n/hr'
 import { toaster } from '@/shared/lib/toaster'
 import { paths } from '@/shared/paths'
@@ -101,6 +103,45 @@ describe('Zone delete', () => {
         expect(await screen.findByText(deleteStrings.deleted('ZONA1'))).toBeInTheDocument()
         await waitFor(() => {
             expect(screen.getByRole('button', { name: hr.zones.add })).toHaveFocus()
+        })
+    })
+
+    it('returns focus to the Uredi button of a form opened after a delete', async () => {
+        const rendered = await renderRoute(paths.zones)
+        const { dialog } = await openDeleteFromRow(rendered, 'ZONA1')
+        await rendered.user.click(
+            within(dialog).getByRole('button', { name: deleteStrings.confirm }),
+        )
+        await waitFor(() => {
+            expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument()
+        })
+
+        const table = await zonesTable()
+        const editButton = within(table).getByRole('button', { name: hr.zones.editZone('2A') })
+        await rendered.user.click(editButton)
+        const form = await screen.findByRole('dialog', { name: hr.zones.editZone('2A') })
+        await rendered.user.click(within(form).getByRole('button', { name: hr.forms.close }))
+
+        await waitFor(() => {
+            expect(editButton).toHaveFocus()
+        })
+    })
+
+    it('treats a zone someone else deleted as deleted, and refreshes the list', async () => {
+        const rendered = await renderRoute(paths.zones)
+        const { dialog } = await openDeleteFromRow(rendered, 'ZONA1')
+        await request('/zones/1', { method: 'DELETE', schema: z.undefined() })
+
+        await rendered.user.click(
+            within(dialog).getByRole('button', { name: deleteStrings.confirm }),
+        )
+
+        await waitFor(() => {
+            expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument()
+        })
+        const table = await zonesTable()
+        await waitFor(() => {
+            expect(within(table).queryByRole('cell', { name: 'ZONA1' })).not.toBeInTheDocument()
         })
     })
 

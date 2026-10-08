@@ -1,19 +1,21 @@
 import { Button, Dialog, Portal, Stack, type ButtonProps } from '@chakra-ui/react'
-import { useRef, type ReactNode } from 'react'
+import { Fragment, useRef, type ReactNode } from 'react'
 
-// Both designs: the outlined button first, the solid one second (on top when stacked on a phone).
 const tones = {
     destructive: {
         cancel: { variant: 'outline' },
         confirm: { variant: 'solid', colorPalette: 'red' },
-        isConfirmFirst: false,
+        order: ['cancel', 'confirm'],
     },
     discard: {
         cancel: { variant: 'solid', colorPalette: 'blue' },
-        confirm: { variant: 'outline', color: 'fg.error' },
-        isConfirmFirst: true,
+        confirm: { variant: 'outline', colorPalette: 'red' },
+        order: ['confirm', 'cancel'],
     },
-} satisfies Record<string, { cancel: ButtonProps; confirm: ButtonProps; isConfirmFirst: boolean }>
+} satisfies Record<
+    string,
+    { cancel: ButtonProps; confirm: ButtonProps; order: ('cancel' | 'confirm')[] }
+>
 
 interface ConfirmDialogProps {
     isOpen: boolean
@@ -23,7 +25,6 @@ interface ConfirmDialogProps {
     cancelLabel: string
     tone: keyof typeof tones
     isConfirming?: boolean
-    /** Shown above the buttons, e.g. why the last attempt failed. */
     error?: ReactNode
     onConfirm: () => void
     onCancel: () => void
@@ -45,32 +46,34 @@ export function ConfirmDialog({
     finalFocusEl,
 }: ConfirmDialogProps) {
     const cancelRef = useRef<HTMLButtonElement>(null)
-    const { cancel, confirm, isConfirmFirst } = tones[tone]
+    const { cancel, confirm, order } = tones[tone]
 
-    const cancelButton = (
-        <Button
-            ref={cancelRef}
-            {...cancel}
-            w={{ base: 'full', sm: 'auto' }}
-            disabled={isConfirming}
-            onClick={onCancel}
-        >
-            {cancelLabel}
-        </Button>
-    )
-    const confirmButton = (
-        <Button
-            {...confirm}
-            w={{ base: 'full', sm: 'auto' }}
-            loading={isConfirming}
-            loadingText={confirmLabel}
-            onClick={() => {
-                if (!isConfirming) onConfirm()
-            }}
-        >
-            {confirmLabel}
-        </Button>
-    )
+    const buttons = {
+        cancel: (
+            <Button
+                ref={cancelRef}
+                {...cancel}
+                w={{ base: 'full', sm: 'auto' }}
+                disabled={isConfirming}
+                onClick={onCancel}
+            >
+                {cancelLabel}
+            </Button>
+        ),
+        confirm: (
+            <Button
+                {...confirm}
+                w={{ base: 'full', sm: 'auto' }}
+                loading={isConfirming}
+                loadingText={confirmLabel}
+                onClick={() => {
+                    if (!isConfirming) onConfirm()
+                }}
+            >
+                {confirmLabel}
+            </Button>
+        ),
+    }
 
     return (
         <Dialog.Root
@@ -100,8 +103,9 @@ export function ConfirmDialog({
 
                         <Dialog.Footer asChild>
                             <Stack direction={{ base: 'column-reverse', sm: 'row' }} gap="2">
-                                {isConfirmFirst ? confirmButton : cancelButton}
-                                {isConfirmFirst ? cancelButton : confirmButton}
+                                {order.map((action) => (
+                                    <Fragment key={action}>{buttons[action]}</Fragment>
+                                ))}
                             </Stack>
                         </Dialog.Footer>
                     </Dialog.Content>

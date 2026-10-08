@@ -111,7 +111,6 @@ export const hr = {
                 network:
                     'Poslužitelj nije odgovorio. Provjerite internetsku vezu i pokušajte ponovno.',
                 forbidden: 'Nemate ovlasti za brisanje zona.',
-                notFound: 'Zona više ne postoji. Možda ju je netko u međuvremenu obrisao.',
                 server: 'Došlo je do pogreške na poslužitelju. Pokušajte ponovno za nekoliko minuta.',
             },
         },
