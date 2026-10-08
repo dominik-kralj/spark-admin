@@ -57,7 +57,10 @@ the pattern stays single-sourced.
 The list pattern (`features/zones/components/`):
 
 - `ZonesPage`: `PageHeader` (h1, document title, the primary action) above
-  `ZoneList`; the page is `flex="1" minW="0"` inside the shell's `main`.
+  `ZoneList`; the page is `flex="1" minW="0" minH="0"` inside the shell's `main`,
+  which from `md` is the window's height. The form drawer and delete dialog
+  come from `useEditAndDeleteOverlays` (`shared/lib`); the dialog is `DeleteDialog`
+  (`shared/ui`).
 - `ZoneList`: early returns for `LoadingState`, `ErrorState` (retry is
   `refetch`), `EmptyState` with the one fixing action, then the data.
   `LoadingState` announces its label through the shell's `LiveRegion`, a
@@ -65,9 +68,9 @@ The list pattern (`features/zones/components/`):
   `shared/lib/announcer` for other status messages, not a new live region. Sorting
   comes from `useSortSearchParams` (URL `sort` and `dir`; the default order
   leaves the URL clean).
-- From `md`, `ZoneTable`: a `panel` with a labelled `Table`,
-  `SortableColumnHeader` for sortable columns (it moves to `shared/ui` when a
-  second feature sorts), numbers right-aligned, and the
+- From `md`, `ZoneTable`: a `TablePanel` (`shared/ui`; it takes the spare height
+  and scrolls only its rows, so a table page never scrolls),
+  `SortableColumnHeader` (`shared/ui`) for sortable columns, numbers right-aligned, and the
   total as a footer. Below `md`, `ZoneCards`: a labelled `ul` of `panel` cards
   with a `dl` of 3 to 4 fields. Both render; CSS shows one.
 - Tests: `ZonesPage.test.tsx` through the route and the mock (columns and
@@ -173,7 +176,8 @@ deduplicates); read `next/dynamic` as `React.lazy`.
   goes through these helpers.
 - **Validation** (`src/shared/lib/validation.ts`): shared Zod pieces for plate, OIB
   and PIN, reused by every form and normalised on input (plates: uppercase, no
-  spaces).
+  spaces or dashes, in the Croatian format `ZG1234AB`: two letters, three or four
+  digits, one or two letters, never Q, W, X or Y).
 
 ## Gotchas
 

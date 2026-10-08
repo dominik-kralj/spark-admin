@@ -124,6 +124,95 @@ export const hr = {
         total: (count: number) =>
             `Ukupno ${String(count)} ${plural(count, { one: 'zona', few: 'zone', other: 'zona' })}`,
     },
+    privilegedOwners: {
+        description: 'Vozila koja parkiraju bez naplate, na primjer stanari.',
+        add: 'Dodaj korisnika',
+        addLong: 'Dodaj povlaštenog korisnika',
+        listLabel: 'Povlašteni korisnici',
+        search: {
+            label: 'Registracija',
+            placeholder: 'npr. ZG1234AB',
+        },
+        validity: {
+            label: 'Valjanost',
+            all: 'Svi',
+            valid: 'Važeći',
+            expired: 'Istekli',
+            withCount: (label: string, count: number) => `${label} (${String(count)})`,
+        },
+        columns: {
+            plate: 'Registracija',
+            validUntil: 'Vrijedi do',
+            status: 'Status',
+            ownerName: 'Vlasnik',
+            address: 'Adresa',
+        },
+        status: {
+            valid: 'Važeće',
+            expired: 'Isteklo',
+        },
+        actions: 'Radnje',
+        edit: 'Uredi',
+        editOwner: (plate: string) => `Uredi korisnika ${plate}`,
+        shown: (shown: number, total: number) => `Prikazano ${String(shown)} od ${String(total)}`,
+        loading: 'Učitavanje povlaštenih korisnika…',
+        errorTitle: 'Povlaštene korisnike nije moguće učitati',
+        empty: {
+            title: 'Još nema povlaštenih korisnika',
+            description: 'Dodajte vozila koja parkiraju bez naplate, na primjer vozila stanara.',
+        },
+        noMatch: {
+            title: 'Nema korisnika s tom registracijom',
+            description: 'Provjerite unos ili dodajte vozilo kao novog povlaštenog korisnika.',
+            clear: 'Očisti pretragu',
+        },
+        emptyTab: {
+            valid: {
+                title: 'Nema važećih korisnika',
+                description: 'Povlaštenje je isteklo svim upisanim vozilima.',
+            },
+            expired: {
+                title: 'Nema isteklih korisnika',
+                description: 'Povlaštenje vrijedi za sva upisana vozila.',
+            },
+        },
+        form: {
+            intro: 'Sva su polja obavezna.',
+            labels: {
+                plate: 'Registracija',
+                validUntil: 'Vrijedi do',
+                ownerName: 'Ime i prezime vlasnika',
+                street: 'Adresa',
+                houseNo: 'Kućni broj',
+                zipCode: 'Poštanski broj',
+                city: 'Mjesto',
+            },
+            plateHelp: 'Upišite kako želite, npr. zg 1234-ab. Sprema se kao ZG1234AB.',
+            dateHelp: 'Oblik: DD.MM.GGGG',
+            expired: (date: string) => `Isteklo ${date}.`,
+            expiredNote:
+                'Vozilo se trenutačno naplaćuje kao i svako drugo. Upišite novi datum da ponovno vrijedi.',
+            tooLong: (maxLength: number) => `Upišite najviše ${String(maxLength)} znakova.`,
+            notSaved: 'Korisnik nije spremljen. Ispravite označena polja.',
+            saved: (plate: string) => `Korisnik ${plate} je spremljen`,
+        },
+        delete: {
+            deleteOwner: (plate: string) => `Obriši korisnika ${plate}`,
+            formButton: 'Obriši korisnika',
+            title: (plate: string) => `Obrisati korisnika ${plate}?`,
+            description: (plate: string, ownerName: string) =>
+                `Vozilo ${plate} (${ownerName}) više neće parkirati bez naplate. Ovu radnju nije moguće poništiti.`,
+            confirm: 'Obriši korisnika',
+            deleted: (plate: string) => `Korisnik ${plate} je obrisan`,
+            failed: 'Korisnik nije obrisan.',
+            errors: {
+                network:
+                    'Poslužitelj nije odgovorio. Provjerite internetsku vezu i pokušajte ponovno.',
+                forbidden: 'Nemate ovlasti za brisanje povlaštenih korisnika.',
+                server: 'Došlo je do pogreške na poslužitelju. Pokušajte ponovno za nekoliko minuta.',
+            },
+        },
+    },
     forms: {
         close: 'Zatvori obrazac',
         cancel: 'Odustani',
@@ -133,6 +222,29 @@ export const hr = {
             description: 'Promjene nisu spremljene. Ako sada izađete, izgubit ćete ih.',
             confirm: 'Odbaci promjene',
             keepEditing: 'Nastavi uređivati',
+        },
+        datePicker: {
+            locale: 'hr-HR',
+            open: (field: string) => `Otvori kalendar: ${field}`,
+            close: (field: string) => `Zatvori kalendar: ${field}`,
+            calendar: 'Kalendar',
+            selected: (date: string) => `Odabrani datum: ${date}`,
+            previous: {
+                day: 'Prethodni mjesec',
+                month: 'Prethodna godina',
+                year: 'Prethodno desetljeće',
+            },
+            next: { day: 'Sljedeći mjesec', month: 'Sljedeća godina', year: 'Sljedeće desetljeće' },
+            show: { day: 'Prikaži dane', month: 'Prikaži mjesece', year: 'Prikaži godine' },
+        },
+        validation: {
+            required: 'Ovo polje je obavezno.',
+            plateInvalid:
+                'Upišite registraciju u obliku ZG 1234-AB: dva slova, tri ili četiri znamenke te jedno ili dva slova (bez Q, W, X i Y).',
+            oibInvalid: 'OIB mora imati točno 11 znamenki.',
+            pinInvalid: 'PIN može imati najviše 4 znamenke.',
+            dateFormat: 'Upišite datum u obliku DD.MM.GGGG, npr. 31.12.2026.',
+            dateInvalid: 'Taj datum ne postoji. Provjerite dan i mjesec.',
         },
         serverFieldErrors: {
             invalid: 'Poslužitelj nije prihvatio ovu vrijednost. Provjerite unos.',

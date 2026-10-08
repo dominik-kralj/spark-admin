@@ -116,6 +116,95 @@ export const en: Dictionary = {
         errorTitle: 'Zones could not be loaded',
         total: (count: number) => `${String(count)} ${count === 1 ? 'zone' : 'zones'} in total`,
     },
+    privilegedOwners: {
+        description: 'Vehicles that park free of charge, for example residents.',
+        add: 'Add user',
+        addLong: 'Add privileged user',
+        listLabel: 'Privileged users',
+        search: {
+            label: 'Plate',
+            placeholder: 'e.g. ZG1234AB',
+        },
+        validity: {
+            label: 'Validity',
+            all: 'All',
+            valid: 'Valid',
+            expired: 'Expired',
+            withCount: (label: string, count: number) => `${label} (${String(count)})`,
+        },
+        columns: {
+            plate: 'Plate',
+            validUntil: 'Valid until',
+            status: 'Status',
+            ownerName: 'Owner',
+            address: 'Address',
+        },
+        status: {
+            valid: 'Valid',
+            expired: 'Expired',
+        },
+        actions: 'Actions',
+        edit: 'Edit',
+        editOwner: (plate: string) => `Edit user ${plate}`,
+        shown: (shown: number, total: number) => `Showing ${String(shown)} of ${String(total)}`,
+        loading: 'Loading privileged users…',
+        errorTitle: 'Privileged users could not be loaded',
+        empty: {
+            title: 'No privileged users yet',
+            description: "Add vehicles that park free of charge, for example residents' vehicles.",
+        },
+        noMatch: {
+            title: 'No users with that plate',
+            description: 'Check what you entered, or add the vehicle as a new privileged user.',
+            clear: 'Clear search',
+        },
+        emptyTab: {
+            valid: {
+                title: 'No valid users',
+                description: 'The privilege has expired for every vehicle on the list.',
+            },
+            expired: {
+                title: 'No expired users',
+                description: 'The privilege is valid for every vehicle on the list.',
+            },
+        },
+        form: {
+            intro: 'All fields are required.',
+            labels: {
+                plate: 'Plate',
+                validUntil: 'Valid until',
+                ownerName: "Owner's full name",
+                street: 'Street',
+                houseNo: 'House number',
+                zipCode: 'Postcode',
+                city: 'Town',
+            },
+            plateHelp: 'Type it any way, e.g. zg 1234-ab. It is saved as ZG1234AB.',
+            dateHelp: 'Format: DD.MM.YYYY',
+            expired: (date: string) => `Expired ${date}.`,
+            expiredNote:
+                'The vehicle is currently charged like any other. Enter a new date to make it valid again.',
+            tooLong: (maxLength: number) => `Enter at most ${String(maxLength)} characters.`,
+            notSaved: 'The user was not saved. Correct the marked fields.',
+            saved: (plate: string) => `User ${plate} saved`,
+        },
+        delete: {
+            deleteOwner: (plate: string) => `Delete user ${plate}`,
+            formButton: 'Delete user',
+            title: (plate: string) => `Delete user ${plate}?`,
+            description: (plate: string, ownerName: string) =>
+                `Vehicle ${plate} (${ownerName}) will no longer park free of charge. This cannot be undone.`,
+            confirm: 'Delete user',
+            deleted: (plate: string) => `User ${plate} deleted`,
+            failed: 'The user was not deleted.',
+            errors: {
+                network:
+                    'The server did not respond. Check your internet connection and try again.',
+                forbidden: 'You do not have permission to delete privileged users.',
+                server: 'Something went wrong on the server. Try again in a few minutes.',
+            },
+        },
+    },
     forms: {
         close: 'Close form',
         cancel: 'Cancel',
@@ -125,6 +214,25 @@ export const en: Dictionary = {
             description: 'Your changes have not been saved. If you leave now, you will lose them.',
             confirm: 'Discard changes',
             keepEditing: 'Keep editing',
+        },
+        datePicker: {
+            locale: 'en-GB',
+            open: (field: string) => `Open calendar: ${field}`,
+            close: (field: string) => `Close calendar: ${field}`,
+            calendar: 'Calendar',
+            selected: (date: string) => `Selected date: ${date}`,
+            previous: { day: 'Previous month', month: 'Previous year', year: 'Previous decade' },
+            next: { day: 'Next month', month: 'Next year', year: 'Next decade' },
+            show: { day: 'Show days', month: 'Show months', year: 'Show years' },
+        },
+        validation: {
+            required: 'This field is required.',
+            plateInvalid:
+                'Enter the plate as ZG 1234-AB: two letters, three or four digits, then one or two letters (no Q, W, X or Y).',
+            oibInvalid: 'An OIB must have exactly 11 digits.',
+            pinInvalid: 'A PIN can have at most 4 digits.',
+            dateFormat: 'Enter the date as DD.MM.YYYY, e.g. 31.12.2026.',
+            dateInvalid: 'That date does not exist. Check the day and month.',
         },
         serverFieldErrors: {
             invalid: 'The server did not accept this value. Check what you entered.',

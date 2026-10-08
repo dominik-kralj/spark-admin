@@ -1,4 +1,4 @@
-import { useSearchParams } from 'react-router'
+import { useSearchParams } from './useSearchParams'
 
 export type SortDirection = 'asc' | 'desc'
 
@@ -29,27 +29,17 @@ export function useSortSearchParams<TKey extends string>(
     keys: readonly TKey[],
     defaultSort: Sort<TKey>,
 ) {
-    const [searchParams, setSearchParams] = useSearchParams()
+    const { searchParams, updateSearchParams } = useSearchParams()
     const sort = readSort(searchParams, { keys, defaultSort })
 
     function sortBy(key: TKey): void {
         const direction = key === sort.key && sort.direction === 'asc' ? 'desc' : 'asc'
         const isDefault = key === defaultSort.key && direction === defaultSort.direction
 
-        setSearchParams(
-            (current) => {
-                const next = new URLSearchParams(current)
-                next.delete(sortParam)
-                next.delete(directionParam)
-                if (!isDefault) {
-                    next.set(sortParam, key)
-                    next.set(directionParam, direction)
-                }
-
-                return next
-            },
-            { replace: true },
-        )
+        updateSearchParams({
+            [sortParam]: isDefault ? null : key,
+            [directionParam]: isDefault ? null : direction,
+        })
     }
 
     return { sort, sortBy }

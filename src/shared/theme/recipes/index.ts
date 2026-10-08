@@ -1,6 +1,7 @@
 import { defineConfig } from '@chakra-ui/react'
 
 import { layerStyles } from '../layerStyles'
+import { textStyles } from '../textStyles'
 
 import { alertRecipe } from './alert'
 import { buttonRecipe } from './button'
@@ -12,11 +13,13 @@ import { inputRecipe } from './input'
 import { skeletonRecipe } from './skeleton'
 import { skipNavLinkRecipe } from './skipNavLink'
 import { tableRecipe } from './table'
+import { tabsRecipe } from './tabs'
 import { toastRecipe } from './toast'
 
 export const recipesConfig = defineConfig({
     theme: {
         layerStyles,
+        textStyles,
         recipes: {
             button: buttonRecipe,
             input: inputRecipe,
@@ -30,6 +33,7 @@ export const recipesConfig = defineConfig({
             emptyState: emptyStateRecipe,
             field: fieldRecipe,
             table: tableRecipe,
+            tabs: tabsRecipe,
             toast: toastRecipe,
         },
     },

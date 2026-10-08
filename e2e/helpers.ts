@@ -74,3 +74,30 @@ export async function expectTouchTargets(controls: Locator): Promise<void> {
         expect(box?.height, name).toBeGreaterThanOrEqual(43.99)
     }
 }
+
+/** The page fits the window, and `table` scrolls its own rows instead. */
+export async function expectOnlyTableScrolls(page: Page, table: Locator): Promise<void> {
+    const pageOverflow = await page.evaluate(
+        () => document.documentElement.scrollHeight - document.documentElement.clientHeight,
+    )
+    const main = page.getByRole('main')
+    const mainOverflow = await main.evaluate(
+        (element) => element.scrollHeight - element.clientHeight,
+    )
+    const rowsOverflow = await table
+        .locator('..')
+        .evaluate((element) => element.scrollHeight - element.clientHeight)
+
+    expect(pageOverflow).toBeLessThanOrEqual(0)
+    expect(mainOverflow).toBeLessThanOrEqual(0)
+    expect(rowsOverflow).toBeGreaterThan(0)
+
+    const scrollArea = table.locator('..')
+    const headerTop = async () => (await table.getByRole('columnheader').first().boundingBox())?.y
+    const areaTop = (await scrollArea.boundingBox())?.y
+    await scrollArea.evaluate((element) => {
+        element.scrollTop = element.scrollHeight
+    })
+
+    expect(await headerTop()).toBeCloseTo(areaTop ?? Number.NaN, 0)
+}

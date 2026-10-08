@@ -1,3 +1,5 @@
+import type { CalendarDate } from './calendarDate'
+
 // Part of the format, which stays Croatian in every UI language.
 const currency = 'EUR'
 const minutesUnit = 'min'
@@ -40,6 +42,13 @@ function zagrebParts(value: Date) {
 
 export function formatDate(value: Date): string {
     return zagrebParts(value).date
+}
+
+/** A typed or picked day, with no time zone to convert. */
+export function formatCalendarDate({ year, month, day }: CalendarDate): string {
+    const pad = (value: number) => String(value).padStart(2, '0')
+
+    return `${pad(day)}.${pad(month)}.${String(year)}`
 }
 
 export function formatTime(value: Date): string {

@@ -7,6 +7,7 @@ import { expectNoAxeViolations } from './axe'
 import {
     expectBelow,
     expectNoHorizontalScroll,
+    expectOnlyTableScrolls,
     expectTouchTargets,
     signIn,
     waitForAnimations,
@@ -39,6 +40,18 @@ test.describe('Zone list on a desktop', () => {
         await expect(page).toHaveURL(`${paths.zones}?sort=code&dir=desc`)
         await expect(table.getByRole('row').nth(1)).toContainText('ZONA1')
     })
+})
+
+test('scrolls only the table rows when the window is short', async ({ page, isMobile }) => {
+    test.skip(isMobile, 'the table layout runs in the desktop project')
+    await page.setViewportSize({ width: 1440, height: 360 })
+    await signIn(page)
+    await page.goto(paths.zones)
+    const table = page.getByRole('table', { name: hr.zones.listLabel })
+    await expect(table.getByRole('row')).toHaveCount(3)
+
+    await expectOnlyTableScrolls(page, table)
+    await expect(page.getByText(hr.zones.total(2))).toBeInViewport()
 })
 
 test.describe('Zone list on a phone', () => {

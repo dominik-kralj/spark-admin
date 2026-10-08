@@ -9,6 +9,9 @@ import { paths } from '@/shared/paths'
 
 const screens: Partial<Record<string, () => Promise<ComponentType>>> = {
     [paths.zones]: async () => (await import('@/features/zones/components/ZonesPage')).ZonesPage,
+    [paths.privilegedOwners]: async () =>
+        (await import('@/features/privileged-owners/components/PrivilegedOwnersPage'))
+            .PrivilegedOwnersPage,
 }
 
 function sectionRoute({ path, labelKey }: Section): RouteObject {

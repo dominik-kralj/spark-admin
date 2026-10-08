@@ -44,15 +44,16 @@ Markers used below:
   For "06.10.2026 to 06.10.2026" the frontend sends
   `createdFrom=2026-10-05T22:00:00Z&createdTo=2026-10-06T22:00:00Z`. [proposed]
 - Money is a JSON number in EUR. Requests carry at most 2 decimals. [proposed]
-- Plates are uppercase letters and digits only, 1 to 20 characters
-  (`ZG1234AB`). The frontend sends them normalised; the backend should
+- Plates are Croatian plates without spaces or dashes (`ZG1234AB`): two letters,
+  three or four digits, then one or two letters; the letters are A–Z without
+  Q, W, X and Y, plus Č, Ć, Đ, Š, Ž. [built] The frontend sends them normalised; the backend should
   normalise again before storing or comparing. [spec]
 - Status values (payment and fiscalization) are the type `Status` used below:
   `'PENDING' | 'PROCESSING' | 'DONE' | 'FAIL'`. [spec]
 
 ### Lists
 
-Small master-data lists (zones, inspectors, admin users) return a plain array
+Small master-data lists (zones, privileged owners, inspectors, admin users) return a plain array
 and are sorted in the browser. Large lists are paged on the server:
 
 ```ts
@@ -307,22 +308,11 @@ type PrivilegedOwnerInput = Omit<PrivilegedOwner, 'privilegedOwnerId'>
 
 All fields are required [spec: every column is NOT NULL].
 
-`GET /privileged-owners`
-
-| Query      | Type   | Notes                                                 |
-| ---------- | ------ | ----------------------------------------------------- |
-| `plate`    | string | Matches anywhere in the plate                         |
-| `validity` | string | `all` (default), `valid`, `expired`                   |
-| `sortBy`   | string | `validUntil` (default, `desc`), `vehicleRegistration` |
-| paging     |        | `page`, `pageSize`, `sortDir`                         |
-
-```ts
-// 200: the tabs "Svi (6) / Važeći (4) / Istekli (2)" need the counts.
-// Counts respect `plate` and ignore `validity`.
-interface PrivilegedOwnerPage extends Page<PrivilegedOwner> {
-  counts: { all: number; valid: number; expired: number }
-}
-```
+`GET /privileged-owners` answers `200 PrivilegedOwner[]`: every entry of the city, as
+for zones. The tabs ("Svi (6) / Važeći (4) / Istekli (2)"), their counts, the
+plate search and the sort run in the browser. [built] Server paging with
+`plate`, `validity` and `sortBy` and the counts in the response can be added if a
+city's list grows into the thousands.
 
 | Call                                            | Body                   | Success               |
 | ----------------------------------------------- | ---------------------- | --------------------- |

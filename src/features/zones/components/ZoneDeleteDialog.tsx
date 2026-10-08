@@ -1,10 +1,5 @@
-import { useRef } from 'react'
-
 import { useStrings } from '@/shared/i18n/useStrings'
-import { errorMessage } from '@/shared/lib/errorMessage'
-import { toaster } from '@/shared/lib/toaster'
-import { ConfirmDialog } from '@/shared/ui/ConfirmDialog'
-import { ErrorAlert } from '@/shared/ui/ErrorAlert'
+import { DeleteDialog } from '@/shared/ui/DeleteDialog'
 
 import { useDeleteZone } from '../api/useZones'
 import type { Zone } from '../validators/zone'
@@ -17,52 +12,26 @@ interface ZoneDeleteDialogProps {
     finalFocusEl: () => HTMLElement | null
 }
 
-export function ZoneDeleteDialog({
-    isOpen,
-    zone,
-    onCancel,
-    onDeleted,
-    finalFocusEl,
-}: ZoneDeleteDialogProps) {
+export function ZoneDeleteDialog({ zone, ...dialog }: ZoneDeleteDialogProps) {
     const t = useStrings()
     const deleteZone = useDeleteZone()
-    // isPending reaches the button a tick after mutate; this stops a press in between.
-    const isRequestedRef = useRef(false)
+    const strings = t.zones.delete
 
     if (zone === null) return null
 
     return (
-        <ConfirmDialog
-            isOpen={isOpen}
-            title={t.zones.delete.title(zone.code)}
-            description={t.zones.delete.description(zone.code, zone.name)}
-            confirmLabel={t.zones.delete.confirm}
-            cancelLabel={t.forms.cancel}
-            tone="destructive"
-            isConfirming={deleteZone.isPending}
-            error={
-                deleteZone.error && (
-                    <ErrorAlert
-                        title={t.zones.delete.failed}
-                        message={errorMessage(deleteZone.error, t.zones.delete.errors)}
-                    />
-                )
-            }
-            onConfirm={() => {
-                if (isRequestedRef.current) return
-                isRequestedRef.current = true
-                deleteZone.mutate(zone.id, {
-                    onSettled: () => {
-                        isRequestedRef.current = false
-                    },
-                    onSuccess: () => {
-                        toaster.success({ title: t.zones.delete.deleted(zone.code) })
-                        onDeleted()
-                    },
-                })
+        <DeleteDialog
+            {...dialog}
+            strings={{
+                title: strings.title(zone.code),
+                description: strings.description(zone.code, zone.name),
+                confirm: strings.confirm,
+                failed: strings.failed,
+                errors: strings.errors,
+                deleted: strings.deleted(zone.code),
             }}
-            onCancel={onCancel}
-            finalFocusEl={finalFocusEl}
+            deletion={deleteZone}
+            id={zone.id}
         />
     )
 }

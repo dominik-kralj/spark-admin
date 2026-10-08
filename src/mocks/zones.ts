@@ -2,6 +2,7 @@ import { http, HttpResponse } from 'msw'
 import { z } from 'zod'
 
 import { mockAdminUser } from './adminUsers'
+import { notFound, validationProblem } from './responses'
 import { apiUrl } from './url'
 
 interface ZoneRow {
@@ -114,13 +115,7 @@ type BodyResult = { body: ZoneBody } | { response: Response }
 
 async function readZoneBody(request: Request, ownId: number | null): Promise<BodyResult> {
     const parsed = zoneBodySchema.safeParse(await request.json())
-    if (!parsed.success) {
-        const errors: Record<string, string[]> = {}
-        // ValidationProblemDetails puts errors about the body as a whole under '$'.
-        for (const issue of parsed.error.issues) errors[issue.path.join('.') || '$'] = ['invalid']
-
-        return { response: HttpResponse.json({ status: 400, errors }, { status: 400 }) }
-    }
+    if (!parsed.success) return { response: validationProblem(parsed.error) }
 
     const field = duplicateField(parsed.data, ownId)
     if (field !== null) {
@@ -131,8 +126,6 @@ async function readZoneBody(request: Request, ownId: number | null): Promise<Bod
 
     return { body: parsed.data }
 }
-
-const notFound = () => new HttpResponse(null, { status: 404 })
 
 export const zoneHandlers = [
     http.get(apiUrl('/zones'), () =>
