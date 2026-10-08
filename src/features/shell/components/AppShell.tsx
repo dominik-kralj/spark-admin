@@ -2,7 +2,7 @@ import { Flex, Grid, SkipNavContent, SkipNavLink } from '@chakra-ui/react'
 import type { ReactNode } from 'react'
 import { Outlet } from 'react-router'
 
-import { hr } from '@/shared/i18n/hr'
+import { useStrings } from '@/shared/i18n/useStrings'
 import { LiveRegion } from '@/shared/ui/LiveRegion'
 
 import { useShellLayout, type ShellLayout } from '../lib/useShellLayout'
@@ -27,12 +27,13 @@ const sideNav: Record<ShellLayout, ReactNode> = {
 }
 
 export function AppShell({ userName, onSignOut }: AppShellProps) {
+    const t = useStrings()
     const layout = useShellLayout()
 
     // main keeps its place in the tree at every width, so a resize never remounts the page.
     return (
         <Grid templateColumns={columns[layout]} minH="100dvh">
-            <SkipNavLink>{hr.shell.skipToContent}</SkipNavLink>
+            <SkipNavLink>{t.shell.skipToContent}</SkipNavLink>
             <LiveRegion />
 
             {sideNav[layout]}

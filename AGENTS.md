@@ -152,8 +152,16 @@ deduplicates); read `next/dynamic` as `React.lazy`.
   `colorPalette="blue"`), never raw hex values.
   App-wide component styling goes in recipe overrides in
   `src/shared/theme/recipes/`, one file per component, never in `system.ts`.
-- **Strings** (`src/shared/i18n/hr.ts`): every user-visible string, including
-  aria-labels, validation messages and toasts. Components import keys from it.
+- **Strings** (`src/shared/i18n/`): every user-visible string, including
+  aria-labels, validation messages and toasts, lives in `hr.ts` (the source and
+  the default) and in `en.ts`, which is typed against it, so a missing or extra
+  key fails `tsc`. Add every new key to both. Components read the active
+  language with `useStrings()`; code outside React (helpers, Zod schemas built
+  per render) gets the strings passed in, or calls `getStrings()`. Never read a
+  dictionary when a module loads: that freezes the language (nav labels are
+  keys, resolved at render). The choice is per browser in `localStorage`;
+  `LanguageMenu` (`shared/ui`) switches it. Dates, times and amounts keep the
+  Croatian formats in both languages.
 - **Format** (`src/shared/lib/format.ts`): every date, time and money shown in the UI
   goes through these helpers.
 - **Validation** (`src/shared/lib/validation.ts`): shared Zod pieces for plate, OIB
@@ -211,7 +219,8 @@ deduplicates); read `next/dynamic` as `React.lazy`.
 
 ## Glossary
 
-The UI is in Croatian. Code identifiers, comments and commits are in English.
+The UI is in Croatian by default, with English as the second language. Code
+identifiers, comments and commits are in English.
 
 | UI (hr)             | Code (en)                  | Spec table                |
 | ------------------- | -------------------------- | ------------------------- |

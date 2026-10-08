@@ -1,13 +1,15 @@
 import { Button } from '@chakra-ui/react'
 import { Plus } from 'lucide-react'
 
-import { hr } from '@/shared/i18n/hr'
+import { useStrings } from '@/shared/i18n/useStrings'
 
 export function AddZoneButton() {
+    const t = useStrings()
+
     return (
         <Button colorPalette="blue">
             <Plus aria-hidden="true" />
-            {hr.zones.add}
+            {t.zones.add}
         </Button>
     )
 }

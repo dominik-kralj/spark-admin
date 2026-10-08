@@ -11,9 +11,9 @@ const screens: Partial<Record<string, () => Promise<ComponentType>>> = {
     [paths.zones]: async () => (await import('@/features/zones/components/ZonesPage')).ZonesPage,
 }
 
-function sectionRoute({ path, label }: Section): RouteObject {
+function sectionRoute({ path, labelKey }: Section): RouteObject {
     const screen = screens[path]
-    if (screen === undefined) return { path, element: <PlaceholderPage title={label} /> }
+    if (screen === undefined) return { path, element: <PlaceholderPage labelKey={labelKey} /> }
 
     return { path, lazy: { Component: screen } }
 }

@@ -1,7 +1,7 @@
 import { Button, Icon } from '@chakra-ui/react'
 import { TriangleAlert } from 'lucide-react'
 
-import { hr } from '@/shared/i18n/hr'
+import { useStrings } from '@/shared/i18n/useStrings'
 import { listErrorMessage } from '@/shared/lib/listErrorMessage'
 
 import { EmptyState } from './EmptyState'
@@ -14,6 +14,8 @@ interface ErrorStateProps {
 }
 
 export function ErrorState({ title, error, onRetry, isRetrying }: ErrorStateProps) {
+    const t = useStrings()
+
     return (
         <EmptyState
             role="alert"
@@ -23,15 +25,15 @@ export function ErrorState({ title, error, onRetry, isRetrying }: ErrorStateProp
                 </Icon>
             }
             title={title}
-            description={listErrorMessage(error)}
+            description={listErrorMessage(error, t)}
             action={
                 <Button
                     colorPalette="blue"
                     loading={isRetrying}
-                    loadingText={hr.listStates.retry}
+                    loadingText={t.listStates.retry}
                     onClick={onRetry}
                 >
-                    {hr.listStates.retry}
+                    {t.listStates.retry}
                 </Button>
             }
         />

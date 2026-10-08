@@ -49,6 +49,8 @@ describe('LoginPage', () => {
         expect(screen.getByRole('button', { name: hr.login.showPassword })).toHaveFocus()
         await user.tab()
         expect(getForm().submit).toHaveFocus()
+        await user.tab()
+        expect(screen.getByRole('button', { name: 'Jezik / Language: HR' })).toHaveFocus()
     })
 
     it('names the browser tab after the page', async () => {

@@ -1,13 +1,15 @@
 import { Box, Flex } from '@chakra-ui/react'
 import { Link } from 'react-router'
 
-import { hr } from '@/shared/i18n/hr'
+import { useStrings } from '@/shared/i18n/useStrings'
 import { paths } from '@/shared/paths'
 
 import { Logo } from './Logo'
 import { NavItems } from './NavItems'
 
 export function Sidebar() {
+    const t = useStrings()
+
     return (
         <Box
             position="sticky"
@@ -26,12 +28,12 @@ export function Sidebar() {
                 borderBottomWidth="1px"
                 borderColor="border"
             >
-                <Link to={paths.home} aria-label={hr.shell.homeLink}>
+                <Link to={paths.home} aria-label={t.shell.homeLink}>
                     <Logo />
                 </Link>
             </Flex>
 
-            <Box as="nav" aria-label={hr.shell.mainNav} p="3">
+            <Box as="nav" aria-label={t.shell.mainNav} p="3">
                 <NavItems variant="sidebar" />
             </Box>
         </Box>

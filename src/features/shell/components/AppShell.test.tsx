@@ -35,7 +35,7 @@ describe('app shell', () => {
         ).toBeInTheDocument()
     })
 
-    it('starts the focus order with a skip link to main, then logo, nav and Odjava', async () => {
+    it('starts the focus order with a skip link to main, then logo, nav, language and Odjava', async () => {
         const { user, container } = await renderRoute(paths.tickets)
         await screen.findByText('Grad Samobor')
 
@@ -51,6 +51,8 @@ describe('app shell', () => {
             await user.tab()
             expect(screen.getByRole('link', { name: label })).toHaveFocus()
         }
+        await user.tab()
+        expect(screen.getByRole('button', { name: 'Jezik / Language: HR' })).toHaveFocus()
         await user.tab()
         expect(screen.getByRole('button', { name: hr.shell.signOut })).toHaveFocus()
 

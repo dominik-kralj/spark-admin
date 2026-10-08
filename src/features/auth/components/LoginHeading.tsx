@@ -1,9 +1,11 @@
 import { Heading, Image, Span } from '@chakra-ui/react'
 
 import sparkMark from '@/shared/assets/spark-mark.svg'
-import { hr } from '@/shared/i18n/hr'
+import { useStrings } from '@/shared/i18n/useStrings'
 
 export function LoginHeading({ id }: { id: string }) {
+    const t = useStrings()
+
     return (
         <Heading
             as="h1"
@@ -18,9 +20,9 @@ export function LoginHeading({ id }: { id: string }) {
             color="spark.heading"
         >
             <Image src={sparkMark} alt="" boxSize="10" flex="none" />
-            <Span letterSpacing="0.06em">{hr.app.brand}</Span>{' '}
+            <Span letterSpacing="0.06em">{t.app.brand}</Span>{' '}
             <Span fontSize="md" fontWeight="normal" color="fg.muted">
-                {hr.app.product}
+                {t.app.product}
             </Span>
         </Heading>
     )

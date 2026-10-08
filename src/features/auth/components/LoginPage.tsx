@@ -1,21 +1,23 @@
-import { Alert, Button, Field, Flex, HStack, IconButton, Input, Stack } from '@chakra-ui/react'
+import { Alert, Box, Button, Field, Flex, HStack, IconButton, Input, Stack } from '@chakra-ui/react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CircleAlert, Eye, EyeOff, Info } from 'lucide-react'
 import { useId, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useLocation, useNavigate, useSearchParams } from 'react-router'
 
-import { hr } from '@/shared/i18n/hr'
+import { useStrings } from '@/shared/i18n/useStrings'
 import { focusOnMount } from '@/shared/lib/focusOnMount'
+import { LanguageMenu } from '@/shared/ui/LanguageMenu'
 
 import { useAuth } from '../api/useAuth'
 import { loginErrorMessage } from '../lib/loginErrorMessage'
 import { isSessionExpiredState, returnPathFrom } from '../lib/sessionRedirects'
-import { emptyLoginForm, loginFormSchema } from '../validators/loginForm'
+import { createLoginFormSchema, emptyLoginForm } from '../validators/loginForm'
 
 import { LoginHeading } from './LoginHeading'
 
 export function LoginPage() {
+    const t = useStrings()
     const navigate = useNavigate()
     const location = useLocation()
     const [searchParams] = useSearchParams()
@@ -30,7 +32,7 @@ export function LoginPage() {
         handleSubmit,
         formState: { errors },
     } = useForm({
-        resolver: zodResolver(loginFormSchema),
+        resolver: zodResolver(createLoginFormSchema(t)),
         defaultValues: emptyLoginForm,
         mode: 'onSubmit',
         reValidateMode: 'onChange',
@@ -51,6 +53,7 @@ export function LoginPage() {
             // offset puts the form (about 20rem tall) in the middle of the screen.
             pt={{ base: 'max(1.5rem, calc(50dvh - 10rem))', md: '28vh' }}
             bg="bg"
+            position="relative"
         >
             <Stack asChild w="full" maxW="360px" gap="5">
                 <form
@@ -60,7 +63,7 @@ export function LoginPage() {
                     aria-describedby={failure ? errorId : undefined}
                     onSubmit={(event) => void handleSubmit(signIn)(event)}
                 >
-                    <title>{hr.app.documentTitle(hr.login.title)}</title>
+                    <title>{t.app.documentTitle(t.login.title)}</title>
 
                     <LoginHeading id={headingId} />
 
@@ -69,7 +72,7 @@ export function LoginPage() {
                             <Alert.Indicator>
                                 <Info />
                             </Alert.Indicator>
-                            <Alert.Description>{hr.login.sessionExpired}</Alert.Description>
+                            <Alert.Description>{t.login.sessionExpired}</Alert.Description>
                         </Alert.Root>
                     )}
 
@@ -86,8 +89,8 @@ export function LoginPage() {
                                 <CircleAlert />
                             </Alert.Indicator>
                             <Alert.Description>
-                                <strong>{hr.login.errorTitle}</strong>{' '}
-                                {loginErrorMessage(failure.error)}
+                                <strong>{t.login.errorTitle}</strong>{' '}
+                                {loginErrorMessage(failure.error, t)}
                             </Alert.Description>
                         </Alert.Root>
                     )}
@@ -96,7 +99,7 @@ export function LoginPage() {
                         invalid={errors.username !== undefined}
                         ids={{ errorText: usernameErrorId }}
                     >
-                        <Field.Label>{hr.login.username}</Field.Label>
+                        <Field.Label>{t.login.username}</Field.Label>
                         <Input
                             {...register('username')}
                             aria-describedby={errors.username ? usernameErrorId : undefined}
@@ -112,7 +115,7 @@ export function LoginPage() {
                         invalid={errors.password !== undefined}
                         ids={{ errorText: passwordErrorId }}
                     >
-                        <Field.Label>{hr.login.password}</Field.Label>
+                        <Field.Label>{t.login.password}</Field.Label>
                         <HStack w="full" gap="2">
                             <Input
                                 {...register('password')}
@@ -121,7 +124,7 @@ export function LoginPage() {
                                 autoComplete="current-password"
                             />
                             <IconButton
-                                aria-label={hr.login.showPassword}
+                                aria-label={t.login.showPassword}
                                 aria-pressed={isPasswordVisible}
                                 onClick={() => {
                                     setIsPasswordVisible((isVisible) => !isVisible)
@@ -140,14 +143,19 @@ export function LoginPage() {
                     <Button
                         type="submit"
                         loading={isPending}
-                        loadingText={hr.login.submit}
+                        loadingText={t.login.submit}
                         colorPalette="blue"
                         mt="1"
                     >
-                        {hr.login.submit}
+                        {t.login.submit}
                     </Button>
                 </form>
             </Stack>
+
+            {/* Last in focus order, so the form still starts at the username. */}
+            <Box position="absolute" top="4" right="4">
+                <LanguageMenu variant="header" />
+            </Box>
         </Flex>
     )
 }

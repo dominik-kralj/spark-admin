@@ -1,4 +1,4 @@
-import { hr } from '@/shared/i18n/hr'
+import { getStrings } from '@/shared/i18n/language'
 
 const dateTimeFormat = new Intl.DateTimeFormat('hr-HR', {
     timeZone: 'Europe/Zagreb',
@@ -49,9 +49,9 @@ export function formatAmount(amount: number): string {
         .map((part) => (part.type === 'minusSign' ? '-' : part.value))
         .join('')
 
-    return `${digits} ${hr.format.currency}`
+    return `${digits} ${getStrings().format.currency}`
 }
 
 export function formatMinutes(minutes: number): string {
-    return `${integerFormat.format(minutes)} ${hr.format.minutes}`
+    return `${integerFormat.format(minutes)} ${getStrings().format.minutes}`
 }

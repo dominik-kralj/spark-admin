@@ -11,7 +11,21 @@ import { installMatchMedia, resetViewport } from './viewport'
 beforeAll(() => {
     server.listen({ onUnhandledFrame: 'error' })
     // Absent in files that opt into the node environment.
-    if (typeof window !== 'undefined') installMatchMedia()
+    if (typeof window !== 'undefined') {
+        installMatchMedia()
+        // jsdom has no layout; Chakra's menu positioning only needs the API to exist.
+        globalThis.ResizeObserver = class {
+            observe(): void {
+                return undefined
+            }
+            unobserve(): void {
+                return undefined
+            }
+            disconnect(): void {
+                return undefined
+            }
+        }
+    }
 })
 afterEach(() => {
     cleanup()
@@ -21,6 +35,8 @@ afterEach(() => {
     resetZones()
     // Absent in files that opt into the node environment.
     if (typeof sessionStorage !== 'undefined') sessionStorage.clear()
+    // The language choice lives here; every test starts in Croatian.
+    if (typeof localStorage !== 'undefined') localStorage.clear()
 })
 afterAll(() => {
     server.close()

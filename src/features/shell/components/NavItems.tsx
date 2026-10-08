@@ -1,6 +1,8 @@
 import { Box, HStack, type StackProps } from '@chakra-ui/react'
 import { NavLink } from 'react-router'
 
+import { useStrings } from '@/shared/i18n/useStrings'
+
 import { sections } from '../lib/sections'
 
 type NavItemsVariant = 'sidebar' | 'drawer' | 'rail'
@@ -17,11 +19,12 @@ const itemStyles: Record<NavItemsVariant, StackProps> = {
 }
 
 export function NavItems({ variant, onNavigate }: NavItemsProps) {
+    const t = useStrings()
     const isIconOnly = variant === 'rail'
 
     return (
         <Box as="ul" display="flex" flexDirection="column" alignItems="stretch" gap="0.5">
-            {sections.map(({ path, label, icon: Icon }) => (
+            {sections.map(({ path, labelKey, icon: Icon }) => (
                 <li key={path}>
                     <HStack
                         asChild
@@ -37,11 +40,11 @@ export function NavItems({ variant, onNavigate }: NavItemsProps) {
                     >
                         <NavLink
                             to={path}
-                            aria-label={isIconOnly ? label : undefined}
+                            aria-label={isIconOnly ? t.nav[labelKey] : undefined}
                             onClick={onNavigate}
                         >
                             <Icon size={isIconOnly ? 22 : 18} aria-hidden="true" />
-                            {!isIconOnly && label}
+                            {!isIconOnly && t.nav[labelKey]}
                         </NavLink>
                     </HStack>
                 </li>

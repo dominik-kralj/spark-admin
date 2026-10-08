@@ -1,15 +1,15 @@
 import { isApiError } from '@/shared/api'
-import { hr } from '@/shared/i18n/hr'
+import type { Dictionary } from '@/shared/i18n/dictionary'
 
-export function listErrorMessage(error: Error): string {
-    if (!isApiError(error)) return hr.listStates.errors.server
+export function listErrorMessage(error: Error, t: Dictionary): string {
+    if (!isApiError(error)) return t.listStates.errors.server
 
     switch (error.kind) {
         case 'network':
-            return hr.listStates.errors.network
+            return t.listStates.errors.network
         case 'forbidden':
-            return hr.listStates.errors.forbidden
+            return t.listStates.errors.forbidden
         default:
-            return hr.listStates.errors.server
+            return t.listStates.errors.server
     }
 }

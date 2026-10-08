@@ -61,7 +61,8 @@ The backend (C# .NET Web API) is built by others and is not ready.
 
 ## Hard requirements
 
-- UI text in Croatian, all strings in one place (no literals in components).
+- UI text in Croatian (the default) and English, all strings in one place per
+  language (no literals in components).
   Dates dd.MM.yyyy, 24-hour time, amounts like 0,70 EUR.
 - Responsive from 320 px to desktop. On phones tables become cards, filters
   move into a drawer, navigation becomes a drawer, forms are one column.
