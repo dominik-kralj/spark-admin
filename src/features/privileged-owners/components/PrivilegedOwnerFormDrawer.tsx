@@ -1,5 +1,6 @@
-import { Input, SimpleGrid, Text } from '@chakra-ui/react'
+import { Button, Input, SimpleGrid, Text } from '@chakra-ui/react'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Trash2 } from 'lucide-react'
 import type { HTMLAttributes } from 'react'
 import { useForm } from 'react-hook-form'
 
@@ -12,7 +13,11 @@ import { ErrorAlert } from '@/shared/ui/ErrorAlert'
 import { FormDrawer } from '@/shared/ui/FormDrawer'
 import { FormField } from '@/shared/ui/FormField'
 
-import { useCreatePrivilegedOwner, useUpdatePrivilegedOwner } from '../api/usePrivilegedOwners'
+import {
+    useCreatePrivilegedOwner,
+    usePrivilegedOwners,
+    useUpdatePrivilegedOwner,
+} from '../api/usePrivilegedOwners'
 import { privilegedOwnerFieldMessage } from '../lib/privilegedOwnerFieldMessage'
 import { validityOf } from '../lib/validity'
 import {
@@ -32,7 +37,6 @@ import { ExpiredNote } from './ExpiredNote'
 
 type InputMode = HTMLAttributes<HTMLInputElement>['inputMode']
 
-// Rows of the form: fields that belong together share a row from md up.
 const fieldRows: { name: PrivilegedOwnerField; inputMode: InputMode }[][] = [
     [
         { name: 'plate', inputMode: 'text' },
@@ -53,16 +57,21 @@ interface PrivilegedOwnerFormDrawerProps {
     isOpen: boolean
     owner: PrivilegedOwner | null
     onClose: () => void
+    onDelete: (owner: PrivilegedOwner) => void
+    finalFocusEl: () => HTMLElement | null
 }
 
 export function PrivilegedOwnerFormDrawer({
     isOpen,
     owner,
     onClose,
+    onDelete,
+    finalFocusEl,
 }: PrivilegedOwnerFormDrawerProps) {
     const t = useStrings()
     const createOwner = useCreatePrivilegedOwner()
     const updateOwner = useUpdatePrivilegedOwner()
+    const { dataUpdatedAt } = usePrivilegedOwners()
     const isAdding = owner === null
     const saveMutation = isAdding ? createOwner : updateOwner
     const {
@@ -80,7 +89,7 @@ export function PrivilegedOwnerFormDrawer({
     const saveError = saveMutation.error
     const hasFieldErrors = Object.keys(toPrivilegedOwnerFieldErrors(saveError)).length > 0
     const hasInvalidFields = submitCount > 0 && Object.keys(errors).length > 0
-    const isExpired = !isAdding && validityOf(owner, new Date()) === 'expired'
+    const isExpired = !isAdding && validityOf(owner, new Date(dataUpdatedAt)) === 'expired'
     const helperTexts: Partial<Record<PrivilegedOwnerField, string>> = {
         plate: t.privilegedOwners.form.plateHelp,
         validUntil: t.privilegedOwners.form.dateHelp,
@@ -105,7 +114,10 @@ export function PrivilegedOwnerFormDrawer({
 
         return register(name, {
             onBlur: (event: { target: { value: string } }) => {
-                setValue(name, normalisePlate(event.target.value), { shouldDirty: true })
+                setValue(name, normalisePlate(event.target.value), {
+                    shouldDirty: true,
+                    shouldValidate: true,
+                })
             },
         })
     }
@@ -119,7 +131,22 @@ export function PrivilegedOwnerFormDrawer({
             isDirty={isDirty}
             isSaving={isSubmitting}
             isSaveDisabled={!isAdding && !isDirty}
+            destructiveAction={
+                !isAdding && (
+                    <Button
+                        variant="ghost"
+                        colorPalette="red"
+                        onClick={() => {
+                            onDelete(owner)
+                        }}
+                    >
+                        <Trash2 aria-hidden="true" />
+                        {t.privilegedOwners.delete.formButton}
+                    </Button>
+                )
+            }
             onClose={onClose}
+            finalFocusEl={finalFocusEl}
             onSubmit={(event) => void handleSubmit(save)(event)}
         >
             {isExpired && <ExpiredNote validUntil={owner.validUntil} />}

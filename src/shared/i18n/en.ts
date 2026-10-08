@@ -188,6 +188,22 @@ export const en: Dictionary = {
             notSaved: 'The user was not saved. Correct the marked fields.',
             saved: (plate: string) => `User ${plate} saved`,
         },
+        delete: {
+            deleteOwner: (plate: string) => `Delete user ${plate}`,
+            formButton: 'Delete user',
+            title: (plate: string) => `Delete user ${plate}?`,
+            description: (plate: string, ownerName: string) =>
+                `Vehicle ${plate} (${ownerName}) will no longer park free of charge. This cannot be undone.`,
+            confirm: 'Delete user',
+            deleted: (plate: string) => `User ${plate} deleted`,
+            failed: 'The user was not deleted.',
+            errors: {
+                network:
+                    'The server did not respond. Check your internet connection and try again.',
+                forbidden: 'You do not have permission to delete privileged users.',
+                server: 'Something went wrong on the server. Try again in a few minutes.',
+            },
+        },
     },
     forms: {
         close: 'Close form',
@@ -201,8 +217,8 @@ export const en: Dictionary = {
         },
         validation: {
             required: 'This field is required.',
-            plateInvalid: 'A plate may contain only letters and digits.',
-            plateTooLong: 'A plate can have at most 20 characters.',
+            plateInvalid:
+                'Enter the plate as ZG 1234-AB: two letters, three or four digits, then one or two letters (no Q, W, X or Y).',
             oibInvalid: 'An OIB must have exactly 11 digits.',
             pinInvalid: 'A PIN can have at most 4 digits.',
             dateFormat: 'Enter the date as DD.MM.YYYY, e.g. 31.12.2026.',

@@ -1,6 +1,7 @@
 import { defineConfig } from '@chakra-ui/react'
 
 import { layerStyles } from '../layerStyles'
+import { textStyles } from '../textStyles'
 
 import { alertRecipe } from './alert'
 import { buttonRecipe } from './button'
@@ -18,6 +19,7 @@ import { toastRecipe } from './toast'
 export const recipesConfig = defineConfig({
     theme: {
         layerStyles,
+        textStyles,
         recipes: {
             button: buttonRecipe,
             input: inputRecipe,

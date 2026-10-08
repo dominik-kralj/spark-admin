@@ -61,13 +61,13 @@ async function fillOwner(form: Locator, values: Partial<Record<keyof typeof labe
     }
 }
 
-/** Adds ZG77XY from `addButton`, then renews the expired ZG9087KL from `editButton`. */
+/** Adds ZG777AB from `addButton`, then renews the expired ZG9087KL from `editButton`. */
 async function addAndRenew(page: Page, addButton: Locator, editButton: () => Locator) {
     await addButton.click()
     const addForm = page.getByRole('dialog', { name: t.addLong })
     await expect(addForm.getByRole('heading', { name: t.addLong })).toBeFocused()
     await fillOwner(addForm, {
-        plate: 'zg 77-xy',
+        plate: 'zg 777-ab',
         validUntil: '31.01.2027',
         ownerName: 'Ivana Horvat',
         street: 'Gajeva ulica',
@@ -76,11 +76,11 @@ async function addAndRenew(page: Page, addButton: Locator, editButton: () => Loc
         city: 'Samobor',
     })
     await addForm.getByLabel(labels.validUntil, { exact: true }).focus()
-    await expect(addForm.getByLabel(labels.plate, { exact: true })).toHaveValue('ZG77XY')
+    await expect(addForm.getByLabel(labels.plate, { exact: true })).toHaveValue('ZG777AB')
     await addForm.getByRole('button', { name: hr.forms.save }).click()
 
     await expect(addForm).toBeHidden()
-    await expect(page.getByText(t.form.saved('ZG77XY'))).toBeVisible()
+    await expect(page.getByText(t.form.saved('ZG777AB'))).toBeVisible()
 
     await editButton().click()
     const editForm = page.getByRole('dialog', { name: t.editOwner('ZG9087KL') })
@@ -131,7 +131,7 @@ test.describe('Privileged owners on a desktop', () => {
             table.getByRole('button', { name: t.editOwner('ZG9087KL') }),
         )
 
-        await expect(table.getByRole('row', { name: /ZG77XY/ })).toContainText('31.01.2027')
+        await expect(table.getByRole('row', { name: /ZG777AB/ })).toContainText('31.01.2027')
         const renewed = table.getByRole('row', { name: /ZG9087KL/ })
         await expect(renewed).toContainText('30.06.2027')
         await expect(renewed).toContainText(t.status.valid)
@@ -173,5 +173,45 @@ test.describe('Privileged owners on a phone', () => {
         const renewed = list.getByRole('listitem').filter({ hasText: 'ZG9087KL' })
         await expect(renewed).toContainText('30.06.2027')
         await expect(renewed).toContainText(t.status.valid)
+    })
+})
+
+test.describe('Privileged owner delete', () => {
+    test('deletes an entry from the table on a desktop', async ({ page, isMobile }) => {
+        test.skip(isMobile, 'the table runs in the desktop project')
+        await openList(page)
+        const table = page.getByRole('table', { name: t.listLabel })
+
+        await table.getByRole('button', { name: t.delete.deleteOwner('ZG1234AB') }).click()
+        const dialog = page.getByRole('alertdialog', { name: t.delete.title('ZG1234AB') })
+        await expect(dialog.getByRole('button', { name: hr.forms.cancel })).toBeFocused()
+        await waitForAnimations(dialog)
+        await expectNoAxeViolations(page)
+        await dialog.getByRole('button', { name: t.delete.confirm }).click()
+
+        await expect(dialog).toBeHidden()
+        await expect(page.getByText(t.delete.deleted('ZG1234AB'))).toBeVisible()
+        await expect(page.getByRole('tab', { name: 'Svi (5)' })).toBeVisible()
+        await expect(page.getByRole('button', { name: t.add })).toBeFocused()
+    })
+
+    test('deletes an entry from its edit form on a phone', async ({ page, isMobile }) => {
+        test.skip(!isMobile, 'the full-screen form runs in the phone project')
+        await openList(page)
+        const list = page.getByRole('list', { name: t.listLabel })
+
+        await list.getByRole('button', { name: t.editOwner('ZG9087KL') }).click()
+        const form = page.getByRole('dialog', { name: t.editOwner('ZG9087KL') })
+        const deleteButton = form.getByRole('button', { name: t.delete.formButton })
+        await expectTouchTargets(deleteButton)
+        await deleteButton.click()
+        await page
+            .getByRole('alertdialog', { name: t.delete.title('ZG9087KL') })
+            .getByRole('button', { name: t.delete.confirm })
+            .click()
+
+        await expect(form).toBeHidden()
+        await expect(list.getByRole('listitem')).toHaveCount(5)
+        await expect(page.getByRole('button', { name: t.addLong })).toBeFocused()
     })
 })

@@ -1,7 +1,6 @@
 import { queryOptions, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { z } from 'zod'
 
-import { isApiError, request } from '@/shared/api'
+import { deleteRequest, request } from '@/shared/api'
 
 import {
     toZone,
@@ -69,14 +68,7 @@ export function useDeleteZone() {
     const queryClient = useQueryClient()
 
     return useMutation({
-        mutationFn: async (id: number) => {
-            try {
-                await request(`/zones/${String(id)}`, { method: 'DELETE', schema: z.undefined() })
-            } catch (error) {
-                // Already gone, so the outcome the user asked for: refresh like any delete.
-                if (!isApiError(error) || error.kind !== 'notFound') throw error
-            }
-        },
+        mutationFn: (id: number) => deleteRequest(`/zones/${String(id)}`),
         onSuccess: () => queryClient.invalidateQueries({ queryKey: zonesQuery.queryKey }),
     })
 }

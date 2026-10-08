@@ -2,27 +2,36 @@ import { z } from 'zod'
 
 import { isRealDate, type CalendarDate } from './calendarDate'
 
-/** Messages are dictionary keys (`forms.validation`), so a form shows them in the active language. */
 export type ValidationMessage =
     | 'required'
+    | 'tooLong'
     | 'plateInvalid'
-    | 'plateTooLong'
     | 'oibInvalid'
     | 'pinInvalid'
     | 'dateFormat'
     | 'dateInvalid'
 
-const message = (key: ValidationMessage) => ({ message: key })
+/** A Zod error message that is a dictionary key, so the form translates it at render. */
+export const messageKey = <TKey extends string>(key: TKey) => ({ message: key })
 
-const plateMaxLength = 20
+const message = messageKey<ValidationMessage>
+
+export function requiredText(maxLength: number) {
+    return z.string().trim().min(1, message('required')).max(maxLength, message('tooLong'))
+}
 
 // Whitespace of any kind, the hyphen-minus and the Unicode dashes a paste can bring.
 const plateSeparators = /[\s\p{Pd}]/gu
 
-/** Removes spaces and dashes and upper-cases, as drivers' plates are stored (ZG1234AB). */
 export function normalisePlate(value: string): string {
     return value.replace(plateSeparators, '').toLocaleUpperCase('hr')
 }
+
+// Croatian plates have no Q, W, X or Y.
+const plateLetter = '[A-PR-VZČĆĐŠŽ]'
+
+/** A normalised Croatian plate: city code, three or four digits, one or two letters (ZG1234AB). */
+export const platePattern = new RegExp(`^${plateLetter}{2}\\d{3,4}${plateLetter}{1,2}$`, 'u')
 
 export const plateField = z
     .string()
@@ -31,8 +40,7 @@ export const plateField = z
         z
             .string()
             .min(1, message('required'))
-            .max(plateMaxLength, message('plateTooLong'))
-            .regex(/^[\p{L}\d]*$/u, message('plateInvalid')),
+            .refine((plate) => plate === '' || platePattern.test(plate), message('plateInvalid')),
     )
 
 // Digits only, no checksum: whether to check ISO 7064 is open (open-questions.md #1).
@@ -44,7 +52,6 @@ export const oibField = z
 
 const pinMaxLength = 4
 
-/** Drops everything but digits while the PIN is typed, and stops at four. */
 export function filterPin(value: string): string {
     return value.replace(/\D/g, '').slice(0, pinMaxLength)
 }
@@ -57,7 +64,6 @@ export const pinField = z
 // DD.MM.GGGG; the trailing dot of the Croatian spelling (31.12.2026.) is allowed.
 const datePattern = /^(\d{1,2})\.(\d{1,2})\.(\d{4})\.?$/
 
-/** Reads a typed DD.MM.GGGG date, ignoring spaces a paste can bring (31. 12. 2026.). */
 export const dateField = z.string().transform((value, context): CalendarDate => {
     const compact = value.replace(/\s/g, '')
     const match = datePattern.exec(compact)

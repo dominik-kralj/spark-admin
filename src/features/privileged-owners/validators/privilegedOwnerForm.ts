@@ -2,14 +2,10 @@ import { z } from 'zod'
 
 import { endOfZagrebDay } from '@/shared/lib/calendarDate'
 import { formatDate } from '@/shared/lib/format'
-import { dateField, plateField, type ValidationMessage } from '@/shared/lib/validation'
+import { dateField, plateField, requiredText } from '@/shared/lib/validation'
 
 import type { PrivilegedOwner, PrivilegedOwnerInput } from './privilegedOwner'
 
-// Messages are dictionary keys, so the form shows them in the active language at render.
-export type PrivilegedOwnerFormMessage = ValidationMessage | 'tooLong'
-
-// Column lengths from the PRIVILEGED_OWNERS CREATE TABLE.
 export const textMaxLength = {
     ownerName: 200,
     street: 150,
@@ -20,10 +16,7 @@ export const textMaxLength = {
 
 export type PrivilegedOwnerTextField = keyof typeof textMaxLength
 
-const message = (key: PrivilegedOwnerFormMessage) => ({ message: key })
-
-const textField = (field: PrivilegedOwnerTextField) =>
-    z.string().trim().min(1, message('required')).max(textMaxLength[field], message('tooLong'))
+const textField = (field: PrivilegedOwnerTextField) => requiredText(textMaxLength[field])
 
 export const privilegedOwnerFormSchema = z.object({
     plate: plateField,

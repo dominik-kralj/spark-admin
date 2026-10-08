@@ -9,6 +9,7 @@ import { signInForTest } from '@/test/session'
 
 import {
     useCreatePrivilegedOwner,
+    useDeletePrivilegedOwner,
     usePrivilegedOwners,
     useUpdatePrivilegedOwner,
 } from './usePrivilegedOwners'
@@ -29,7 +30,7 @@ const firstOwner: PrivilegedOwner = {
 const otherCityOwnerId = 7
 
 const newOwner: PrivilegedOwnerInput = {
-    plate: 'ZG7777XY',
+    plate: 'ZG7777AB',
     validUntil: new Date('2027-01-31T22:59:59.999Z'),
     ownerName: 'Ivana Horvat',
     address: { street: 'Gajeva ulica', houseNo: '5a', zipCode: '10430', city: 'Samobor' },
@@ -42,6 +43,7 @@ function renderOwnerHooks() {
         owners: usePrivilegedOwners(),
         create: useCreatePrivilegedOwner(),
         update: useUpdatePrivilegedOwner(),
+        remove: useDeletePrivilegedOwner(),
     }))
 }
 
@@ -111,7 +113,7 @@ describe('useCreatePrivilegedOwner', () => {
         const error = await mutationError(() =>
             result.current.create.mutateAsync({
                 ...newOwner,
-                plate: 'zg 77',
+                plate: 'ZG1234XY',
                 ownerName: '',
                 address: { ...newOwner.address, zipCode: '1'.repeat(11) },
             }),
@@ -150,5 +152,36 @@ describe('useUpdatePrivilegedOwner', () => {
         )
 
         expect(error).toMatchObject({ kind: 'notFound', status: 404 })
+    })
+})
+
+describe('useDeletePrivilegedOwner', () => {
+    it('deletes the entry and refreshes the list', async () => {
+        const { result } = renderOwnerHooks()
+        await loadedOwners(result)
+
+        await act(async () => {
+            await result.current.remove.mutateAsync(firstOwner.id)
+        })
+
+        await waitFor(() => {
+            expect(result.current.owners.data?.map((owner) => owner.id)).not.toContain(
+                firstOwner.id,
+            )
+        })
+        expect(result.current.owners.data).toHaveLength(5)
+    })
+
+    it.each([
+        ['does not exist', 999],
+        ['belongs to another city', otherCityOwnerId],
+    ])('treats a 404 for an entry that %s as already deleted', async (_case, id) => {
+        const { result } = renderOwnerHooks()
+
+        await act(async () => {
+            await result.current.remove.mutateAsync(id)
+        })
+
+        expect(result.current.remove.isSuccess).toBe(true)
     })
 })

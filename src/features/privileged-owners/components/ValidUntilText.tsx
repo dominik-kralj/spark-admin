@@ -3,15 +3,14 @@ import { Text } from '@chakra-ui/react'
 import { formatDate } from '@/shared/lib/format'
 
 import type { Validity } from '../lib/validity'
-import type { PrivilegedOwner } from '../validators/privilegedOwner'
 
 interface ValidUntilTextProps {
-    owner: PrivilegedOwner
+    validUntil: Date
     validity: Validity
     as?: 'span' | 'dd'
 }
 
-export function ValidUntilText({ owner, validity, as = 'span' }: ValidUntilTextProps) {
+export function ValidUntilText({ validUntil, validity, as = 'span' }: ValidUntilTextProps) {
     const isExpired = validity === 'expired'
 
     return (
@@ -20,7 +19,7 @@ export function ValidUntilText({ owner, validity, as = 'span' }: ValidUntilTextP
             color={isExpired ? 'red.fg' : undefined}
             fontWeight={isExpired ? 'medium' : undefined}
         >
-            {formatDate(owner.validUntil)}
+            {formatDate(validUntil)}
         </Text>
     )
 }

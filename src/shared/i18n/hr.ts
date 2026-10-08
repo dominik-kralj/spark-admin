@@ -196,6 +196,22 @@ export const hr = {
             notSaved: 'Korisnik nije spremljen. Ispravite označena polja.',
             saved: (plate: string) => `Korisnik ${plate} je spremljen`,
         },
+        delete: {
+            deleteOwner: (plate: string) => `Obriši korisnika ${plate}`,
+            formButton: 'Obriši korisnika',
+            title: (plate: string) => `Obrisati korisnika ${plate}?`,
+            description: (plate: string, ownerName: string) =>
+                `Vozilo ${plate} (${ownerName}) više neće parkirati bez naplate. Ovu radnju nije moguće poništiti.`,
+            confirm: 'Obriši korisnika',
+            deleted: (plate: string) => `Korisnik ${plate} je obrisan`,
+            failed: 'Korisnik nije obrisan.',
+            errors: {
+                network:
+                    'Poslužitelj nije odgovorio. Provjerite internetsku vezu i pokušajte ponovno.',
+                forbidden: 'Nemate ovlasti za brisanje povlaštenih korisnika.',
+                server: 'Došlo je do pogreške na poslužitelju. Pokušajte ponovno za nekoliko minuta.',
+            },
+        },
     },
     forms: {
         close: 'Zatvori obrazac',
@@ -209,8 +225,8 @@ export const hr = {
         },
         validation: {
             required: 'Ovo polje je obavezno.',
-            plateInvalid: 'Registracija smije sadržavati samo slova i znamenke.',
-            plateTooLong: 'Registracija može imati najviše 20 znakova.',
+            plateInvalid:
+                'Upišite registraciju u obliku ZG 1234-AB: dva slova, tri ili četiri znamenke te jedno ili dva slova (bez Q, W, X i Y).',
             oibInvalid: 'OIB mora imati točno 11 znamenki.',
             pinInvalid: 'PIN može imati najviše 4 znamenke.',
             dateFormat: 'Upišite datum u obliku DD.MM.GGGG, npr. 31.12.2026.',

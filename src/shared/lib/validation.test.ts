@@ -37,22 +37,33 @@ describe('plateField', () => {
         expect(plateField.parse('zg 1234-ab')).toBe('ZG1234AB')
     })
 
-    it('accepts Croatian letters', () => {
-        expect(plateField.parse('ČK 123-ŠĐ')).toBe('ČK123ŠĐ')
+    it.each([
+        ['three digits and one letter', 'st 123-a', 'ST123A'],
+        ['four digits and two letters', 'RI 9999-ZZ', 'RI9999ZZ'],
+        ['Croatian letters', 'čk 123-šđ', 'ČK123ŠĐ'],
+    ])('accepts %s', (_case, typed, stored) => {
+        expect(plateField.parse(typed)).toBe(stored)
     })
 
     it.each([
         ['', 'required'],
         ['  -  ', 'required'],
-        ['ZG.1234', 'plateInvalid'],
-        ['ZG/1234', 'plateInvalid'],
-        ['A'.repeat(21), 'plateTooLong'],
+        ['ZG.1234-AB', 'plateInvalid'],
+        ['ZG/1234-AB', 'plateInvalid'],
+        ['Z 1234-AB', 'plateInvalid'],
+        ['ZAG 1234-AB', 'plateInvalid'],
+        ['ZG 12-AB', 'plateInvalid'],
+        ['ZG 12345-AB', 'plateInvalid'],
+        ['ZG 1234', 'plateInvalid'],
+        ['ZG 1234-ABC', 'plateInvalid'],
+        ['1234-AB', 'plateInvalid'],
+        ['ZG 1234-AQ', 'plateInvalid'],
+        ['ZG 1234-W', 'plateInvalid'],
+        ['ZG 1234-XY', 'plateInvalid'],
+        ['QG 1234-AB', 'plateInvalid'],
+        ['ZG 1234-AÖ', 'plateInvalid'],
     ])('rejects "%s" with %s', (typed, message) => {
         expect(messagesFor(plateField, typed)).toEqual([message])
-    })
-
-    it('counts the length after removing spaces and dashes', () => {
-        expect(plateField.parse(`${'A'.repeat(10)} - ${'1'.repeat(10)}`)).toHaveLength(20)
     })
 })
 

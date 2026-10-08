@@ -22,7 +22,7 @@ type Label = keyof typeof labels
 const now = new Date('2026-10-08T10:00:00Z')
 
 const newOwner: Record<Label, string> = {
-    plate: 'zg 77-xy',
+    plate: 'zg 777-ab',
     validUntil: '31.01.2027',
     ownerName: 'Ivana Horvat',
     street: 'Gajeva ulica',
@@ -112,7 +112,7 @@ describe('Privileged owner form', () => {
         await expectFormClosed()
         expect(bodies).toEqual([
             {
-                vehicleRegistration: 'ZG77XY',
+                vehicleRegistration: 'ZG777AB',
                 validUntil: '2027-01-31T22:59:59.999Z',
                 ownerName: 'Ivana Horvat',
                 address: 'Gajeva ulica',
@@ -121,9 +121,9 @@ describe('Privileged owner form', () => {
                 city: 'Samobor',
             },
         ])
-        expect(await screen.findByText(t.form.saved('ZG77XY'))).toBeInTheDocument()
+        expect(await screen.findByText(t.form.saved('ZG777AB'))).toBeInTheDocument()
         const table = screen.getByRole('table', { name: t.listLabel })
-        const row = await within(table).findByRole('row', { name: /ZG77XY/ })
+        const row = await within(table).findByRole('row', { name: /ZG777AB/ })
         expect(row).toHaveTextContent('31.01.2027')
     })
 
@@ -192,8 +192,8 @@ describe('Privileged owner form', () => {
 
     it.each([
         ['plate', '', validation.required],
-        ['plate', 'ZG.1234', validation.plateInvalid],
-        ['plate', 'A'.repeat(21), validation.plateTooLong],
+        ['plate', 'ZG.1234-AB', validation.plateInvalid],
+        ['plate', 'ZG 1234-XY', validation.plateInvalid],
         ['validUntil', '', validation.required],
         ['validUntil', '2027-01-31', validation.dateFormat],
         ['validUntil', '31.02.2027', validation.dateInvalid],

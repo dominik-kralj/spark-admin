@@ -1,18 +1,22 @@
 import { normalisePlate } from '@/shared/lib/validation'
 
-import type { PrivilegedOwner } from '../validators/privilegedOwner'
+import type { PrivilegedOwnerRow, ValidityFilter } from './validity'
 
-import { validityOf, type Validity } from './validity'
-
-/** Matches anywhere in the plate, however the search was typed (zg 12 finds ZG1234AB). */
-export function matchingPlate(owners: PrivilegedOwner[], search: string): PrivilegedOwner[] {
+export function filterByPlate(rows: PrivilegedOwnerRow[], search: string): PrivilegedOwnerRow[] {
     const query = normalisePlate(search)
 
-    return owners.filter((owner) => owner.plate.includes(query))
+    return rows.filter(({ owner }) => owner.plate.includes(query))
 }
 
-export function countByValidity(owners: PrivilegedOwner[], now: Date): Record<Validity, number> {
-    const valid = owners.filter((owner) => validityOf(owner, now) === 'valid').length
+export function filterByValidity(
+    rows: PrivilegedOwnerRow[],
+    filter: ValidityFilter,
+): PrivilegedOwnerRow[] {
+    return filter === 'all' ? rows : rows.filter(({ validity }) => validity === filter)
+}
 
-    return { valid, expired: owners.length - valid }
+export function countByValidity(rows: PrivilegedOwnerRow[]): Record<ValidityFilter, number> {
+    const valid = filterByValidity(rows, 'valid').length
+
+    return { all: rows.length, valid, expired: rows.length - valid }
 }

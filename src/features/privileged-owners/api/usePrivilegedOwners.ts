@@ -1,6 +1,6 @@
 import { queryOptions, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
-import { request } from '@/shared/api'
+import { deleteRequest, request } from '@/shared/api'
 
 import {
     privilegedOwnerListResponseSchema,
@@ -65,5 +65,15 @@ export function useUpdatePrivilegedOwner() {
                 owners?.map((owner) => (owner.id === saved.id ? saved : owner)),
             )
         },
+    })
+}
+
+export function useDeletePrivilegedOwner() {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: (id: number) => deleteRequest(`/privileged-owners/${String(id)}`),
+        onSuccess: () =>
+            queryClient.invalidateQueries({ queryKey: privilegedOwnersQuery.queryKey }),
     })
 }

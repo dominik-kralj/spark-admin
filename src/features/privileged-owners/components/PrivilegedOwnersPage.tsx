@@ -1,32 +1,32 @@
-import { Box, IconButton, Stack } from '@chakra-ui/react'
+import { IconButton, Stack, useMediaQuery } from '@chakra-ui/react'
 import { Plus } from 'lucide-react'
-import { useState } from 'react'
 
 import { useStrings } from '@/shared/i18n/useStrings'
+import { useEditAndDeleteOverlays } from '@/shared/lib/useEditAndDeleteOverlays'
 import { PageHeader } from '@/shared/ui/PageHeader'
 
 import type { PrivilegedOwner } from '../validators/privilegedOwner'
 
 import { AddPrivilegedOwnerButton } from './AddPrivilegedOwnerButton'
+import { PrivilegedOwnerDeleteDialog } from './PrivilegedOwnerDeleteDialog'
 import { PrivilegedOwnerFormDrawer } from './PrivilegedOwnerFormDrawer'
 import { PrivilegedOwnerList } from './PrivilegedOwnerList'
 
-interface FormState {
-    isOpen: boolean
-    owner: PrivilegedOwner | null
-    /** A new key per opening gives the form fresh state; closing keeps it, so it animates out. */
-    key: number
-}
-
-const closedForm: FormState = { isOpen: false, owner: null, key: 0 }
-
 export function PrivilegedOwnersPage() {
     const t = useStrings()
-    const [form, setForm] = useState(closedForm)
-
-    function openForm(owner: PrivilegedOwner | null) {
-        setForm((current) => ({ isOpen: true, owner, key: current.key + 1 }))
-    }
+    const {
+        form,
+        deleteDialog,
+        afterDeleteFocusRef,
+        openForm,
+        closeForm,
+        openDeleteDialog,
+        closeDeleteDialog,
+        finishDelete,
+        focusAfterDelete,
+    } = useEditAndDeleteOverlays<PrivilegedOwner>()
+    // Focus after a delete goes to the add button on screen: text from md, icon below.
+    const [isFromMd] = useMediaQuery(['(min-width: 768px)'], { ssr: false })
 
     function openAddForm() {
         openForm(null)
@@ -39,10 +39,12 @@ export function PrivilegedOwnersPage() {
                 description={t.privilegedOwners.description}
                 action={
                     <>
-                        <Box hideBelow="md">
-                            <AddPrivilegedOwnerButton onClick={openAddForm} />
-                        </Box>
+                        <AddPrivilegedOwnerButton
+                            ref={isFromMd ? afterDeleteFocusRef : undefined}
+                            onClick={openAddForm}
+                        />
                         <IconButton
+                            ref={isFromMd ? undefined : afterDeleteFocusRef}
                             hideFrom="md"
                             aria-label={t.privilegedOwners.addLong}
                             colorPalette="blue"
@@ -54,15 +56,28 @@ export function PrivilegedOwnersPage() {
                 }
             />
 
-            <PrivilegedOwnerList onAdd={openAddForm} onEdit={openForm} />
+            <PrivilegedOwnerList
+                onAdd={openAddForm}
+                onEdit={openForm}
+                onDelete={openDeleteDialog}
+            />
 
             <PrivilegedOwnerFormDrawer
-                key={form.key}
+                key={`form-${String(form.key)}`}
                 isOpen={form.isOpen}
-                owner={form.owner}
-                onClose={() => {
-                    setForm((current) => ({ ...current, isOpen: false }))
-                }}
+                owner={form.item}
+                onClose={closeForm}
+                onDelete={openDeleteDialog}
+                finalFocusEl={focusAfterDelete}
+            />
+
+            <PrivilegedOwnerDeleteDialog
+                key={`delete-${String(deleteDialog.key)}`}
+                isOpen={deleteDialog.isOpen}
+                owner={deleteDialog.item}
+                onCancel={closeDeleteDialog}
+                onDeleted={finishDelete}
+                finalFocusEl={focusAfterDelete}
             />
         </Stack>
     )

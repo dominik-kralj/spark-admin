@@ -44,8 +44,9 @@ Markers used below:
   For "06.10.2026 to 06.10.2026" the frontend sends
   `createdFrom=2026-10-05T22:00:00Z&createdTo=2026-10-06T22:00:00Z`. [proposed]
 - Money is a JSON number in EUR. Requests carry at most 2 decimals. [proposed]
-- Plates are uppercase letters and digits only, 1 to 20 characters
-  (`ZG1234AB`). The frontend sends them normalised; the backend should
+- Plates are Croatian plates without spaces or dashes (`ZG1234AB`): two letters,
+  three or four digits, then one or two letters; the letters are A–Z without
+  Q, W, X and Y, plus Č, Ć, Đ, Š, Ž. [built] The frontend sends them normalised; the backend should
   normalise again before storing or comparing. [spec]
 - Status values (payment and fiscalization) are the type `Status` used below:
   `'PENDING' | 'PROCESSING' | 'DONE' | 'FAIL'`. [spec]

@@ -1,6 +1,7 @@
 import { z } from 'zod'
 
 import { formatDecimal } from '@/shared/lib/format'
+import { messageKey, requiredText } from '@/shared/lib/validation'
 
 import type { Zone, ZoneInput } from './zone'
 
@@ -14,7 +15,7 @@ export type ZoneFormMessage =
     | 'notWholeNumber'
     | 'notPositive'
 
-const message = (key: ZoneFormMessage) => ({ message: key })
+const message = messageKey<ZoneFormMessage>
 
 const maxTextLength = 20
 const maxAmount = 99_999_999.99
@@ -24,11 +25,7 @@ function toNumber(value: string): number {
     return Number(value.replace(',', '.'))
 }
 
-const textField = z
-    .string()
-    .trim()
-    .min(1, message('required'))
-    .max(maxTextLength, message('tooLong'))
+const textField = requiredText(maxTextLength)
 
 const amountField = z
     .string()

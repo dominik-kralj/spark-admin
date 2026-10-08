@@ -1,6 +1,8 @@
 import { http, HttpResponse } from 'msw'
 import { z } from 'zod'
 
+import { platePattern } from '@/shared/lib/validation'
+
 import { mockAdminUser } from './adminUsers'
 import { notFound, validationProblem } from './responses'
 import { apiUrl } from './url'
@@ -109,9 +111,8 @@ resetPrivilegedOwners()
 
 const text = (maxLength: number) => z.string().trim().min(1).max(maxLength)
 
-// Column lengths from the PRIVILEGED_OWNERS CREATE TABLE; every column is NOT NULL.
 const privilegedOwnerBodySchema = z.object({
-    vehicleRegistration: z.string().regex(/^[\p{Lu}\d]{1,20}$/u),
+    vehicleRegistration: z.string().regex(platePattern),
     validUntil: z.iso.datetime({ offset: true }),
     ownerName: text(200),
     address: text(150),
@@ -170,5 +171,14 @@ export const privilegedOwnerHandlers = [
         Object.assign(existing, parsed.data)
 
         return HttpResponse.json(toResponse(existing))
+    }),
+
+    http.delete(apiUrl('/privileged-owners/:privilegedOwnerId'), ({ params }) => {
+        const existing = findOwner(Number(params.privilegedOwnerId))
+        if (existing === undefined) return notFound()
+
+        owners = owners.filter((owner) => owner !== existing)
+
+        return new HttpResponse(null, { status: 204 })
     }),
 ]

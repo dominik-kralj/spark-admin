@@ -5,14 +5,10 @@ interface TablePanelProps {
     label: string
     /** The total under the rows; it stays in view while the rows scroll. */
     footer: string
-    /** Table.Header and Table.Body. */
     children: ReactNode
 }
 
-/**
- * The table layout from md up. It takes the height left on the page and scrolls its rows
- * under a sticky header, so a long list never scrolls the page.
- */
+/** The table from md up: it fills the page's spare height and scrolls only its rows. */
 export function TablePanel({ label, footer, children }: TablePanelProps) {
     return (
         <Flex
