@@ -77,6 +77,33 @@ export const hr = {
         total: (count: number) =>
             `Ukupno ${String(count)} ${plural(count, { one: 'zona', few: 'zone', other: 'zona' })}`,
     },
+    forms: {
+        close: 'Zatvori obrazac',
+        cancel: 'Odustani',
+        save: 'Spremi',
+        discard: {
+            title: 'Odbaciti nespremljene promjene?',
+            description: 'Promjene nisu spremljene. Ako sada izađete, izgubit ćete ih.',
+            confirm: 'Odbaci promjene',
+            keepEditing: 'Nastavi uređivati',
+        },
+        serverFieldErrors: {
+            invalid: 'Poslužitelj nije prihvatio ovu vrijednost. Provjerite unos.',
+            duplicate: 'Ova vrijednost već postoji. Upišite drugu.',
+        },
+        saveFailed: 'Promjene nisu spremljene.',
+        errors: {
+            network:
+                'Poslužitelj nije odgovorio. Vaš je unos ostao u obrascu. Provjerite internetsku vezu i pokušajte ponovno.',
+            validation: 'Poslužitelj nije prihvatio unos. Provjerite polja i pokušajte ponovno.',
+            forbidden:
+                'Nemate ovlasti za ovu promjenu. Ako mislite da biste je trebali moći napraviti, javite se administratoru sustava.',
+            notFound: 'Zapis više ne postoji. Možda ga je netko u međuvremenu obrisao.',
+            conflict:
+                'Zapis je u međuvremenu promijenjen. Zatvorite obrazac, otvorite ga ponovno i ponovite izmjenu.',
+            server: 'Došlo je do pogreške na poslužitelju. Vaš je unos ostao u obrascu. Pokušajte ponovno za nekoliko minuta.',
+        },
+    },
     listStates: {
         retry: 'Pokušaj ponovno',
         errors: {

@@ -28,8 +28,10 @@ Messages shown to the user come from `hr.ts`, by error kind, and never from the
 server.
 
 The client keeps a JSON error body on `ApiError.body` (undefined when the body
-is not JSON). Only a feature's `validators/` read it, to put an error on the
-right form field. Two shapes are read (`api-contract.md` D2, open question #5):
+is not JSON). `fieldErrorsFrom` (`shared/api/fieldErrors.ts`) reads it, to put
+an error on the right form field, with the map from raw request property names
+to form fields that a feature's `validators/` supply; raw names stay in the
+feature. Two shapes are read (`api-contract.md` D2, open question #5):
 
 ```jsonc
 // 400: ValidationProblemDetails; keys are request property names.
@@ -40,7 +42,10 @@ right form field. Two shapes are read (`api-contract.md` D2, open question #5):
 ```
 
 Any other body, or a key the feature does not know, gives no field error, and
-the form falls back to the message for the error kind.
+the form falls back to the message for the error kind (`hr.forms.errors`). The
+reason in each `errors` entry is not read: every listed field shows one
+"invalid" message, and a duplicate shows one "already exists" message, unless
+the feature words its own.
 
 | Status             | `ApiError.kind`   | Notes                                                                                    |
 | ------------------ | ----------------- | ---------------------------------------------------------------------------------------- |
