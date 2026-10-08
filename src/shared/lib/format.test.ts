@@ -1,7 +1,14 @@
 // @vitest-environment node
 import { describe, expect, it } from 'vitest'
 
-import { formatAmount, formatDate, formatDateTime, formatMinutes, formatTime } from './format'
+import {
+    formatAmount,
+    formatDate,
+    formatDateTime,
+    formatDecimal,
+    formatMinutes,
+    formatTime,
+} from './format'
 
 describe('test time zone', () => {
     it('is not Zagreb, so the helpers are proven to ignore it', () => {
@@ -54,6 +61,14 @@ describe('formatDateTime', () => {
 
     it('shows the first minute of the new year in Zagreb', () => {
         expect(formatDateTime(new Date('2026-12-31T23:00:00Z'))).toBe('01.01.2027 00:00')
+    })
+})
+
+describe('formatDecimal', () => {
+    it('shows two decimals after a comma, without grouping or a currency, for form inputs', () => {
+        expect(formatDecimal(0.7)).toBe('0,70')
+        expect(formatDecimal(15)).toBe('15,00')
+        expect(formatDecimal(1234567.89)).toBe('1234567,89')
     })
 })
 

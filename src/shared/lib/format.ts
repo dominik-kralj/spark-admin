@@ -18,6 +18,13 @@ const amountFormat = new Intl.NumberFormat('hr-HR', {
     signDisplay: 'negative',
 })
 
+// No grouping: a form input reads it back, and the parser takes one decimal separator only.
+const decimalInputFormat = new Intl.NumberFormat('hr-HR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+    useGrouping: false,
+})
+
 const integerFormat = new Intl.NumberFormat('hr-HR', { maximumFractionDigits: 0 })
 
 function zagrebParts(value: Date) {
@@ -52,6 +59,10 @@ export function formatAmount(amount: number): string {
         .join('')
 
     return `${digits} ${currency}`
+}
+
+export function formatDecimal(amount: number): string {
+    return decimalInputFormat.format(amount)
 }
 
 export function formatMinutes(minutes: number): string {

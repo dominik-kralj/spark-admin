@@ -69,7 +69,7 @@ describe('toZoneFieldErrors', () => {
             body: { status: 409, code: 'duplicate', field: 'zoneCode' },
         })
 
-        expect(toZoneFieldErrors(error)).toEqual([{ field: 'code', reason: 'duplicate' }])
+        expect(toZoneFieldErrors(error)).toEqual({ code: 'duplicate' })
     })
 
     it('maps a 409 duplicate on zoneName to the name field', () => {
@@ -78,7 +78,7 @@ describe('toZoneFieldErrors', () => {
             body: { code: 'duplicate', field: 'zoneName' },
         })
 
-        expect(toZoneFieldErrors(error)).toEqual([{ field: 'name', reason: 'duplicate' }])
+        expect(toZoneFieldErrors(error)).toEqual({ name: 'duplicate' })
     })
 
     it('maps 400 field errors to domain names and drops unknown keys', () => {
@@ -90,10 +90,7 @@ describe('toZoneFieldErrors', () => {
             },
         })
 
-        expect(toZoneFieldErrors(error)).toEqual([
-            { field: 'durationMinutes', reason: 'invalid' },
-            { field: 'price', reason: 'invalid' },
-        ])
+        expect(toZoneFieldErrors(error)).toEqual({ price: 'invalid', durationMinutes: 'invalid' })
     })
 
     it.each([
@@ -106,6 +103,6 @@ describe('toZoneFieldErrors', () => {
         ['a server error', new ApiError('server', { status: 500, body: { errors: {} } })],
         ['a plain error', new Error('boom')],
     ])('returns no field errors for %s', (_case, error) => {
-        expect(toZoneFieldErrors(error)).toEqual([])
+        expect(toZoneFieldErrors(error)).toEqual({})
     })
 })

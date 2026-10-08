@@ -60,6 +60,36 @@ export const en: Dictionary = {
             maxExtensions: 'Max. extensions',
             dpkIssueDelayMinutes: 'Daily ticket delay',
         },
+        actions: 'Actions',
+        edit: 'Edit',
+        editZone: (code: string) => `Edit zone ${code}`,
+        form: {
+            intro: 'All fields are required.',
+            labels: {
+                code: 'Code',
+                name: 'Name',
+                price: 'Price (EUR)',
+                dailyTicketPrice: 'Daily ticket price (EUR)',
+                durationMinutes: 'Duration (min)',
+                maxExtensions: 'Maximum extensions',
+                dpkIssueDelayMinutes: 'Daily ticket delay (min)',
+            },
+            errors: {
+                required: 'This field is required.',
+                tooLong: 'Enter at most 20 characters.',
+                notAmount: 'Enter an amount in euros, digits and a decimal comma only, e.g. 0,70.',
+                tooManyDecimals: 'An amount can have at most two decimals, e.g. 0,70.',
+                tooLarge: 'The number is too large.',
+                notWholeNumber: 'Enter a whole number, digits only.',
+                notPositive: 'Enter a number greater than 0.',
+            },
+            duplicate: {
+                code: 'A zone with this code already exists. Enter a different code.',
+                name: 'A zone with this name already exists. Enter a different name.',
+            },
+            notSaved: 'The zone was not saved. Fix the marked fields.',
+            saved: (code: string) => `Zone ${code} saved`,
+        },
         loading: 'Loading zones…',
         empty: {
             title: 'No zones yet',
@@ -95,6 +125,9 @@ export const en: Dictionary = {
                 'This record was changed in the meantime. Close the form, open it again and redo your change.',
             server: 'Something went wrong on the server. What you entered is still in the form. Try again in a few minutes.',
         },
+    },
+    notifications: {
+        close: 'Close notification',
     },
     listStates: {
         retry: 'Try again',

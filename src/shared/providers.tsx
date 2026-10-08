@@ -4,6 +4,7 @@ import { useEffect, useState, type ReactNode } from 'react'
 
 import { useLanguage } from '@/shared/i18n/useStrings'
 import { system } from '@/shared/theme/system'
+import { Toaster } from '@/shared/ui/Toaster'
 
 interface AppProvidersProps {
     children: ReactNode
@@ -21,6 +22,7 @@ export function AppProviders({ children, queryClient }: AppProvidersProps) {
     return (
         <ChakraProvider value={system}>
             <QueryClientProvider client={client}>{children}</QueryClientProvider>
+            <Toaster />
         </ChakraProvider>
     )
 }

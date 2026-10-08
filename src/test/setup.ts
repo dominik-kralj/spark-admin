@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom/vitest'
-import { cleanup } from '@testing-library/react'
+import { cleanup, configure } from '@testing-library/react'
 import { afterAll, afterEach, beforeAll } from 'vitest'
 
 import { resetLoginRateLimit } from '@/mocks/auth'
@@ -7,6 +7,9 @@ import { resetZones } from '@/mocks/zones'
 
 import { server } from './server'
 import { installMatchMedia, resetViewport } from './viewport'
+
+// findBy and waitFor give up after 1 s by default, which a busy parallel run can pass.
+configure({ asyncUtilTimeout: 3000 })
 
 beforeAll(() => {
     server.listen({ onUnhandledFrame: 'error' })

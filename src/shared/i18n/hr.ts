@@ -67,6 +67,36 @@ export const hr = {
             maxExtensions: 'Najviše produljenja',
             dpkIssueDelayMinutes: 'Čekanje za DPK',
         },
+        actions: 'Radnje',
+        edit: 'Uredi',
+        editZone: (code: string) => `Uredi zonu ${code}`,
+        form: {
+            intro: 'Sva su polja obavezna.',
+            labels: {
+                code: 'Šifra',
+                name: 'Naziv',
+                price: 'Cijena (EUR)',
+                dailyTicketPrice: 'Cijena dnevne karte (EUR)',
+                durationMinutes: 'Trajanje (min)',
+                maxExtensions: 'Najviše produljenja',
+                dpkIssueDelayMinutes: 'Čekanje za DPK (min)',
+            },
+            errors: {
+                required: 'Ovo polje je obavezno.',
+                tooLong: 'Upišite najviše 20 znakova.',
+                notAmount: 'Upišite iznos u eurima, samo znamenke i decimalni zarez, npr. 0,70.',
+                tooManyDecimals: 'Iznos može imati najviše dvije decimale, npr. 0,70.',
+                tooLarge: 'Upisani broj je prevelik.',
+                notWholeNumber: 'Upišite cijeli broj, samo znamenke.',
+                notPositive: 'Upišite broj veći od 0.',
+            },
+            duplicate: {
+                code: 'Zona s ovom šifrom već postoji. Upišite drugu šifru.',
+                name: 'Zona s ovim nazivom već postoji. Upišite drugi naziv.',
+            },
+            notSaved: 'Zona nije spremljena. Ispravite označena polja.',
+            saved: (code: string) => `Zona ${code} je spremljena`,
+        },
         loading: 'Učitavanje zona…',
         empty: {
             title: 'Još nema zona',
@@ -103,6 +133,9 @@ export const hr = {
                 'Zapis je u međuvremenu promijenjen. Zatvorite obrazac, otvorite ga ponovno i ponovite izmjenu.',
             server: 'Došlo je do pogreške na poslužitelju. Vaš je unos ostao u obrascu. Pokušajte ponovno za nekoliko minuta.',
         },
+    },
+    notifications: {
+        close: 'Zatvori obavijest',
     },
     listStates: {
         retry: 'Pokušaj ponovno',
