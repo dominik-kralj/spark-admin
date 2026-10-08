@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import { Outlet } from 'react-router'
 
 import { hr } from '@/shared/i18n/hr'
+import { LiveRegion } from '@/shared/ui/LiveRegion'
 
 import { useShellLayout, type ShellLayout } from '../lib/useShellLayout'
 
@@ -32,6 +33,7 @@ export function AppShell({ userName, onSignOut }: AppShellProps) {
     return (
         <Grid templateColumns={columns[layout]} minH="100dvh">
             <SkipNavLink>{hr.shell.skipToContent}</SkipNavLink>
+            <LiveRegion />
 
             {sideNav[layout]}
 

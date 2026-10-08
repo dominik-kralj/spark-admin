@@ -101,7 +101,7 @@ describe('protected routes', () => {
         await waitFor(() => {
             expect(currentUrl(router)).toBe(paths.login)
         })
-        expect(screen.queryByRole('status')).not.toBeInTheDocument()
+        expect(screen.queryByText(hr.login.sessionExpired)).not.toBeInTheDocument()
         expect(sessionStorage.length).toBe(0)
         await waitFor(() => {
             expect(queryClient.getQueryCache().getAll()).toHaveLength(0)

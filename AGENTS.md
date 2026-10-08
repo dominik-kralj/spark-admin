@@ -56,7 +56,10 @@ The list pattern (`features/zones/components/`):
 - `ZonesPage`: `PageHeader` (h1, document title, the primary action) above
   `ZoneList`; the page is `flex="1" minW="0"` inside the shell's `main`.
 - `ZoneList`: early returns for `LoadingState`, `ErrorState` (retry is
-  `refetch`), `EmptyState` with the one fixing action, then the data. Sorting
+  `refetch`), `EmptyState` with the one fixing action, then the data.
+  `LoadingState` announces its label through the shell's `LiveRegion`, a
+  `role="status"` that is in the DOM before any message; use `announce()` from
+  `shared/lib/announcer` for other status messages, not a new live region. Sorting
   comes from `useSortSearchParams` (URL `sort` and `dir`; the default order
   leaves the URL clean).
 - From `md`, `ZoneTable`: a `panel` with a labelled `Table`,

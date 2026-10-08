@@ -1,10 +1,12 @@
 import { defineSlotRecipe } from '@chakra-ui/react'
 
+import { tableHeaderHeight, tableRowHeight } from '../tableSizes'
+
 export const tableRecipe = defineSlotRecipe({
     slots: ['root', 'columnHeader', 'cell'],
     base: {
         columnHeader: {
-            h: '11',
+            h: `${String(tableHeaderHeight)}px`,
             fontSize: 'caption',
             fontWeight: 'semibold',
             color: 'gray.fg',
@@ -13,7 +15,7 @@ export const tableRecipe = defineSlotRecipe({
             verticalAlign: 'middle',
         },
         cell: {
-            h: '52px',
+            h: `${String(tableRowHeight)}px`,
             whiteSpace: 'nowrap',
             verticalAlign: 'middle',
         },

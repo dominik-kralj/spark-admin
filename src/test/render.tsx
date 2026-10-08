@@ -43,10 +43,14 @@ export async function renderRoute(path: string) {
     const router = createMemoryRouter(createRoutes(), { initialEntries: [path] })
     const rendered = renderWithProviders(<RouterProvider router={router} />)
 
-    await waitFor(() => {
-        expect(router.state.initialized).toBe(true)
-        expect(rendered.container).not.toBeEmptyDOMElement()
-    })
+    // A cold lazy import can pass the default 1 s when the whole suite runs in parallel.
+    await waitFor(
+        () => {
+            expect(router.state.initialized).toBe(true)
+            expect(rendered.container).not.toBeEmptyDOMElement()
+        },
+        { timeout: 5000 },
+    )
 
     return { router, ...rendered }
 }
