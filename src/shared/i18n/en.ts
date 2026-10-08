@@ -2,7 +2,6 @@ import type { Dictionary } from './dictionary'
 
 const appName = 'SPARK Admin'
 
-/** English, the same keys as hr.ts. Dates, times and amounts keep the Croatian formats. */
 export const en: Dictionary = {
     app: {
         name: appName,
@@ -59,7 +58,7 @@ export const en: Dictionary = {
             dailyTicketPrice: 'Daily ticket',
             durationMinutes: 'Duration',
             maxExtensions: 'Max. extensions',
-            dpkIssueDelayMinutes: 'Daily ticket wait',
+            dpkIssueDelayMinutes: 'Daily ticket delay',
         },
         loading: 'Loading zones…',
         empty: {
@@ -80,14 +79,10 @@ export const en: Dictionary = {
             server: 'Something went wrong on the server. Try again in a few minutes. If the error persists, contact your system administrator.',
         },
     },
-    format: {
-        currency: 'EUR',
-        minutes: 'min',
-    },
     notFound: {
         title: 'Page not found',
         description:
             'The address you opened does not exist. Check the link or go back to the home page.',
-        home: 'To the home page',
+        home: 'Go to the home page',
     },
 }

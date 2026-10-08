@@ -1,4 +1,6 @@
-import { getStrings } from '@/shared/i18n/language'
+// Part of the format, which stays Croatian in every UI language.
+const currency = 'EUR'
+const minutesUnit = 'min'
 
 const dateTimeFormat = new Intl.DateTimeFormat('hr-HR', {
     timeZone: 'Europe/Zagreb',
@@ -49,9 +51,9 @@ export function formatAmount(amount: number): string {
         .map((part) => (part.type === 'minusSign' ? '-' : part.value))
         .join('')
 
-    return `${digits} ${getStrings().format.currency}`
+    return `${digits} ${currency}`
 }
 
 export function formatMinutes(minutes: number): string {
-    return `${integerFormat.format(minutes)} ${getStrings().format.minutes}`
+    return `${integerFormat.format(minutes)} ${minutesUnit}`
 }

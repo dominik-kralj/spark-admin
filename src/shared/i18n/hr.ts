@@ -87,10 +87,6 @@ export const hr = {
             server: 'Došlo je do pogreške na poslužitelju. Pokušajte ponovno za nekoliko minuta. Ako se pogreška ponavlja, javite se administratoru sustava.',
         },
     },
-    format: {
-        currency: 'EUR',
-        minutes: 'min',
-    },
     notFound: {
         title: 'Stranica nije pronađena',
         description:

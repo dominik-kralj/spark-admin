@@ -156,12 +156,16 @@ deduplicates); read `next/dynamic` as `React.lazy`.
   aria-labels, validation messages and toasts, lives in `hr.ts` (the source and
   the default) and in `en.ts`, which is typed against it, so a missing or extra
   key fails `tsc`. Add every new key to both. Components read the active
-  language with `useStrings()`; code outside React (helpers, Zod schemas built
-  per render) gets the strings passed in, or calls `getStrings()`. Never read a
-  dictionary when a module loads: that freezes the language (nav labels are
-  keys, resolved at render). The choice is per browser in `localStorage`;
-  `LanguageMenu` (`shared/ui`) switches it. Dates, times and amounts keep the
-  Croatian formats in both languages.
+  language with `useStrings()`; helpers outside React take the strings as a
+  parameter. Never read a dictionary when a module loads, and never store a
+  translated string (in a Zod message, state or a cache): it freezes the
+  language. Nav labels are keys; form errors show the field's message from the
+  dictionary at render. The choice is per browser in `localStorage`;
+  `LanguageMenu` (`shared/ui`) switches it. Two exceptions live outside the
+  dictionaries because they read the same in both languages: the picker's own
+  labels (`shared/i18n/language.ts`, "Jezik / Language", "Hrvatski",
+  "English") and the format units in `format.ts`. Dates, times and amounts keep
+  the Croatian formats in both languages, and URL paths stay Croatian.
 - **Format** (`src/shared/lib/format.ts`): every date, time and money shown in the UI
   goes through these helpers.
 - **Validation** (`src/shared/lib/validation.ts`): shared Zod pieces for plate, OIB
@@ -222,17 +226,17 @@ deduplicates); read `next/dynamic` as `React.lazy`.
 The UI is in Croatian by default, with English as the second language. Code
 identifiers, comments and commits are in English.
 
-| UI (hr)             | Code (en)                  | Spec table                |
-| ------------------- | -------------------------- | ------------------------- |
-| Karta / Karte       | `Ticket`                   | TICKETS                   |
-| DPK                 | `DailyTicket`              | TICKETS, type `Dnevna`    |
-| Zona / Zone         | `Zone`                     | ZONES                     |
-| Povlašteni korisnik | `PrivilegedOwner`          | PRIVILEGED_OWNERS         |
-| Kontrolor           | `Inspector`                | INSPECTORS                |
-| Postavke grada      | `CitySettings`             | CITY_TENANTS (tenant)     |
-| Korisnik (admin)    | `AdminUser`                | none (feature docs §5.12) |
-| Izvještaj           | `Report`                   | none (placeholders)       |
-| Fiskalizacija       | `fiscalization` (JIR, ZKI) | TICKETS                   |
-| Registarska oznaka  | `plate`                    | see spec                  |
+| UI (hr)                 | Code (en)                  | Spec table                |
+| ----------------------- | -------------------------- | ------------------------- |
+| Karta / Karte           | `Ticket`                   | TICKETS                   |
+| DPK (en: Daily tickets) | `DailyTicket`              | TICKETS, type `Dnevna`    |
+| Zona / Zone             | `Zone`                     | ZONES                     |
+| Povlašteni korisnik     | `PrivilegedOwner`          | PRIVILEGED_OWNERS         |
+| Kontrolor               | `Inspector`                | INSPECTORS                |
+| Postavke grada          | `CitySettings`             | CITY_TENANTS (tenant)     |
+| Korisnik (admin)        | `AdminUser`                | none (feature docs §5.12) |
+| Izvještaj               | `Report`                   | none (placeholders)       |
+| Fiskalizacija           | `fiscalization` (JIR, ZKI) | TICKETS                   |
+| Registarska oznaka      | `plate`                    | see spec                  |
 
 Fix this table when the spec says otherwise. It is the naming source for code.

@@ -11,7 +11,6 @@ import {
 import { useLanguage } from '@/shared/i18n/useStrings'
 
 interface LanguageMenuProps {
-    /** header: compact, shows the code; drawerRow: full width, shows the name, inside a dialog. */
     variant: 'header' | 'drawerRow'
 }
 

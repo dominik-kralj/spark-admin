@@ -6,9 +6,8 @@ export const languages = ['hr', 'en'] as const
 
 export type Language = (typeof languages)[number]
 
-const dictionaries: Record<Language, Dictionary> = { hr, en }
+export const dictionaries: Record<Language, Dictionary> = { hr, en }
 
-// Each name in its own language, and the picker's name in both, so either reader finds it.
 export const languageNames: Record<Language, string> = { hr: 'Hrvatski', en: 'English' }
 
 export const languagePickerLabel = 'Jezik / Language'
@@ -47,9 +46,4 @@ export function subscribeToLanguage(listener: () => void): () => void {
     return () => {
         listeners.delete(listener)
     }
-}
-
-/** For code outside React (validators, helpers); components use useStrings. */
-export function getStrings(): Dictionary {
-    return dictionaries[getLanguage()]
 }

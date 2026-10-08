@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest'
 import { mockAdminCredentials } from '@/mocks/adminUsers'
 import { apiUrl } from '@/mocks/url'
 import { hr } from '@/shared/i18n/hr'
+import { languagePickerLabel } from '@/shared/i18n/language'
 import { paths } from '@/shared/paths'
 import { expectNoAxeViolations } from '@/test/axe'
 import { renderRoute, type RenderedRoute } from '@/test/render'
@@ -50,7 +51,7 @@ describe('LoginPage', () => {
         await user.tab()
         expect(getForm().submit).toHaveFocus()
         await user.tab()
-        expect(screen.getByRole('button', { name: 'Jezik / Language: HR' })).toHaveFocus()
+        expect(screen.getByRole('button', { name: `${languagePickerLabel}: HR` })).toHaveFocus()
     })
 
     it('names the browser tab after the page', async () => {

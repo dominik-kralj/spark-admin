@@ -7,5 +7,4 @@ type Widen<T> = T extends string
       ? (...args: TArgs) => Widen<TResult>
       : { readonly [TKey in keyof T]: Widen<T[TKey]> }
 
-/** What every language provides; a missing or extra key fails tsc. */
 export type Dictionary = Widen<typeof hr>

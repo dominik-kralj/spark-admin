@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 
 import { apiUrl } from '@/mocks/url'
 import { hr } from '@/shared/i18n/hr'
+import { languagePickerLabel } from '@/shared/i18n/language'
 import { paths } from '@/shared/paths'
 import { expectNoAxeViolations } from '@/test/axe'
 import { renderRoute } from '@/test/render'
@@ -52,7 +53,7 @@ describe('app shell', () => {
             expect(screen.getByRole('link', { name: label })).toHaveFocus()
         }
         await user.tab()
-        expect(screen.getByRole('button', { name: 'Jezik / Language: HR' })).toHaveFocus()
+        expect(screen.getByRole('button', { name: `${languagePickerLabel}: HR` })).toHaveFocus()
         await user.tab()
         expect(screen.getByRole('button', { name: hr.shell.signOut })).toHaveFocus()
 

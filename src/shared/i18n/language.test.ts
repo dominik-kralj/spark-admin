@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { en } from './en'
 import { hr } from './hr'
-import { getLanguage, getStrings, setLanguage } from './language'
+import { dictionaries, getLanguage, setLanguage } from './language'
 
 afterEach(() => {
     vi.restoreAllMocks()
@@ -11,14 +11,14 @@ afterEach(() => {
 describe('language', () => {
     it('defaults to Croatian', () => {
         expect(getLanguage()).toBe('hr')
-        expect(getStrings()).toBe(hr)
+        expect(dictionaries[getLanguage()]).toBe(hr)
     })
 
     it('switches the strings and remembers the choice in this browser', () => {
         setLanguage('en')
 
         expect(getLanguage()).toBe('en')
-        expect(getStrings()).toBe(en)
+        expect(dictionaries[getLanguage()]).toBe(en)
         expect(localStorage.getItem('spark-admin.language')).toBe('en')
     })
 

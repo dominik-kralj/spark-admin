@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test'
 
 import { en } from '../src/shared/i18n/en'
 import { hr } from '../src/shared/i18n/hr'
+import { languagePickerLabel } from '../src/shared/i18n/language'
 import { paths } from '../src/shared/paths'
 
 import { expectNoAxeViolations } from './axe'
@@ -19,7 +20,7 @@ test.describe('language on a desktop', () => {
     test('switches to English from the keyboard and keeps it after a reload', async ({ page }) => {
         await signIn(page)
         await page.goto(paths.zones)
-        const picker = page.getByRole('button', { name: 'Jezik / Language: HR' })
+        const picker = page.getByRole('button', { name: `${languagePickerLabel}: HR` })
 
         await picker.focus()
         await page.keyboard.press('Enter')
@@ -33,7 +34,7 @@ test.describe('language on a desktop', () => {
         await expect(page.getByRole('heading', { level: 1, name: en.nav.zones })).toBeVisible()
         await expect(page.locator('html')).toHaveAttribute('lang', 'en')
         await expect(page).toHaveTitle('Zones – SPARK Admin')
-        await expect(page.getByRole('button', { name: 'Jezik / Language: EN' })).toBeFocused()
+        await expect(page.getByRole('button', { name: `${languagePickerLabel}: EN` })).toBeFocused()
         await expectNoAxeViolations(page)
 
         await page.reload()
@@ -50,7 +51,7 @@ test.describe('language on a phone', () => {
         await page.getByRole('button', { name: hr.shell.openMenu }).click()
         const drawer = page.getByRole('dialog', { name: hr.shell.menu })
         await waitForAnimations(drawer)
-        const picker = drawer.getByRole('button', { name: 'Jezik / Language: Hrvatski' })
+        const picker = drawer.getByRole('button', { name: `${languagePickerLabel}: Hrvatski` })
 
         await expectTouchTargets(picker)
         await expectBelow(drawer.getByRole('button', { name: hr.shell.signOut }), picker)
@@ -65,7 +66,7 @@ test.describe('language on a phone', () => {
     test('can be switched on the login page at 320 px', async ({ page }) => {
         await page.setViewportSize({ width: 320, height: 700 })
         await page.goto(paths.login)
-        const picker = page.getByRole('button', { name: 'Jezik / Language: HR' })
+        const picker = page.getByRole('button', { name: `${languagePickerLabel}: HR` })
 
         await expectTouchTargets(picker)
         await expectBelow(page.getByRole('heading', { level: 1 }), picker)

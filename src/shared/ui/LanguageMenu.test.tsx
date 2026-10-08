@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 
 import { en } from '@/shared/i18n/en'
 import { hr } from '@/shared/i18n/hr'
+import { languagePickerLabel } from '@/shared/i18n/language'
 import { paths } from '@/shared/paths'
 import { expectNoAxeViolations } from '@/test/axe'
 import { renderRoute, type RenderedRoute } from '@/test/render'
@@ -11,7 +12,7 @@ import { setViewportWidth } from '@/test/viewport'
 
 async function chooseEnglish(
     user: RenderedRoute['user'],
-    { scope = document.body, trigger = 'Jezik / Language: HR' } = {},
+    { scope = document.body, trigger = `${languagePickerLabel}: HR` } = {},
 ) {
     await user.click(within(scope).getByRole('button', { name: trigger }))
     await user.click(await screen.findByRole('menuitemradio', { name: 'English' }))
@@ -41,7 +42,9 @@ describe('language switch', () => {
         expect(screen.getByRole('navigation', { name: en.shell.mainNav })).toBeInTheDocument()
         expect(screen.getByRole('table', { name: en.zones.listLabel })).toBeInTheDocument()
         expect(screen.getByRole('button', { name: en.shell.signOut })).toBeInTheDocument()
-        expect(screen.getByRole('button', { name: 'Jezik / Language: EN' })).toBeInTheDocument()
+        expect(
+            screen.getByRole('button', { name: `${languagePickerLabel}: EN` }),
+        ).toBeInTheDocument()
         expect(document.documentElement.lang).toBe('en')
         await waitFor(() => {
             expect(document.title).toBe('Zones – SPARK Admin')
@@ -63,14 +66,14 @@ describe('language switch', () => {
 
         await user.click(screen.getByRole('button', { name: hr.shell.openMenu }))
         const drawer = await screen.findByRole('dialog', { name: hr.shell.menu })
-        await chooseEnglish(user, { scope: drawer, trigger: 'Jezik / Language: Hrvatski' })
+        await chooseEnglish(user, { scope: drawer, trigger: `${languagePickerLabel}: Hrvatski` })
 
         expect(
             await within(drawer).findByRole('button', { name: en.shell.signOut }),
         ).toBeInTheDocument()
         expect(within(drawer).getByRole('link', { name: en.nav.zones })).toBeInTheDocument()
         expect(
-            within(drawer).getByRole('button', { name: 'Jezik / Language: English' }),
+            within(drawer).getByRole('button', { name: `${languagePickerLabel}: English` }),
         ).toBeInTheDocument()
     })
 
@@ -85,6 +88,17 @@ describe('language switch', () => {
             expect(document.title).toBe('Sign in – SPARK Admin')
         })
         await expectNoAxeViolations(container)
+    })
+
+    it('translates validation messages already on screen', async () => {
+        const { user } = await renderRoute(paths.login)
+        await user.click(screen.getByRole('button', { name: hr.login.submit }))
+        expect(await screen.findByText(hr.login.usernameRequired)).toBeInTheDocument()
+
+        await chooseEnglish(user)
+
+        expect(await screen.findByText(en.login.usernameRequired)).toBeInTheDocument()
+        expect(screen.getByText(en.login.passwordRequired)).toBeInTheDocument()
     })
 
     it('shows validation messages in the chosen language', async () => {

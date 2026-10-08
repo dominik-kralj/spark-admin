@@ -12,7 +12,7 @@ import { LanguageMenu } from '@/shared/ui/LanguageMenu'
 import { useAuth } from '../api/useAuth'
 import { loginErrorMessage } from '../lib/loginErrorMessage'
 import { isSessionExpiredState, returnPathFrom } from '../lib/sessionRedirects'
-import { createLoginFormSchema, emptyLoginForm } from '../validators/loginForm'
+import { emptyLoginForm, loginFormSchema } from '../validators/loginForm'
 
 import { LoginHeading } from './LoginHeading'
 
@@ -32,7 +32,7 @@ export function LoginPage() {
         handleSubmit,
         formState: { errors },
     } = useForm({
-        resolver: zodResolver(createLoginFormSchema(t)),
+        resolver: zodResolver(loginFormSchema),
         defaultValues: emptyLoginForm,
         mode: 'onSubmit',
         reValidateMode: 'onChange',
@@ -107,7 +107,7 @@ export function LoginPage() {
                         />
                         <Field.ErrorText fontSize="caption">
                             <CircleAlert size="14" />
-                            {errors.username?.message}
+                            {errors.username && t.login.usernameRequired}
                         </Field.ErrorText>
                     </Field.Root>
 
@@ -136,7 +136,7 @@ export function LoginPage() {
                         </HStack>
                         <Field.ErrorText fontSize="caption">
                             <CircleAlert size="14" />
-                            {errors.password?.message}
+                            {errors.password && t.login.passwordRequired}
                         </Field.ErrorText>
                     </Field.Root>
 
