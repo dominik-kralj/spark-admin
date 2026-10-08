@@ -61,7 +61,6 @@ export function formatAmount(amount: number): string {
     return `${digits} ${currency}`
 }
 
-/** An amount as a form input shows it: `0,70`. */
 export function formatDecimal(amount: number): string {
     return decimalInputFormat.format(amount)
 }

@@ -76,7 +76,7 @@ export function ZoneTable({ zones, codeSortDirection, onSortByCode, onEdit }: Zo
                                             onEdit(zone)
                                         }}
                                     >
-                                        <Pencil />
+                                        <Pencil aria-hidden="true" />
                                     </IconButton>
                                 </Table.Cell>
                             </Table.Row>

@@ -25,25 +25,15 @@ export function ZonesPage() {
         setForm((current) => ({ isOpen: true, zone, key: current.key + 1 }))
     }
 
+    function openAddForm() {
+        openForm(null)
+    }
+
     return (
         <Stack flex="1" minW="0" gap={{ base: '4', md: '5' }}>
-            <PageHeader
-                title={t.nav.zones}
-                action={
-                    <AddZoneButton
-                        onClick={() => {
-                            openForm(null)
-                        }}
-                    />
-                }
-            />
+            <PageHeader title={t.nav.zones} action={<AddZoneButton onClick={openAddForm} />} />
 
-            <ZoneList
-                onAdd={() => {
-                    openForm(null)
-                }}
-                onEdit={openForm}
-            />
+            <ZoneList onAdd={openAddForm} onEdit={openForm} />
 
             <ZoneFormDrawer
                 key={form.key}

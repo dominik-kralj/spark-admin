@@ -16,7 +16,6 @@ export type ZoneFormMessage =
 
 const message = (key: ZoneFormMessage) => ({ message: key })
 
-// ZONES: VARCHAR(20), DECIMAL(10,2) and INT columns.
 const maxTextLength = 20
 const maxAmount = 99_999_999.99
 const maxInteger = 2_147_483_647

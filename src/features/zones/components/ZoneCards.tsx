@@ -61,7 +61,7 @@ export function ZoneCards({ zones, onEdit }: ZoneCardsProps) {
                             onEdit(zone)
                         }}
                     >
-                        <Pencil />
+                        <Pencil aria-hidden="true" />
                         {t.zones.edit}
                     </Button>
                 </Stack>

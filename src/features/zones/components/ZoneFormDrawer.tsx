@@ -1,5 +1,6 @@
 import { Input, SimpleGrid, Text } from '@chakra-ui/react'
 import { zodResolver } from '@hookform/resolvers/zod'
+import type { HTMLAttributes } from 'react'
 import { useForm } from 'react-hook-form'
 
 import { useStrings } from '@/shared/i18n/useStrings'
@@ -7,7 +8,6 @@ import { setServerFieldErrors } from '@/shared/lib/setServerFieldErrors'
 import { toaster } from '@/shared/lib/toaster'
 import { FormAlert } from '@/shared/ui/FormAlert'
 import { FormDrawer } from '@/shared/ui/FormDrawer'
-import { FormErrorNotice } from '@/shared/ui/FormErrorNotice'
 import { FormField } from '@/shared/ui/FormField'
 
 import { useCreateZone, useUpdateZone } from '../api/useZones'
@@ -21,7 +21,9 @@ import {
     type ValidZoneFormValues,
 } from '../validators/zoneForm'
 
-const fields: { name: ZoneField; inputMode: 'text' | 'decimal' | 'numeric' }[] = [
+import { FormErrorNotice } from './FormErrorNotice'
+
+const fields: { name: ZoneField; inputMode: HTMLAttributes<HTMLInputElement>['inputMode'] }[] = [
     { name: 'code', inputMode: 'text' },
     { name: 'name', inputMode: 'text' },
     { name: 'price', inputMode: 'decimal' },
@@ -33,7 +35,6 @@ const fields: { name: ZoneField; inputMode: 'text' | 'decimal' | 'numeric' }[] =
 
 interface ZoneFormDrawerProps {
     isOpen: boolean
-    /** The zone to edit, or null to add one. */
     zone: Zone | null
     onClose: () => void
 }
@@ -42,7 +43,8 @@ export function ZoneFormDrawer({ isOpen, zone, onClose }: ZoneFormDrawerProps) {
     const t = useStrings()
     const createZone = useCreateZone()
     const updateZone = useUpdateZone()
-    const saveMutation = zone === null ? createZone : updateZone
+    const isAdding = zone === null
+    const saveMutation = isAdding ? createZone : updateZone
     const {
         register,
         handleSubmit,
@@ -50,8 +52,7 @@ export function ZoneFormDrawer({ isOpen, zone, onClose }: ZoneFormDrawerProps) {
         formState: { errors, isDirty, isSubmitting, submitCount },
     } = useForm({
         resolver: zodResolver(zoneFormSchema),
-        defaultValues: zone === null ? emptyZoneForm : toZoneFormValues(zone),
-        // Validates on leaving a field, then on every change, so an error clears once fixed.
+        defaultValues: isAdding ? emptyZoneForm : toZoneFormValues(zone),
         mode: 'onTouched',
     })
 
@@ -63,10 +64,9 @@ export function ZoneFormDrawer({ isOpen, zone, onClose }: ZoneFormDrawerProps) {
         const input = toZoneInput(values)
 
         try {
-            const saved =
-                zone === null
-                    ? await createZone.mutateAsync(input)
-                    : await updateZone.mutateAsync({ id: zone.id, ...input })
+            const saved = isAdding
+                ? await createZone.mutateAsync(input)
+                : await updateZone.mutateAsync({ id: zone.id, ...input })
             toaster.success({ title: t.zones.form.saved(saved.code) })
             onClose()
         } catch (error) {
@@ -77,10 +77,10 @@ export function ZoneFormDrawer({ isOpen, zone, onClose }: ZoneFormDrawerProps) {
     return (
         <FormDrawer
             isOpen={isOpen}
-            title={zone === null ? t.zones.add : t.zones.editZone(zone.code)}
+            title={isAdding ? t.zones.add : t.zones.editZone(zone.code)}
             isDirty={isDirty}
             isSaving={isSubmitting}
-            isSaveDisabled={zone !== null && !isDirty}
+            isSaveDisabled={!isAdding && !isDirty}
             onClose={onClose}
             onSubmit={(event) => void handleSubmit(save)(event)}
         >
@@ -95,7 +95,7 @@ export function ZoneFormDrawer({ isOpen, zone, onClose }: ZoneFormDrawerProps) {
                     <FormField
                         key={name}
                         label={t.zones.form.labels[name]}
-                        error={zoneFieldMessage(name, errors[name], t)}
+                        error={zoneFieldMessage({ field: name, error: errors[name], t })}
                     >
                         {(control) => (
                             <Input

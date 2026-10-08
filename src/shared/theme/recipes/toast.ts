@@ -12,12 +12,10 @@ export const toastRecipe = defineSlotRecipe({
             borderWidth: '1px',
             borderRadius: 'l3',
             boxShadow: 'md',
-            '&[data-type=success]': {
-                bg: 'bg.panel',
-                color: 'fg',
-                borderColor: 'border.success',
-            },
-            '&[data-type=error]': { bg: 'bg.panel', color: 'fg', borderColor: 'border.error' },
+            // Chakra's types fill the toast with colour; the design keeps a white surface.
+            '&[data-type]': { bg: 'bg.panel', color: 'fg' },
+            '&[data-type=success]': { borderColor: 'border.success' },
+            '&[data-type=error]': { borderColor: 'border.error' },
             _motionReduce: { transition: 'none' },
         },
         title: { fontWeight: 'semibold', textStyle: 'md' },
