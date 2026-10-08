@@ -52,7 +52,7 @@ Markers used below:
 
 ### Lists
 
-Small master-data lists (zones, inspectors, admin users) return a plain array
+Small master-data lists (zones, privileged owners, inspectors, admin users) return a plain array
 and are sorted in the browser. Large lists are paged on the server:
 
 ```ts
@@ -307,22 +307,11 @@ type PrivilegedOwnerInput = Omit<PrivilegedOwner, 'privilegedOwnerId'>
 
 All fields are required [spec: every column is NOT NULL].
 
-`GET /privileged-owners`
-
-| Query      | Type   | Notes                                                 |
-| ---------- | ------ | ----------------------------------------------------- |
-| `plate`    | string | Matches anywhere in the plate                         |
-| `validity` | string | `all` (default), `valid`, `expired`                   |
-| `sortBy`   | string | `validUntil` (default, `desc`), `vehicleRegistration` |
-| paging     |        | `page`, `pageSize`, `sortDir`                         |
-
-```ts
-// 200: the tabs "Svi (6) / Važeći (4) / Istekli (2)" need the counts.
-// Counts respect `plate` and ignore `validity`.
-interface PrivilegedOwnerPage extends Page<PrivilegedOwner> {
-  counts: { all: number; valid: number; expired: number }
-}
-```
+`GET /privileged-owners` answers `200 PrivilegedOwner[]`: every entry of the city, as
+for zones. The tabs ("Svi (6) / Važeći (4) / Istekli (2)"), their counts, the
+plate search and the sort run in the browser. [built] Server paging with
+`plate`, `validity` and `sortBy` and the counts in the response can be added if a
+city's list grows into the thousands.
 
 | Call                                            | Body                   | Success               |
 | ----------------------------------------------- | ---------------------- | --------------------- |

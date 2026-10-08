@@ -55,7 +55,7 @@ export function ZonesPage() {
     }
 
     return (
-        <Stack flex="1" minW="0" gap={{ base: '4', md: '5' }}>
+        <Stack flex="1" minW="0" minH="0" gap={{ base: '4', md: '5' }}>
             <PageHeader
                 title={t.nav.zones}
                 action={<AddZoneButton ref={addButtonRef} onClick={openAddForm} />}

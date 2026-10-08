@@ -66,8 +66,7 @@ The list pattern (`features/zones/components/`):
   comes from `useSortSearchParams` (URL `sort` and `dir`; the default order
   leaves the URL clean).
 - From `md`, `ZoneTable`: a `panel` with a labelled `Table`,
-  `SortableColumnHeader` for sortable columns (it moves to `shared/ui` when a
-  second feature sorts), numbers right-aligned, and the
+  `SortableColumnHeader` (`shared/ui`) for sortable columns, numbers right-aligned, and the
   total as a footer. Below `md`, `ZoneCards`: a labelled `ul` of `panel` cards
   with a `dl` of 3 to 4 fields. Both render; CSS shows one.
 - Tests: `ZonesPage.test.tsx` through the route and the mock (columns and

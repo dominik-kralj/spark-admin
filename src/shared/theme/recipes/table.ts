@@ -21,6 +21,12 @@ export const tableRecipe = defineSlotRecipe({
         },
     },
     variants: {
+        // Chakra makes the header row sticky, which scrolls away in Chromium; the cells stick.
+        stickyHeader: {
+            true: {
+                columnHeader: { position: 'sticky', top: '0', zIndex: '1' },
+            },
+        },
         variant: {
             // Rules between rows only, so the footer under the last row is not doubled.
             line: {

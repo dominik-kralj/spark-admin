@@ -3,6 +3,7 @@ import { cleanup, configure } from '@testing-library/react'
 import { afterAll, afterEach, beforeAll } from 'vitest'
 
 import { resetLoginRateLimit } from '@/mocks/auth'
+import { resetPrivilegedOwners } from '@/mocks/privilegedOwners'
 import { resetZones } from '@/mocks/zones'
 
 import { server } from './server'
@@ -36,6 +37,7 @@ afterEach(() => {
     server.resetHandlers()
     resetLoginRateLimit()
     resetZones()
+    resetPrivilegedOwners()
     // Absent in files that opt into the node environment.
     if (typeof sessionStorage !== 'undefined') sessionStorage.clear()
     // The language choice lives here; every test starts in Croatian.

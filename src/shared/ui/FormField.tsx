@@ -8,7 +8,7 @@ export interface FieldControlProps {
 
 interface FormFieldProps {
     label: string
-    helperText?: string
+    helperText?: string | undefined
     error?: string | undefined
     children: (control: FieldControlProps) => ReactNode
 }

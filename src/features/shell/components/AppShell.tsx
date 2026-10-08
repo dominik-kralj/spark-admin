@@ -31,14 +31,15 @@ export function AppShell({ userName, onSignOut }: AppShellProps) {
     const layout = useShellLayout()
 
     // main keeps its place in the tree at every width, so a resize never remounts the page.
+    // From md the shell is the window's height: a table page fits it and scrolls only its rows.
     return (
-        <Grid templateColumns={columns[layout]} minH="100dvh">
+        <Grid templateColumns={columns[layout]} minH="100dvh" h={{ md: '100dvh' }}>
             <SkipNavLink>{t.shell.skipToContent}</SkipNavLink>
             <LiveRegion />
 
             {sideNav[layout]}
 
-            <Flex direction="column" minW="0">
+            <Flex direction="column" minW="0" minH="0">
                 {layout === 'phone' ? (
                     <PhoneTopBar userName={userName} onSignOut={onSignOut} />
                 ) : (
@@ -49,6 +50,8 @@ export function AppShell({ userName, onSignOut }: AppShellProps) {
                     as="main"
                     display="flex"
                     flex="1"
+                    minH="0"
+                    overflowY={{ md: 'auto' }}
                     p={{ base: '4', md: '6', lg: '8' }}
                 >
                     <Outlet />
