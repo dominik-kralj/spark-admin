@@ -215,3 +215,38 @@ test.describe('Privileged owner delete', () => {
         await expect(page.getByRole('button', { name: t.addLong })).toBeFocused()
     })
 })
+
+test.describe('Vrijedi do calendar', () => {
+    test('picks a day by keyboard and leaves typing alone', async ({ page, isMobile }) => {
+        await openList(page)
+        const editButton = page
+            .getByRole(isMobile ? 'list' : 'table', { name: t.listLabel })
+            .getByRole('button', { name: t.editOwner('ZG9087KL') })
+        await editButton.click()
+        const form = page.getByRole('dialog', { name: t.editOwner('ZG9087KL') })
+        await waitForAnimations(form)
+        const dateField = form.getByLabel(labels.validUntil, { exact: true })
+        const calendarButton = form.getByRole('button', {
+            name: hr.forms.datePicker.open(labels.validUntil),
+        })
+        if (isMobile) await expectTouchTargets(calendarButton)
+
+        await calendarButton.click()
+        const selectedDay = form.getByRole('button', { name: /30\. rujna 2026/ })
+        await expect(selectedDay).toBeFocused()
+        await expectNoAxeViolations(page)
+        await page.keyboard.press('ArrowRight')
+        await page.keyboard.press('Enter')
+
+        await expect(dateField).toHaveValue('01.10.2026')
+        await expect(form.getByRole('button', { name: /1\. listopada 2026/ })).toBeHidden()
+
+        await dateField.fill('')
+        await dateField.pressSequentially('1.2.20')
+        await expect(dateField).toHaveValue('1.2.20')
+        await dateField.pressSequentially('27')
+        await dateField.press('Tab')
+        await expect(dateField).toHaveValue(/^0?1\.0?2\.2027$/)
+        await expect(dateField).not.toHaveAttribute('aria-invalid', 'true')
+    })
+})

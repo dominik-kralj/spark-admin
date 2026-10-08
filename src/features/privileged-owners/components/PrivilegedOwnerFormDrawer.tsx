@@ -2,13 +2,14 @@ import { Button, Input, SimpleGrid, Text } from '@chakra-ui/react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Trash2 } from 'lucide-react'
 import type { HTMLAttributes } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 
 import { useStrings } from '@/shared/i18n/useStrings'
 import { errorMessage } from '@/shared/lib/errorMessage'
 import { setServerFieldErrors } from '@/shared/lib/setServerFieldErrors'
 import { toaster } from '@/shared/lib/toaster'
 import { normalisePlate } from '@/shared/lib/validation'
+import { DateInput } from '@/shared/ui/DateInput'
 import { ErrorAlert } from '@/shared/ui/ErrorAlert'
 import { FormDrawer } from '@/shared/ui/FormDrawer'
 import { FormField } from '@/shared/ui/FormField'
@@ -79,12 +80,15 @@ export function PrivilegedOwnerFormDrawer({
         handleSubmit,
         setError,
         setValue,
+        control: formControl,
         formState: { errors, isDirty, isSubmitting, submitCount },
     } = useForm({
         resolver: zodResolver(privilegedOwnerFormSchema),
         defaultValues: isAdding ? emptyPrivilegedOwnerForm : toPrivilegedOwnerFormValues(owner),
         mode: 'onTouched',
     })
+
+    const validUntilText = useWatch({ control: formControl, name: 'validUntil' })
 
     const saveError = saveMutation.error
     const hasFieldErrors = Object.keys(toPrivilegedOwnerFieldErrors(saveError)).length > 0
@@ -181,15 +185,33 @@ export function PrivilegedOwnerFormDrawer({
                                 t,
                             })}
                         >
-                            {(control) => (
-                                <Input
-                                    {...registerField(name)}
-                                    {...control}
-                                    inputMode={inputMode}
-                                    autoComplete="off"
-                                    fontFamily={name === 'plate' ? 'mono' : undefined}
-                                />
-                            )}
+                            {(control) => {
+                                const input = (
+                                    <Input
+                                        {...registerField(name)}
+                                        {...control}
+                                        inputMode={inputMode}
+                                        autoComplete="off"
+                                        fontFamily={name === 'plate' ? 'mono' : undefined}
+                                    />
+                                )
+                                if (name !== 'validUntil') return input
+
+                                return (
+                                    <DateInput
+                                        label={t.privilegedOwners.form.labels.validUntil}
+                                        value={validUntilText}
+                                        onPick={(text) => {
+                                            setValue('validUntil', text, {
+                                                shouldDirty: true,
+                                                shouldValidate: true,
+                                            })
+                                        }}
+                                    >
+                                        {input}
+                                    </DateInput>
+                                )
+                            }}
                         </FormField>
                     ))}
                 </SimpleGrid>

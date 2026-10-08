@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 
 import {
     formatAmount,
+    formatCalendarDate,
     formatDate,
     formatDateTime,
     formatDecimal,
@@ -109,5 +110,11 @@ describe('formatMinutes', () => {
 
     it('groups thousands like other numbers', () => {
         expect(formatMinutes(1440)).toBe('1.440 min')
+    })
+})
+
+describe('formatCalendarDate', () => {
+    it('zero-pads day and month, with no time zone involved', () => {
+        expect(formatCalendarDate({ year: 2027, month: 1, day: 5 })).toBe('05.01.2027')
     })
 })

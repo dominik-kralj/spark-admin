@@ -161,6 +161,31 @@ describe('Privileged owner form', () => {
         expect(within(form).queryByText(t.form.expiredNote)).not.toBeInTheDocument()
     })
 
+    it('picks the date from a calendar that opens on the date in the field', async () => {
+        const bodies = captureBodies('put', '/privileged-owners/:id')
+        const rendered = await renderRoute(paths.privilegedOwners)
+        const form = await openEditForm(rendered, 'ZG9087KL')
+        const dateField = field(form, 'validUntil')
+
+        await rendered.user.click(
+            within(form).getByRole('button', {
+                name: hr.forms.datePicker.open(labels.validUntil),
+            }),
+        )
+        const day = await within(form).findByRole('button', { name: /15\. rujna 2026/ })
+        await rendered.user.click(day)
+
+        await waitFor(() => {
+            expect(dateField).toHaveValue('15.09.2026')
+        })
+        expect(dateField).toBeValid()
+        await save(rendered, form)
+        await expectFormClosed()
+        expect(bodies).toEqual([
+            expect.objectContaining({ validUntil: '2026-09-15T21:59:59.999Z' }) as unknown,
+        ])
+    })
+
     it('renews an expired entry: the note, then the new date in the payload and the row', async () => {
         const bodies = captureBodies('put', '/privileged-owners/:id')
         const rendered = await renderRoute(paths.privilegedOwners)

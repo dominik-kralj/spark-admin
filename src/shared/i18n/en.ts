@@ -215,6 +215,16 @@ export const en: Dictionary = {
             confirm: 'Discard changes',
             keepEditing: 'Keep editing',
         },
+        datePicker: {
+            locale: 'en-GB',
+            open: (field: string) => `Open calendar: ${field}`,
+            close: (field: string) => `Close calendar: ${field}`,
+            calendar: 'Calendar',
+            selected: (date: string) => `Selected date: ${date}`,
+            previous: { day: 'Previous month', month: 'Previous year', year: 'Previous decade' },
+            next: { day: 'Next month', month: 'Next year', year: 'Next decade' },
+            show: { day: 'Show days', month: 'Show months', year: 'Show years' },
+        },
         validation: {
             required: 'This field is required.',
             plateInvalid:

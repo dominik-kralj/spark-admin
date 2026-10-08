@@ -223,6 +223,20 @@ export const hr = {
             confirm: 'Odbaci promjene',
             keepEditing: 'Nastavi uređivati',
         },
+        datePicker: {
+            locale: 'hr-HR',
+            open: (field: string) => `Otvori kalendar: ${field}`,
+            close: (field: string) => `Zatvori kalendar: ${field}`,
+            calendar: 'Kalendar',
+            selected: (date: string) => `Odabrani datum: ${date}`,
+            previous: {
+                day: 'Prethodni mjesec',
+                month: 'Prethodna godina',
+                year: 'Prethodno desetljeće',
+            },
+            next: { day: 'Sljedeći mjesec', month: 'Sljedeća godina', year: 'Sljedeće desetljeće' },
+            show: { day: 'Prikaži dane', month: 'Prikaži mjesece', year: 'Prikaži godine' },
+        },
         validation: {
             required: 'Ovo polje je obavezno.',
             plateInvalid:

@@ -64,19 +64,26 @@ export const pinField = z
 // DD.MM.GGGG; the trailing dot of the Croatian spelling (31.12.2026.) is allowed.
 const datePattern = /^(\d{1,2})\.(\d{1,2})\.(\d{4})\.?$/
 
-export const dateField = z.string().transform((value, context): CalendarDate => {
+type DateText = { date: CalendarDate } | { error: 'required' | 'dateFormat' | 'dateInvalid' }
+
+/** Reads DD.MM.GGGG, ignoring spaces a paste can bring (31. 12. 2026.). */
+export function readDateText(value: string): DateText {
     const compact = value.replace(/\s/g, '')
     const match = datePattern.exec(compact)
-    const issue = (key: ValidationMessage) => {
-        context.addIssue({ code: 'custom', ...message(key) })
 
-        return z.NEVER
-    }
-
-    if (compact === '') return issue('required')
-    if (match === null) return issue('dateFormat')
+    if (compact === '') return { error: 'required' }
+    if (match === null) return { error: 'dateFormat' }
 
     const date = { year: Number(match[3]), month: Number(match[2]), day: Number(match[1]) }
 
-    return isRealDate(date) ? date : issue('dateInvalid')
+    return isRealDate(date) ? { date } : { error: 'dateInvalid' }
+}
+
+export const dateField = z.string().transform((value, context): CalendarDate => {
+    const result = readDateText(value)
+    if ('date' in result) return result.date
+
+    context.addIssue({ code: 'custom', ...message(result.error) })
+
+    return z.NEVER
 })
