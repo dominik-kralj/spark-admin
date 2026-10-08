@@ -28,22 +28,25 @@ MSW mock.
 
 ## Issue loop
 
-Work comes from the GitHub issues (`gh issue view <n>`), one at a time, in
-number order unless told otherwise. Milestones M0–M6 group them. The point is
-thorough review, so keep each change to its issue's scope.
+Work comes from the GitHub issues (`gh issue view <n>`) in **groups**: one
+feature's issues built together in one PR, listed in order in
+`docs/issue-groups.md`. Take the first group left unless told otherwise. The
+point is thorough review, so keep each change to its group's issues.
 
-1. Read the issue and everything it points to. State the plan in a few lines
-   and wait for approval.
-2. Branch `issue-<n>-<slug>` from an up-to-date `main`.
+1. Read every issue in the group and everything they point to. State the plan
+   in a few lines and wait for approval.
+2. Branch `<feature>-<slug>` (e.g. `privileged-owners`) from an up-to-date
+   `main`.
 3. Build test-first (`/tdd` skill).
 4. Run the gate (below) until it's green.
-5. Open a PR that says `Closes #<n>` and lists **built / assumed / open**, then
-   stop for review. Each "assumed" item also lands in `api-assumptions.md` or
-   `open-questions.md`.
+5. Open a PR that says `Closes #<n>` for each issue in the group and lists
+   **built / assumed / open** per issue, then stop for review. Each "assumed"
+   item also lands in `api-assumptions.md` or `open-questions.md`. Once
+   merged, remove the group's row from `docs/issue-groups.md`.
 
 An issue is done when its "Done when" list is met, every handoff hard
 requirement that applies is met, **and each has a test or a stated manual
-check**. Work found along the way that is outside the scope becomes a new
+check**. Work found along the way that is outside the group becomes a new
 issue, not part of the current PR.
 
 **Zone (#10–#14) is the reference slice.** Before building any later screen, open the
