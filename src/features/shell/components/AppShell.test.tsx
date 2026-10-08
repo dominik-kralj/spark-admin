@@ -91,7 +91,10 @@ describe('app shell', () => {
 
             await user.click(within(nav).getByRole('link', { name: label }))
 
-            expect(router.state.location.pathname).toBe(path)
+            // Built screens load lazily, so the URL changes once their code has loaded.
+            await waitFor(() => {
+                expect(router.state.location.pathname).toBe(path)
+            })
             expect(
                 await screen.findByRole('heading', { level: 1, name: label }),
             ).toBeInTheDocument()

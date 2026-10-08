@@ -8,6 +8,7 @@ import { emptyStateRecipe } from './emptyState'
 import { inputRecipe } from './input'
 import { skeletonRecipe } from './skeleton'
 import { skipNavLinkRecipe } from './skipNavLink'
+import { tableRecipe } from './table'
 
 export const recipesConfig = defineConfig({
     theme: {
@@ -18,6 +19,6 @@ export const recipesConfig = defineConfig({
             skeleton: skeletonRecipe,
             skipNavLink: skipNavLinkRecipe,
         },
-        slotRecipes: { alert: alertRecipe, emptyState: emptyStateRecipe },
+        slotRecipes: { alert: alertRecipe, emptyState: emptyStateRecipe, table: tableRecipe },
     },
 })

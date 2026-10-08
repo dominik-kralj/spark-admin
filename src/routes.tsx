@@ -1,10 +1,22 @@
+import type { ComponentType } from 'react'
 import { redirect, type RouteObject } from 'react-router'
 
 import { ProtectedLayout } from '@/features/auth/components/ProtectedLayout'
 import { redirectIfSignedIn, requireSession } from '@/features/auth/lib/sessionRedirects'
 import { PlaceholderPage } from '@/features/shell/components/PlaceholderPage'
-import { sections } from '@/features/shell/lib/sections'
+import { sections, type Section } from '@/features/shell/lib/sections'
 import { paths } from '@/shared/paths'
+
+const screens: Partial<Record<string, () => Promise<ComponentType>>> = {
+    [paths.zones]: async () => (await import('@/features/zones/components/ZonesPage')).ZonesPage,
+}
+
+function sectionRoute({ path, label }: Section): RouteObject {
+    const screen = screens[path]
+    if (screen === undefined) return { path, element: <PlaceholderPage title={label} /> }
+
+    return { path, lazy: { Component: screen } }
+}
 
 // Fresh objects per router: React Router caches lazy results on the route objects.
 export function createRoutes(): RouteObject[] {
@@ -31,10 +43,7 @@ export function createRoutes(): RouteObject[] {
                             },
                             children: [
                                 { index: true, loader: () => redirect(paths.home) },
-                                ...sections.map(({ path, label }) => ({
-                                    path,
-                                    element: <PlaceholderPage title={label} />,
-                                })),
+                                ...sections.map(sectionRoute),
                             ],
                         },
                         {

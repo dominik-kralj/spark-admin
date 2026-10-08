@@ -1,3 +1,6 @@
+// Relative: the Playwright specs import this file without the @/ alias.
+import { plural } from '../lib/plural'
+
 const appName = 'SPARK Admin'
 
 /**
@@ -52,6 +55,28 @@ export const hr = {
         citySettings: 'Postavke grada',
         adminUsers: 'Korisnici',
     },
+    zones: {
+        add: 'Dodaj zonu',
+        listLabel: 'Parkirne zone',
+        columns: {
+            code: 'Šifra',
+            name: 'Naziv',
+            price: 'Cijena',
+            dailyTicketPrice: 'Dnevna karta',
+            durationMinutes: 'Trajanje',
+            maxExtensions: 'Najviše produljenja',
+            dpkIssueDelayMinutes: 'Čekanje za DPK',
+        },
+        loading: 'Učitavanje zona…',
+        empty: {
+            title: 'Još nema zona',
+            description:
+                'Dodajte prvu zonu kako bi vozači mogli plaćati parkiranje, a kontrolori izdavati dnevne karte.',
+        },
+        errorTitle: 'Zone nije moguće učitati',
+        total: (count: number) =>
+            `Ukupno ${String(count)} ${plural(count, { one: 'zona', few: 'zone', other: 'zona' })}`,
+    },
     listStates: {
         retry: 'Pokušaj ponovno',
         errors: {
@@ -64,6 +89,7 @@ export const hr = {
     },
     format: {
         currency: 'EUR',
+        minutes: 'min',
     },
     notFound: {
         title: 'Stranica nije pronađena',

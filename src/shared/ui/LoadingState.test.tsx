@@ -5,16 +5,32 @@ import { skeletonRecipe } from '@/shared/theme/recipes/skeleton'
 import { expectNoAxeViolations } from '@/test/axe'
 import { renderWithProviders } from '@/test/render'
 
+import { LiveRegion } from './LiveRegion'
 import { LoadingState } from './LoadingState'
 
 const label = 'Učitavanje zona…'
 const columnWidths = [1, 2, 1, 1, 1, 1, 1]
 
 describe('LoadingState', () => {
-    it('announces its label as a status', () => {
-        renderWithProviders(<LoadingState label={label} columnWidths={columnWidths} />)
+    it('shows its label and announces it through the live region, until it unmounts', () => {
+        renderWithProviders(<LiveRegion />)
+        const loading = renderWithProviders(
+            <LoadingState label={label} columnWidths={columnWidths} />,
+        )
 
         expect(screen.getByRole('status')).toHaveTextContent(label)
+        expect(screen.getAllByText(label)).toHaveLength(2)
+
+        loading.unmount()
+
+        expect(screen.getByRole('status')).toBeEmptyDOMElement()
+    })
+
+    it('leaves the status role to the live region', () => {
+        renderWithProviders(<LoadingState label={label} columnWidths={columnWidths} />)
+
+        expect(screen.queryByRole('status')).not.toBeInTheDocument()
+        expect(screen.getByText(label)).toBeVisible()
     })
 
     it('hides every skeleton from screen readers', () => {

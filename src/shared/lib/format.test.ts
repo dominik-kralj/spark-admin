@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { describe, expect, it } from 'vitest'
 
-import { formatAmount, formatDate, formatDateTime, formatTime } from './format'
+import { formatAmount, formatDate, formatDateTime, formatMinutes, formatTime } from './format'
 
 describe('test time zone', () => {
     it('is not Zagreb, so the helpers are proven to ignore it', () => {
@@ -83,5 +83,16 @@ describe('formatAmount', () => {
 
     it('drops the minus when the amount rounds to zero', () => {
         expect(formatAmount(-0.001)).toBe('0,00 EUR')
+    })
+})
+
+describe('formatMinutes', () => {
+    it('writes whole minutes with the min unit', () => {
+        expect(formatMinutes(60)).toBe('60 min')
+        expect(formatMinutes(0)).toBe('0 min')
+    })
+
+    it('groups thousands like other numbers', () => {
+        expect(formatMinutes(1440)).toBe('1.440 min')
     })
 })

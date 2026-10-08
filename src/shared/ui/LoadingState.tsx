@@ -1,4 +1,9 @@
 import { Box, Grid, Skeleton, Stack, Text } from '@chakra-ui/react'
+import { useEffect } from 'react'
+
+import { announce } from '@/shared/lib/announcer'
+
+import { tableHeaderHeight, tableRowHeight } from '@/shared/theme/tableSizes'
 
 interface LoadingStateProps {
     label: string
@@ -10,12 +15,19 @@ const tableRows = [1, 2, 3]
 const cards = [1, 2]
 
 export function LoadingState({ label, columnWidths }: LoadingStateProps) {
+    useEffect(() => {
+        announce(label)
+
+        return () => {
+            announce('')
+        }
+    }, [label])
     const gridTemplateColumns = columnWidths.map((width) => `${String(width)}fr`).join(' ')
 
     return (
         <Box layerStyle={{ md: 'panel' }} overflow="hidden">
             <Box hideBelow="md" aria-hidden="true">
-                <Box h="11" bg="bg.subtle" />
+                <Box h={`${String(tableHeaderHeight)}px`} bg="bg.subtle" />
                 {tableRows.map((row) => (
                     <Grid
                         key={row}
@@ -23,7 +35,7 @@ export function LoadingState({ label, columnWidths }: LoadingStateProps) {
                         gridTemplateColumns={gridTemplateColumns}
                         gap="8"
                         alignItems="center"
-                        h="52px"
+                        h={`${String(tableRowHeight)}px`}
                         px="4"
                         borderTopWidth="1px"
                     >
@@ -45,7 +57,6 @@ export function LoadingState({ label, columnWidths }: LoadingStateProps) {
             </Stack>
 
             <Text
-                role="status"
                 mt={{ base: '3', md: '0' }}
                 px={{ md: '4' }}
                 py={{ md: '3' }}
