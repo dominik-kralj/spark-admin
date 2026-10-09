@@ -1,4 +1,10 @@
-import { keepPreviousData, queryOptions, skipToken, useQuery } from '@tanstack/react-query'
+import {
+    keepPreviousData,
+    queryOptions,
+    skipToken,
+    useQuery,
+    useQueryClient,
+} from '@tanstack/react-query'
 
 import { request } from '@/shared/api'
 
@@ -13,6 +19,7 @@ import {
     type TicketFilters,
     type TicketListParams,
 } from '../validators/ticket'
+import { toZoneOptions, zoneOptionsResponseSchema } from '../validators/zoneOption'
 
 interface NewTicketCountParams {
     /** The newest loaded ticket's time; null while nothing is loaded. */
@@ -21,23 +28,51 @@ interface NewTicketCountParams {
 }
 
 const ticketKeys = {
+    lists: ['tickets', 'list'] as const,
     list: (params: TicketListParams) => ['tickets', 'list', params] as const,
+    newestTimes: ['tickets', 'newest'] as const,
+    newestTime: (filters: TicketFilters) => ['tickets', 'newest', filters] as const,
+    zoneOptions: ['tickets', 'zoneOptions'] as const,
     detail: (id: string) => ['tickets', 'detail', id] as const,
     newCount: ({ createdAfter, filters }: NewTicketCountParams) =>
         ['tickets', 'newCount', createdAfter, filters] as const,
 }
 
+/** How often Karte asks for the number of new tickets (`api-contract.md` ADM-4). */
+export const newTicketPollMs = 30_000
+
+async function fetchTicketPage(params: TicketListParams, signal: AbortSignal) {
+    return toTicketPage(
+        await request('/tickets', {
+            query: toTicketListQuery(params),
+            schema: ticketPageResponseSchema,
+            signal,
+        }),
+    )
+}
+
+// Never stale: the rows stay as loaded until the user asks for new ones (useShowNewTickets).
 function ticketsQuery(params: TicketListParams) {
     return queryOptions({
         queryKey: ticketKeys.list(params),
-        queryFn: async ({ signal }) =>
-            toTicketPage(
-                await request('/tickets', {
-                    query: toTicketListQuery(params),
-                    schema: ticketPageResponseSchema,
-                    signal,
-                }),
-            ),
+        queryFn: ({ signal }) => fetchTicketPage(params, signal),
+        staleTime: Infinity,
+    })
+}
+
+// What the list's rows are as new as; kept with the rows, so the two only move together.
+function newestTicketTimeQuery(filters: TicketFilters) {
+    return queryOptions({
+        queryKey: ticketKeys.newestTime(filters),
+        queryFn: async ({ signal }) => {
+            const { items } = await fetchTicketPage(
+                { page: 1, pageSize: 1, sort: { key: 'createdAt', direction: 'desc' }, filters },
+                signal,
+            )
+
+            return items[0]?.createdAt ?? new Date(0)
+        },
+        staleTime: Infinity,
     })
 }
 
@@ -69,8 +104,15 @@ function newTicketCountQuery({ createdAfter, filters }: NewTicketCountParams) {
 
                       return count
                   },
+        refetchInterval: newTicketPollMs,
     })
 }
+
+const zoneOptionsQuery = queryOptions({
+    queryKey: ticketKeys.zoneOptions,
+    queryFn: async ({ signal }) =>
+        toZoneOptions(await request('/zones', { schema: zoneOptionsResponseSchema, signal })),
+})
 
 // The previous page stays on screen while the next one loads.
 export function useTickets(params: TicketListParams) {
@@ -81,6 +123,27 @@ export function useTicket(id: string) {
     return useQuery(ticketQuery(id))
 }
 
+export function useNewestTicketTime(filters: TicketFilters) {
+    return useQuery(newestTicketTimeQuery(filters))
+}
+
+// Polling stops while the tab is hidden: TanStack Query's refetchIntervalInBackground is off.
 export function useNewTicketCount(params: NewTicketCountParams) {
     return useQuery(newTicketCountQuery(params))
+}
+
+/** Loads the rows again with the tickets that arrived since, and counts new ones from there. */
+export function useShowNewTickets() {
+    const queryClient = useQueryClient()
+
+    return async () => {
+        await Promise.all([
+            queryClient.invalidateQueries({ queryKey: ticketKeys.lists }),
+            queryClient.invalidateQueries({ queryKey: ticketKeys.newestTimes }),
+        ])
+    }
+}
+
+export function useTicketZoneOptions() {
+    return useQuery(zoneOptionsQuery)
 }

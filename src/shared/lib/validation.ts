@@ -10,6 +10,7 @@ export type ValidationMessage =
     | 'pinInvalid'
     | 'dateFormat'
     | 'dateInvalid'
+    | 'dateRangeOrder'
 
 /** A Zod error message that is a dictionary key, so the form translates it at render. */
 export const messageKey = <TKey extends string>(key: TKey) => ({ message: key })
@@ -82,6 +83,17 @@ export function readDateText(value: string): DateText {
 export const dateField = z.string().transform((value, context): CalendarDate => {
     const result = readDateText(value)
     if ('date' in result) return result.date
+
+    context.addIssue({ code: 'custom', ...message(result.error) })
+
+    return z.NEVER
+})
+
+/** A date that may be left empty, as in a filter: '' reads as null. */
+export const optionalDateField = z.string().transform((value, context): CalendarDate | null => {
+    const result = readDateText(value)
+    if ('date' in result) return result.date
+    if (result.error === 'required') return null
 
     context.addIssue({ code: 'custom', ...message(result.error) })
 

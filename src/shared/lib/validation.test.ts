@@ -3,7 +3,15 @@ import { describe, expect, it } from 'vitest'
 
 import type { z } from 'zod'
 
-import { dateField, filterPin, normalisePlate, oibField, pinField, plateField } from './validation'
+import {
+    dateField,
+    filterPin,
+    normalisePlate,
+    oibField,
+    optionalDateField,
+    pinField,
+    plateField,
+} from './validation'
 
 function messagesFor(schema: z.ZodType, value: string) {
     return schema.safeParse(value).error?.issues.map((issue) => issue.message)
@@ -142,5 +150,22 @@ describe('dateField', () => {
         ['01.01.0000', 'dateInvalid'],
     ])('rejects "%s" with %s', (typed, message) => {
         expect(messagesFor(dateField, typed)).toEqual([message])
+    })
+})
+
+describe('optionalDateField', () => {
+    it.each(['', '   '])('reads %j as no date', (typed) => {
+        expect(optionalDateField.parse(typed)).toBeNull()
+    })
+
+    it('reads a typed date', () => {
+        expect(optionalDateField.parse('6.10.2026')).toEqual({ year: 2026, month: 10, day: 6 })
+    })
+
+    it.each([
+        ['2026-10-06', 'dateFormat'],
+        ['31.02.2027', 'dateInvalid'],
+    ])('rejects "%s" with %s', (typed, message) => {
+        expect(messagesFor(optionalDateField, typed)).toEqual([message])
     })
 })

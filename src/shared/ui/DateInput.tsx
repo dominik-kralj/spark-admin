@@ -3,7 +3,7 @@ import { CalendarDays } from 'lucide-react'
 import type { ReactNode } from 'react'
 
 import { useStrings } from '@/shared/i18n/useStrings'
-import type { CalendarDate } from '@/shared/lib/calendarDate'
+import { toIsoDate, type CalendarDate } from '@/shared/lib/calendarDate'
 import { formatCalendarDate } from '@/shared/lib/format'
 import { readDateText } from '@/shared/lib/validation'
 
@@ -18,10 +18,8 @@ interface DateInputProps {
     children: ReactNode
 }
 
-function toDateValue({ year, month, day }: CalendarDate): DateValue {
-    const pad = (part: number) => String(part).padStart(2, '0')
-
-    return parseDate(`${String(year).padStart(4, '0')}-${pad(month)}-${pad(day)}`)
+function toDateValue(date: CalendarDate): DateValue {
+    return parseDate(toIsoDate(date))
 }
 
 /** A typed DD.MM.GGGG field with a calendar button beside it. */

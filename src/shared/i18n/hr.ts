@@ -84,6 +84,48 @@ export const hr = {
             description: 'Popis karata ima manje stranica. Vratite se na prvu stranicu.',
             action: 'Na prvu stranicu',
         },
+        filters: {
+            label: 'Filteri karata',
+            plate: 'Registracija',
+            platePlaceholder: 'npr. ZG1234AB',
+            from: 'Datum od',
+            to: 'Datum do',
+            zone: 'Zona',
+            allZones: 'Sve zone',
+            fiscal: 'Fiskalizacija',
+            allStatuses: 'Svi statusi',
+            search: 'Pretraži',
+            clear: 'Očisti',
+            clearAll: 'Očisti sve',
+            open: 'Filteri',
+            openWithCount: (count: number) =>
+                `Filteri, ${String(count)} ${plural(count, { one: 'aktivan', few: 'aktivna', other: 'aktivnih' })}`,
+            drawerTitle: 'Filteri',
+            close: 'Zatvori filtere',
+            apply: 'Prikaži rezultate',
+            active: 'Aktivni filteri:',
+            tags: {
+                plate: (plate: string) => `Registracija: ${plate}`,
+                range: (from: string, to: string) => `Razdoblje: ${from} – ${to}`,
+                rangeFrom: (from: string) => `Razdoblje: od ${from}`,
+                rangeTo: (to: string) => `Razdoblje: do ${to}`,
+                zone: (code: string) => `Zona: ${code}`,
+                fiscal: (status: string) => `Fiskalizacija: ${status}`,
+            },
+            remove: (tag: string) => `Ukloni filter ${tag}`,
+            noResults: {
+                title: 'Nema karata za odabrane filtere',
+                description: 'Promijenite ili uklonite filtere da vidite više karata.',
+            },
+        },
+        newTickets: {
+            count: (count: number) =>
+                `${String(count)} ${plural(count, { one: 'nova karta', few: 'nove karte', other: 'novih karata' })} od zadnjeg učitavanja`,
+            countShort: (count: number) =>
+                `${String(count)} ${plural(count, { one: 'nova karta', few: 'nove karte', other: 'novih karata' })}`,
+            show: 'Prikaži nove karte',
+            showShort: 'Prikaži nove',
+        },
         detail: {
             title: (plate: string) => `Karta ${plate}`,
             fallbackTitle: 'Detalji karte',
@@ -368,6 +410,7 @@ export const hr = {
             pinInvalid: 'PIN može imati najviše 4 znamenke.',
             dateFormat: 'Upišite datum u obliku DD.MM.GGGG, npr. 31.12.2026.',
             dateInvalid: 'Taj datum ne postoji. Provjerite dan i mjesec.',
+            dateRangeOrder: 'Datum do ne može biti prije datuma od.',
         },
         serverFieldErrors: {
             invalid: 'Poslužitelj nije prihvatio ovu vrijednost. Provjerite unos.',

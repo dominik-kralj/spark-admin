@@ -10,6 +10,9 @@ export interface Sort<TKey extends string> {
 const sortParam = 'sort'
 const directionParam = 'dir'
 
+/** The params that hold a sort; removing them goes back to the list's default order. */
+export const sortParams = [sortParam, directionParam] as const
+
 function readSort<TKey extends string>(
     searchParams: URLSearchParams,
     { keys, defaultSort }: { keys: readonly TKey[]; defaultSort: Sort<TKey> },
