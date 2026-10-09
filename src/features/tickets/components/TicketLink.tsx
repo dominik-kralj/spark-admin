@@ -14,7 +14,7 @@ export function TicketLink({ ticketId, children, ...linkProps }: TicketLinkProps
     const { search } = useLocation()
 
     return (
-        <Link asChild color="spark.blue.700" {...linkProps}>
+        <Link asChild color="spark.blue.700" textDecoration="underline" {...linkProps}>
             <RouterLink
                 to={ticketDetailPath(ticketId, search)}
                 state={fromListState}

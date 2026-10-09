@@ -125,9 +125,14 @@ export function TicketDetailContent({ ticket }: { ticket: TicketDetail }) {
                 <Heading as="h3" textStyle="md" color="spark.heading">
                     {strings.transactionSection}
                 </Heading>
-                <Stack as="dl" gap="0" separator={<Separator />}>
+                <Stack as="dl" gap="0">
                     {transactionFields(ticket, strings).map(({ label, value }) => (
-                        <Box key={label} py="2.5">
+                        <Box
+                            key={label}
+                            py="2.5"
+                            borderBottomWidth="1px"
+                            _last={{ borderBottomWidth: '0' }}
+                        >
                             <FieldTerm>{label}</FieldTerm>
                             <Box as="dd">{value}</Box>
                         </Box>
