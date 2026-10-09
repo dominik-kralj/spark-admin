@@ -3,9 +3,9 @@ import { X } from 'lucide-react'
 
 import { useStrings } from '@/shared/i18n/useStrings'
 
-import { useTicketFilterForm } from '../lib/useTicketFilterForm'
-import { activeDrawerFilterCount } from '../lib/ticketFilterValues'
-import type { TicketFilterValues } from '../validators/ticketFilterForm'
+import { useTicketFilterForm } from '@/shared/lib/useTicketFilterForm'
+import { activeDrawerFilterCount } from '@/shared/lib/ticketFilterValues'
+import type { TicketFilterValues } from '@/shared/lib/ticketFilterForm'
 
 import { DateFilterField, FiscalFilterField, ZoneFilterField } from './TicketFilterFields'
 
@@ -17,7 +17,7 @@ interface FilterDrawerFormProps {
 
 function FilterDrawerForm({ values, onApply, onClear }: FilterDrawerFormProps) {
     const t = useStrings()
-    const f = t.tickets.filters
+    const f = t.ticketFilters
     const { form, submit } = useTicketFilterForm(values, onApply)
     const { isDirty } = form.formState
 
@@ -69,7 +69,7 @@ export function TicketFilterDrawer({
     finalFocusEl,
 }: TicketFilterDrawerProps) {
     const t = useStrings()
-    const f = t.tickets.filters
+    const f = t.ticketFilters
 
     return (
         <Drawer.Root

@@ -1,7 +1,7 @@
 import { pageParam } from '@/shared/lib/usePageSearchParam'
 import { useSearchParams } from '@/shared/lib/useSearchParams'
 
-import type { TicketFilterValues } from '../validators/ticketFilterForm'
+import type { TicketFilterValues } from './ticketFilterForm'
 
 import { noFilterValues, readFilterValues, toFilterSearchParams } from './ticketFilterValues'
 

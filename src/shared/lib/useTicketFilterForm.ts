@@ -6,7 +6,7 @@ import {
     toTicketFilterFormValues,
     type TicketFilterFormValues,
     type TicketFilterValues,
-} from '../validators/ticketFilterForm'
+} from './ticketFilterForm'
 
 export type TicketFilterForm = UseFormReturn<TicketFilterFormValues, unknown, TicketFilterValues>
 

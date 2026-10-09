@@ -4,10 +4,10 @@ import type { Ref } from 'react'
 
 import { useStrings } from '@/shared/i18n/useStrings'
 
-import { dateFilterError, dateFilterNames } from '../lib/dateFilterError'
-import { activeDrawerFilterCount, noFilterValues } from '../lib/ticketFilterValues'
-import { useTicketFilterForm } from '../lib/useTicketFilterForm'
-import { toTicketFilterFormValues, type TicketFilterValues } from '../validators/ticketFilterForm'
+import { dateFilterError, dateFilterNames } from '@/shared/lib/dateFilterError'
+import { activeDrawerFilterCount, noFilterValues } from '@/shared/lib/ticketFilterValues'
+import { useTicketFilterForm } from '@/shared/lib/useTicketFilterForm'
+import { toTicketFilterFormValues, type TicketFilterValues } from '@/shared/lib/ticketFilterForm'
 
 import {
     DateFilterField,
@@ -17,6 +17,8 @@ import {
 } from './TicketFilterFields'
 
 interface TicketFilterBarProps {
+    /** Names the search form: which list it filters. */
+    label: string
     values: TicketFilterValues
     onApply: (values: TicketFilterValues) => void
     onClear: () => void
@@ -25,6 +27,7 @@ interface TicketFilterBarProps {
 }
 
 export function TicketFilterBar({
+    label,
     values,
     onApply,
     onClear,
@@ -32,7 +35,7 @@ export function TicketFilterBar({
     drawerTriggerRef,
 }: TicketFilterBarProps) {
     const t = useStrings()
-    const f = t.tickets.filters
+    const f = t.ticketFilters
     const { form, submit } = useTicketFilterForm(values, onApply)
     const { isDirty } = form.formState
     const drawerCount = activeDrawerFilterCount(values)
@@ -74,7 +77,7 @@ export function TicketFilterBar({
             >
                 <form
                     role="search"
-                    aria-label={f.label}
+                    aria-label={label}
                     noValidate
                     onSubmit={(event) => void submit(event)}
                 >

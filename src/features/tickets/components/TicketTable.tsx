@@ -1,17 +1,17 @@
-import { Table, Text } from '@chakra-ui/react'
+import { Table } from '@chakra-ui/react'
 
 import { useStrings } from '@/shared/i18n/useStrings'
 import { formatAmount, formatDateTime, formatMinutes } from '@/shared/lib/format'
+import type { PageRange } from '@/shared/lib/pageRange'
 import type { Sort } from '@/shared/lib/useSortSearchParams'
-import { ListPagination } from '@/shared/ui/ListPagination'
+import { paths } from '@/shared/paths'
+import { TablePageFooter } from '@/shared/ui/PageFooters'
 import { ProcessingStatusChip } from '@/shared/ui/ProcessingStatusChip'
 import { SortableColumnHeader } from '@/shared/ui/SortableColumnHeader'
+import { RowLink } from '@/shared/ui/RowLink'
 import { TablePanel } from '@/shared/ui/TablePanel'
 
-import type { PageRange } from '../lib/pageRange'
 import type { Ticket, TicketSortKey } from '../validators/ticket'
-
-import { TicketLink } from './TicketLink'
 
 interface TicketTableProps {
     tickets: Ticket[]
@@ -40,19 +40,7 @@ export function TicketTable({
         <TablePanel
             label={t.tickets.listLabel}
             isBusy={isUpdating}
-            footer={
-                <>
-                    <Text>{t.tickets.shown(range.from, range.to, range.total)}</Text>
-                    <ListPagination
-                        label={t.pagination.tableLabel}
-                        page={page}
-                        pageSize={range.pageSize}
-                        totalCount={range.total}
-                        onPageChange={onPageChange}
-                        hasPageNumbers
-                    />
-                </>
-            }
+            footer={<TablePageFooter range={range} page={page} onPageChange={onPageChange} />}
         >
             <Table.Header>
                 <Table.Row>
@@ -101,13 +89,14 @@ export function TicketTable({
                     <Table.Row key={ticket.id}>
                         <Table.Cell hideBelow="lg">{formatDateTime(ticket.createdAt)}</Table.Cell>
                         <Table.Cell>
-                            <TicketLink
-                                ticketId={ticket.id}
+                            <RowLink
+                                listPath={paths.tickets}
+                                id={ticket.id}
                                 textStyle="plate"
                                 fontWeight="semibold"
                             >
                                 {ticket.plate}
-                            </TicketLink>
+                            </RowLink>
                         </Table.Cell>
                         <Table.Cell>{ticket.zone.code}</Table.Cell>
                         <Table.Cell hideBelow="lg" textAlign="end">

@@ -3,8 +3,18 @@ import { processingStatuses, type ProcessingStatus } from '@/shared/lib/processi
 import type { SearchParamUpdates } from '@/shared/lib/useSearchParams'
 import { normalisePlate } from '@/shared/lib/validation'
 
-import type { TicketFilters } from '../validators/ticket'
-import type { TicketFilterValues } from '../validators/ticketFilterForm'
+import type { TicketFilterValues } from './ticketFilterForm'
+
+/** The filters a ticket list request takes: instants, not days. */
+export interface TicketFilters {
+    plate?: string
+    /** Inclusive. */
+    createdFrom?: Date
+    /** Exclusive. */
+    createdTo?: Date
+    zoneId?: number
+    fiscalStatus?: ProcessingStatus
+}
 
 export type TicketFilterKey = keyof TicketFilterValues
 

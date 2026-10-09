@@ -9,9 +9,9 @@ import { normalisePlate, readDateText } from '@/shared/lib/validation'
 import { DateInput } from '@/shared/ui/DateInput'
 import { FormField, type FieldControlProps } from '@/shared/ui/FormField'
 
-import { useTicketZoneOptions } from '../api/useTickets'
-import { dateFilterError, type DateFilterName } from '../lib/dateFilterError'
-import type { TicketFilterForm } from '../lib/useTicketFilterForm'
+import { useZoneOptions } from '@/shared/lib/useZoneOptions'
+import { dateFilterError, type DateFilterName } from '@/shared/lib/dateFilterError'
+import type { TicketFilterForm } from '@/shared/lib/useTicketFilterForm'
 
 interface FilterFieldProps {
     form: TicketFilterForm
@@ -23,7 +23,7 @@ interface PlateFilterFieldProps extends FilterFieldProps {
 
 export function PlateFilterField({ form, onClear }: PlateFilterFieldProps) {
     const t = useStrings()
-    const f = t.tickets.filters
+    const f = t.ticketFilters
     const plate = useWatch({ control: form.control, name: 'plate' })
 
     return (
@@ -71,7 +71,7 @@ interface DateFilterFieldProps extends FilterFieldProps {
 
 export function DateFilterField({ form, name, isErrorInAlert = false }: DateFilterFieldProps) {
     const t = useStrings()
-    const label = t.tickets.filters[name]
+    const label = t.ticketFilters[name]
     const typedDate = useWatch({ control: form.control, name })
     const otherDate = readDateText(
         useWatch({ control: form.control, name: name === 'from' ? 'to' : 'from' }),
@@ -141,11 +141,11 @@ function SelectFilterField({ form, name, label, children }: SelectFilterFieldPro
 
 export function ZoneFilterField({ form }: FilterFieldProps) {
     const t = useStrings()
-    const zones = useTicketZoneOptions()
+    const zones = useZoneOptions()
 
     return (
-        <SelectFilterField form={form} name="zoneId" label={t.tickets.filters.zone}>
-            <option value="">{t.tickets.filters.allZones}</option>
+        <SelectFilterField form={form} name="zoneId" label={t.ticketFilters.zone}>
+            <option value="">{t.ticketFilters.allZones}</option>
             {zones.data?.map((zone) => (
                 <option key={zone.id} value={String(zone.id)}>
                     {zone.code}
@@ -159,8 +159,8 @@ export function FiscalFilterField({ form }: FilterFieldProps) {
     const t = useStrings()
 
     return (
-        <SelectFilterField form={form} name="fiscalStatus" label={t.tickets.filters.fiscal}>
-            <option value="">{t.tickets.filters.allStatuses}</option>
+        <SelectFilterField form={form} name="fiscalStatus" label={t.ticketFilters.fiscal}>
+            <option value="">{t.ticketFilters.allStatuses}</option>
             {processingStatuses.map((status) => (
                 <option key={status} value={status}>
                     {t.processingStatus.fiscal[status]}

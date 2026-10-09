@@ -67,12 +67,7 @@ export const hr = {
             payment: 'Plaćanje',
             fiscal: 'Fiskalizacija',
         },
-        details: 'Detalji',
         moreInDetail: 'Vrijeme kupnje, trajanje i iznos nalaze se u detaljima karte.',
-        shown: (from: number, to: number, total: number) =>
-            `Prikazano ${String(from)}–${String(to)} od ${String(total)}`,
-        shownShort: (from: number, to: number, total: number) =>
-            `${String(from)}–${String(to)} od ${String(total)}`,
         loading: 'Učitavanje karata…',
         errorTitle: 'Karte nije moguće učitati',
         empty: {
@@ -86,33 +81,6 @@ export const hr = {
         },
         filters: {
             label: 'Filteri karata',
-            plate: 'Registracija',
-            platePlaceholder: 'npr. ZG1234AB',
-            clearPlate: 'Obriši registraciju',
-            from: 'Datum od',
-            to: 'Datum do',
-            zone: 'Zona',
-            allZones: 'Sve zone',
-            fiscal: 'Fiskalizacija',
-            allStatuses: 'Svi statusi',
-            search: 'Pretraži',
-            notApplied: 'Filteri nisu primijenjeni.',
-            clear: 'Očisti filtere',
-            clearAll: 'Očisti sve',
-            open: 'Filteri',
-            openWithCount: (count: number) =>
-                `Filteri, ${String(count)} ${plural(count, { one: 'aktivan', few: 'aktivna', other: 'aktivnih' })}`,
-            drawerTitle: 'Filteri',
-            close: 'Zatvori filtere',
-            apply: 'Prikaži rezultate',
-            tags: {
-                range: (from: string, to: string) => `Razdoblje: ${from} – ${to}`,
-                rangeFrom: (from: string) => `Razdoblje: od ${from}`,
-                rangeTo: (to: string) => `Razdoblje: do ${to}`,
-                zone: (code: string) => `Zona: ${code}`,
-                fiscal: (status: string) => `Fiskalizacija: ${status}`,
-            },
-            remove: (tag: string) => `Ukloni filter ${tag}`,
             noResults: {
                 title: 'Nema karata za odabrane filtere',
                 description: 'Promijenite ili uklonite filtere da vidite više karata.',
@@ -131,7 +99,6 @@ export const hr = {
             fallbackTitle: 'Detalji karte',
             close: 'Zatvori detalje karte',
             back: 'Natrag na karte',
-            closeButton: 'Zatvori',
             ticketSection: 'Podaci o karti',
             transactionSection: 'Transakcija i fiskalizacija',
             fields: {
@@ -156,7 +123,6 @@ export const hr = {
                 zki: 'Kopiraj ZKI',
             },
             copied: 'Kopirano',
-            missing: 'Nema podatka',
             loading: 'Učitavanje karte…',
             errorTitle: 'Kartu nije moguće učitati',
             notFound: {
@@ -450,6 +416,40 @@ export const hr = {
             server: 'Došlo je do pogreške na poslužitelju. Vaš je unos ostao u obrascu. Pokušajte ponovno za nekoliko minuta.',
         },
     },
+    ticketFilters: {
+        plate: 'Registracija',
+        platePlaceholder: 'npr. ZG1234AB',
+        clearPlate: 'Obriši registraciju',
+        from: 'Datum od',
+        to: 'Datum do',
+        zone: 'Zona',
+        allZones: 'Sve zone',
+        fiscal: 'Fiskalizacija',
+        allStatuses: 'Svi statusi',
+        search: 'Pretraži',
+        notApplied: 'Filteri nisu primijenjeni.',
+        clear: 'Očisti filtere',
+        clearAll: 'Očisti sve',
+        open: 'Filteri',
+        openWithCount: (count: number) =>
+            `Filteri, ${String(count)} ${plural(count, { one: 'aktivan', few: 'aktivna', other: 'aktivnih' })}`,
+        drawerTitle: 'Filteri',
+        close: 'Zatvori filtere',
+        apply: 'Prikaži rezultate',
+        tags: {
+            range: (from: string, to: string) => `Razdoblje: ${from} – ${to}`,
+            rangeFrom: (from: string) => `Razdoblje: od ${from}`,
+            rangeTo: (to: string) => `Razdoblje: do ${to}`,
+            zone: (code: string) => `Zona: ${code}`,
+            fiscal: (status: string) => `Fiskalizacija: ${status}`,
+        },
+        remove: (tag: string) => `Ukloni filter ${tag}`,
+    },
+    details: {
+        open: 'Detalji',
+        close: 'Zatvori',
+        missing: 'Nema podatka',
+    },
     processingStatus: {
         payment: {
             pending: 'Na čekanju',
@@ -465,6 +465,10 @@ export const hr = {
         },
     },
     pagination: {
+        shown: (from: number, to: number, total: number) =>
+            `Prikazano ${String(from)}–${String(to)} od ${String(total)}`,
+        shownShort: (from: number, to: number, total: number) =>
+            `${String(from)}–${String(to)} od ${String(total)}`,
         tableLabel: 'Stranice tablice',
         listLabel: 'Stranice popisa',
         previous: 'Prethodna stranica',

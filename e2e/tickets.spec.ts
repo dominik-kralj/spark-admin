@@ -13,7 +13,7 @@ import {
 } from './helpers'
 
 const t = hr.tickets
-const f = t.filters
+const f = hr.ticketFilters
 
 async function openList(page: Page): Promise<void> {
     await signIn(page)
@@ -33,19 +33,19 @@ test.describe('Karte on a desktop', () => {
         await expect(table.getByRole('columnheader')).toHaveCount(8)
         await expect(table.getByRole('row')).toHaveCount(26)
         await expect(table.getByRole('row').nth(1)).toContainText('ZG1234AB')
-        await expect(page.getByText(t.shown(1, 25, 300))).toBeVisible()
+        await expect(page.getByText(hr.pagination.shown(1, 25, 300))).toBeVisible()
         await expectNoHorizontalScroll(page)
         await expectNoAxeViolations(page)
 
         await pages.getByRole('button', { name: hr.pagination.next }).click()
 
         await expect(page).toHaveURL(`${paths.tickets}?page=2`)
-        await expect(page.getByText(t.shown(26, 50, 300))).toBeVisible()
+        await expect(page.getByText(hr.pagination.shown(26, 50, 300))).toBeVisible()
         await expect(table.getByRole('row').nth(1)).not.toContainText('ZG1234AB')
 
         await pages.getByRole('button', { name: hr.pagination.page(12) }).click()
 
-        await expect(page.getByText(t.shown(276, 300, 300))).toBeVisible()
+        await expect(page.getByText(hr.pagination.shown(276, 300, 300))).toBeVisible()
         await expect(pages.getByRole('button', { name: hr.pagination.next })).toBeDisabled()
     })
 
@@ -56,7 +56,7 @@ test.describe('Karte on a desktop', () => {
         await expect(table.getByRole('row')).toHaveCount(26)
 
         await expectOnlyTableScrolls(page, table)
-        await expect(page.getByText(t.shown(1, 25, 300))).toBeInViewport()
+        await expect(page.getByText(hr.pagination.shown(1, 25, 300))).toBeInViewport()
     })
 
     test('opens a ticket in a 560 px drawer and closes it back to its row', async ({ page }) => {
@@ -90,7 +90,7 @@ test.describe('Karte on a desktop', () => {
 
         const drawer = page.getByRole('dialog', { name: t.detail.title('KA4410CD') })
         await expect(drawer.getByText(/Porezna uprava/)).toBeVisible()
-        await drawer.getByRole('button', { name: t.detail.closeButton, exact: true }).click()
+        await drawer.getByRole('button', { name: hr.details.close, exact: true }).click()
 
         await expect(drawer).toBeHidden()
         await expect(page).toHaveURL(paths.tickets)
@@ -99,7 +99,7 @@ test.describe('Karte on a desktop', () => {
 
     test('filters inline at 1440 px, and keeps the filters on reload', async ({ page }) => {
         await openList(page)
-        const bar = page.getByRole('search', { name: f.label })
+        const bar = page.getByRole('search', { name: t.filters.label })
         const table = page.getByRole('table', { name: t.listLabel })
         await expect(bar.getByRole('button', { name: f.open })).toBeHidden()
 
@@ -133,7 +133,7 @@ test.describe('Karte on a desktop', () => {
     test('keeps the filter bar to one row on a laptop window', async ({ page }) => {
         await page.setViewportSize({ width: 1280, height: 600 })
         await openList(page)
-        const bar = page.getByRole('search', { name: f.label })
+        const bar = page.getByRole('search', { name: t.filters.label })
         const table = page.getByRole('table', { name: t.listLabel })
         await expect(table.getByRole('row')).toHaveCount(26)
 
@@ -145,7 +145,7 @@ test.describe('Karte on a desktop', () => {
 
     test('lists an unreadable date above the bar without moving it', async ({ page }) => {
         await openList(page)
-        const bar = page.getByRole('search', { name: f.label })
+        const bar = page.getByRole('search', { name: t.filters.label })
 
         await bar.getByRole('textbox', { name: f.to }).fill('31.02.2026')
         await bar.getByRole('button', { name: f.search }).click()
@@ -211,7 +211,9 @@ test.describe('Karte on a phone', () => {
 
             await pages.getByRole('button', { name: hr.pagination.next }).click()
 
-            await expect(page.getByText(t.shownShort(26, 50, 300), { exact: true })).toBeVisible()
+            await expect(
+                page.getByText(hr.pagination.shownShort(26, 50, 300), { exact: true }),
+            ).toBeVisible()
             await expect(page).toHaveURL(`${paths.tickets}?page=2`)
             await expect(list.getByRole('listitem').first()).not.toContainText('ZG1234AB')
         })
@@ -220,7 +222,7 @@ test.describe('Karte on a phone', () => {
     test('filters by plate on the page and the rest in the drawer at 375 px', async ({ page }) => {
         await page.setViewportSize({ width: 375, height: 812 })
         await openList(page)
-        const bar = page.getByRole('search', { name: f.label })
+        const bar = page.getByRole('search', { name: t.filters.label })
         const list = page.getByRole('list', { name: t.listLabel })
         const plate = bar.getByRole('searchbox', { name: f.plate })
         await expect(bar.getByRole('textbox', { name: f.from })).toBeHidden()
@@ -270,7 +272,7 @@ test.describe('Karte on a phone', () => {
 
         expect((await drawer.boundingBox())?.width).toBe(375)
         await expect(
-            drawer.getByRole('button', { name: t.detail.closeButton, exact: true }),
+            drawer.getByRole('button', { name: hr.details.close, exact: true }),
         ).toBeHidden()
         await expectTouchTargets(drawer.getByRole('button').filter({ visible: true }))
         await expectNoHorizontalScroll(page)

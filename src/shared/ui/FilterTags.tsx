@@ -3,9 +3,9 @@ import { X } from 'lucide-react'
 
 import { useStrings } from '@/shared/i18n/useStrings'
 
-import { useTicketZoneOptions } from '../api/useTickets'
-import { filterTags } from '../lib/filterTags'
-import type { TicketFilterValues } from '../validators/ticketFilterForm'
+import { useZoneOptions } from '@/shared/lib/useZoneOptions'
+import { filterTags } from '@/shared/lib/filterTags'
+import type { TicketFilterValues } from '@/shared/lib/ticketFilterForm'
 
 interface FilterTagsProps {
     values: TicketFilterValues
@@ -16,8 +16,8 @@ interface FilterTagsProps {
 // From xl every filter is a field in the bar, which already shows its value.
 export function FilterTags({ values, onApply, onClearDrawerFilters }: FilterTagsProps) {
     const t = useStrings()
-    const f = t.tickets.filters
-    const zones = useTicketZoneOptions()
+    const f = t.ticketFilters
+    const zones = useZoneOptions()
     const tags = filterTags({ values, zones: zones.data ?? [], t })
 
     if (tags.length === 0) return null

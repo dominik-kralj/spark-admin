@@ -9,7 +9,7 @@ export function MissingValue() {
     return (
         <>
             <span aria-hidden="true">–</span>
-            <VisuallyHidden>{t.tickets.detail.missing}</VisuallyHidden>
+            <VisuallyHidden>{t.details.missing}</VisuallyHidden>
         </>
     )
 }

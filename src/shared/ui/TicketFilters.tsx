@@ -1,20 +1,22 @@
 import { Stack } from '@chakra-ui/react'
 import { useRef, useState } from 'react'
 
-import { noFilterValues } from '../lib/ticketFilterValues'
-import type { TicketFilterValues } from '../validators/ticketFilterForm'
+import { noFilterValues } from '@/shared/lib/ticketFilterValues'
+import type { TicketFilterValues } from '@/shared/lib/ticketFilterForm'
 
 import { FilterTags } from './FilterTags'
 import { TicketFilterBar } from './TicketFilterBar'
 import { TicketFilterDrawer } from './TicketFilterDrawer'
 
 interface TicketFiltersProps {
+    /** Names the search form: which list it filters. */
+    label: string
     values: TicketFilterValues
     onApply: (values: TicketFilterValues) => void
     onClear: () => void
 }
 
-export function TicketFilters({ values, onApply, onClear }: TicketFiltersProps) {
+export function TicketFilters({ label, values, onApply, onClear }: TicketFiltersProps) {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false)
     const drawerTriggerRef = useRef<HTMLButtonElement>(null)
 
@@ -26,6 +28,7 @@ export function TicketFilters({ values, onApply, onClear }: TicketFiltersProps) 
     return (
         <Stack gap="3">
             <TicketFilterBar
+                label={label}
                 values={values}
                 onApply={onApply}
                 onClear={onClear}

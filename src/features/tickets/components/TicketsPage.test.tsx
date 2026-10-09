@@ -51,7 +51,7 @@ function tablePages() {
 async function findTableRange(from: number, to: number) {
     const footer = tablePages().parentElement ?? document.body
 
-    return within(footer).findByText(t.shown(from, to, 300))
+    return within(footer).findByText(hr.pagination.shown(from, to, 300))
 }
 
 /** Records the query string of every list request. */
@@ -118,7 +118,7 @@ describe('Karte list', () => {
             'href',
             `${paths.tickets}/${mockTicketIds.newest}`,
         )
-        expect(screen.getByText(t.shown(1, 25, 300))).toBeInTheDocument()
+        expect(screen.getByText(hr.pagination.shown(1, 25, 300))).toBeInTheDocument()
         expect(screen.getByText(t.moreInDetail)).toBeInTheDocument()
     })
 
@@ -145,7 +145,7 @@ describe('Karte list', () => {
             'Plaćeno',
             'Fiskalizirano',
         ])
-        expect(screen.getByText(t.shownShort(1, 25, 300))).toBeInTheDocument()
+        expect(screen.getByText(hr.pagination.shownShort(1, 25, 300))).toBeInTheDocument()
     })
 
     it('pages forward, which changes the request and the URL', async () => {

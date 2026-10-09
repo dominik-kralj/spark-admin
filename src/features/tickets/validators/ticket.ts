@@ -1,26 +1,15 @@
 import { z } from 'zod'
 
-import type { ProcessingStatus } from '@/shared/lib/processingStatus'
+import type { Page } from '@/shared/lib/pageRange'
+import {
+    rawProcessingStatusSchema,
+    toProcessingStatus,
+    toRawProcessingStatus,
+    type ProcessingStatus,
+} from '@/shared/lib/processingStatus'
+import type { TicketFilters } from '@/shared/lib/ticketFilterValues'
 import type { Sort } from '@/shared/lib/useSortSearchParams'
 import { utcDateTimeSchema } from '@/shared/lib/utcDateTime'
-
-const rawStatusSchema = z.enum(['PENDING', 'PROCESSING', 'DONE', 'FAIL'])
-
-type RawStatus = z.output<typeof rawStatusSchema>
-
-const statusForRaw: Record<RawStatus, ProcessingStatus> = {
-    PENDING: 'pending',
-    PROCESSING: 'processing',
-    DONE: 'done',
-    FAIL: 'failed',
-}
-
-const rawForStatus: Record<ProcessingStatus, RawStatus> = {
-    pending: 'PENDING',
-    processing: 'PROCESSING',
-    done: 'DONE',
-    failed: 'FAIL',
-}
 
 const ticketTypeForRaw = { Standard: 'standard', Dnevna: 'daily' } as const
 
@@ -42,8 +31,8 @@ const ticketFields = {
     parkingMinutes: z.number(),
     amount: z.number(),
     validUntil: utcDateTimeSchema.nullish(),
-    paymentStatus: rawStatusSchema,
-    fiscalStatus: rawStatusSchema,
+    paymentStatus: rawProcessingStatusSchema,
+    fiscalStatus: rawProcessingStatusSchema,
 }
 
 const ticketDetailFields = {
@@ -108,24 +97,9 @@ export interface TicketDetail extends Ticket {
     }
 }
 
-export interface TicketPage {
-    items: Ticket[]
-    page: number
-    pageSize: number
-    totalCount: number
-}
+export type TicketPage = Page<Ticket>
 
 export type TicketSortKey = 'createdAt' | 'plate' | 'amount' | 'validUntil'
-
-export interface TicketFilters {
-    plate?: string
-    /** Inclusive. */
-    createdFrom?: Date
-    /** Exclusive. */
-    createdTo?: Date
-    zoneId?: number
-    fiscalStatus?: ProcessingStatus
-}
 
 export interface TicketListParams {
     page: number
@@ -155,8 +129,8 @@ export function toTicket(raw: TicketResponse): Ticket {
         // A computed column (CreatedAt + ParkingMinutes), so an API may leave it out.
         validUntil:
             raw.validUntil ?? new Date(raw.createdAt.getTime() + raw.parkingMinutes * minuteInMs),
-        payment: { status: statusForRaw[raw.paymentStatus] },
-        fiscal: { status: statusForRaw[raw.fiscalStatus] },
+        payment: { status: toProcessingStatus(raw.paymentStatus) },
+        fiscal: { status: toProcessingStatus(raw.fiscalStatus) },
     }
 }
 
@@ -170,7 +144,7 @@ export function toTicketDetail(raw: TicketDetailResponse): TicketDetail {
             amount: raw.iznosPDV ?? null,
         },
         fiscal: {
-            status: statusForRaw[raw.fiscalStatus],
+            status: toProcessingStatus(raw.fiscalStatus),
             jir: raw.jir ?? null,
             zki: raw.zki ?? null,
             fiscalizedAt: raw.fiscalizedAt ?? null,
@@ -195,7 +169,9 @@ function toFilterQuery(filters: TicketFilters) {
         createdTo: filters.createdTo?.toISOString(),
         zoneId: filters.zoneId,
         fiscalStatus:
-            filters.fiscalStatus === undefined ? undefined : rawForStatus[filters.fiscalStatus],
+            filters.fiscalStatus === undefined
+                ? undefined
+                : toRawProcessingStatus(filters.fiscalStatus),
     }
 }
 

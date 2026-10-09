@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { describe, expect, it } from 'vitest'
 
-import type { TicketFilterValues } from '../validators/ticketFilterForm'
+import type { TicketFilterValues } from './ticketFilterForm'
 
 import {
     activeDrawerFilterCount,

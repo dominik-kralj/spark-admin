@@ -7,6 +7,7 @@ import {
 } from '@tanstack/react-query'
 
 import { request } from '@/shared/api'
+import type { TicketFilters } from '@/shared/lib/ticketFilterValues'
 
 import {
     newTicketCountResponseSchema,
@@ -16,10 +17,8 @@ import {
     toTicketDetail,
     toTicketListQuery,
     toTicketPage,
-    type TicketFilters,
     type TicketListParams,
 } from '../validators/ticket'
-import { toZoneOptions, zoneOptionsResponseSchema } from '../validators/zoneOption'
 
 interface NewTicketCountParams {
     /** The newest loaded ticket's time; null while nothing is loaded. */
@@ -32,7 +31,6 @@ const ticketKeys = {
     list: (params: TicketListParams) => ['tickets', 'list', params] as const,
     newestTimes: ['tickets', 'newest'] as const,
     newestTime: (filters: TicketFilters) => ['tickets', 'newest', filters] as const,
-    zoneOptions: ['tickets', 'zoneOptions'] as const,
     detail: (id: string) => ['tickets', 'detail', id] as const,
     newCount: ({ createdAfter, filters }: NewTicketCountParams) =>
         ['tickets', 'newCount', createdAfter, filters] as const,
@@ -112,14 +110,6 @@ function newTicketCountQuery({ createdAfter, filters }: NewTicketCountParams) {
     })
 }
 
-const zoneOptionsQuery = queryOptions({
-    queryKey: ticketKeys.zoneOptions,
-    // Zones change rarely; without this every mount of a filter asks again.
-    staleTime: 5 * 60_000,
-    queryFn: async ({ signal }) =>
-        toZoneOptions(await request('/zones', { schema: zoneOptionsResponseSchema, signal })),
-})
-
 // The previous page stays on screen while the next one loads.
 export function useTickets(params: TicketListParams) {
     return useQuery({ ...ticketsQuery(params), placeholderData: keepPreviousData })
@@ -148,8 +138,4 @@ export function useShowNewTickets() {
             queryClient.invalidateQueries({ queryKey: ticketKeys.newestTimes }),
         ])
     }
-}
-
-export function useTicketZoneOptions() {
-    return useQuery(zoneOptionsQuery)
 }

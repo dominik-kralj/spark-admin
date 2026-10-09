@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { noFilterValues } from '../lib/ticketFilterValues'
+import { noFilterValues } from './ticketFilterValues'
 
 import {
     ticketFilterFormSchema,

@@ -60,12 +60,7 @@ export const en: Dictionary = {
             payment: 'Payment',
             fiscal: 'Fiscalization',
         },
-        details: 'Details',
         moreInDetail: "Purchase time, duration and amount are in the ticket's details.",
-        shown: (from: number, to: number, total: number) =>
-            `Showing ${String(from)}–${String(to)} of ${String(total)}`,
-        shownShort: (from: number, to: number, total: number) =>
-            `${String(from)}–${String(to)} of ${String(total)}`,
         loading: 'Loading tickets…',
         errorTitle: 'Tickets could not be loaded',
         empty: {
@@ -79,32 +74,6 @@ export const en: Dictionary = {
         },
         filters: {
             label: 'Ticket filters',
-            plate: 'Plate',
-            platePlaceholder: 'e.g. ZG1234AB',
-            clearPlate: 'Clear plate',
-            from: 'Date from',
-            to: 'Date to',
-            zone: 'Zone',
-            allZones: 'All zones',
-            fiscal: 'Fiscalization',
-            allStatuses: 'All statuses',
-            search: 'Search',
-            notApplied: 'The filters were not applied.',
-            clear: 'Clear filters',
-            clearAll: 'Clear all',
-            open: 'Filters',
-            openWithCount: (count: number) => `Filters, ${String(count)} active`,
-            drawerTitle: 'Filters',
-            close: 'Close filters',
-            apply: 'Show results',
-            tags: {
-                range: (from: string, to: string) => `Period: ${from} – ${to}`,
-                rangeFrom: (from: string) => `Period: from ${from}`,
-                rangeTo: (to: string) => `Period: to ${to}`,
-                zone: (code: string) => `Zone: ${code}`,
-                fiscal: (status: string) => `Fiscalization: ${status}`,
-            },
-            remove: (tag: string) => `Remove filter ${tag}`,
             noResults: {
                 title: 'No tickets match these filters',
                 description: 'Change or remove filters to see more tickets.',
@@ -123,7 +92,6 @@ export const en: Dictionary = {
             fallbackTitle: 'Ticket details',
             close: 'Close ticket details',
             back: 'Back to tickets',
-            closeButton: 'Close',
             ticketSection: 'Ticket',
             transactionSection: 'Transaction and fiscalization',
             fields: {
@@ -148,7 +116,6 @@ export const en: Dictionary = {
                 zki: 'Copy ZKI',
             },
             copied: 'Copied',
-            missing: 'No data',
             loading: 'Loading ticket…',
             errorTitle: 'The ticket could not be loaded',
             notFound: {
@@ -437,6 +404,39 @@ export const en: Dictionary = {
             server: 'Something went wrong on the server. What you entered is still in the form. Try again in a few minutes.',
         },
     },
+    ticketFilters: {
+        plate: 'Plate',
+        platePlaceholder: 'e.g. ZG1234AB',
+        clearPlate: 'Clear plate',
+        from: 'Date from',
+        to: 'Date to',
+        zone: 'Zone',
+        allZones: 'All zones',
+        fiscal: 'Fiscalization',
+        allStatuses: 'All statuses',
+        search: 'Search',
+        notApplied: 'The filters were not applied.',
+        clear: 'Clear filters',
+        clearAll: 'Clear all',
+        open: 'Filters',
+        openWithCount: (count: number) => `Filters, ${String(count)} active`,
+        drawerTitle: 'Filters',
+        close: 'Close filters',
+        apply: 'Show results',
+        tags: {
+            range: (from: string, to: string) => `Period: ${from} – ${to}`,
+            rangeFrom: (from: string) => `Period: from ${from}`,
+            rangeTo: (to: string) => `Period: to ${to}`,
+            zone: (code: string) => `Zone: ${code}`,
+            fiscal: (status: string) => `Fiscalization: ${status}`,
+        },
+        remove: (tag: string) => `Remove filter ${tag}`,
+    },
+    details: {
+        open: 'Details',
+        close: 'Close',
+        missing: 'No data',
+    },
     processingStatus: {
         payment: {
             pending: 'Pending',
@@ -452,6 +452,10 @@ export const en: Dictionary = {
         },
     },
     pagination: {
+        shown: (from: number, to: number, total: number) =>
+            `Showing ${String(from)}–${String(to)} of ${String(total)}`,
+        shownShort: (from: number, to: number, total: number) =>
+            `${String(from)}–${String(to)} of ${String(total)}`,
         tableLabel: 'Table pages',
         listLabel: 'List pages',
         previous: 'Previous page',

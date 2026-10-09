@@ -1,25 +1,19 @@
-import { Box, Flex, Grid, HStack, Stack, Text } from '@chakra-ui/react'
-import { ChevronRight } from 'lucide-react'
-import type { ReactNode } from 'react'
+import { Stack } from '@chakra-ui/react'
 
 import type { Dictionary } from '@/shared/i18n/dictionary'
 import { useStrings } from '@/shared/i18n/useStrings'
 import { formatDateTime } from '@/shared/lib/format'
-import { ListPagination } from '@/shared/ui/ListPagination'
+import type { PageRange } from '@/shared/lib/pageRange'
+import { paths } from '@/shared/paths'
+import { CardDetailLink } from '@/shared/ui/CardDetailLink'
+import { CardFields } from '@/shared/ui/CardFields'
+import type { DetailField } from '@/shared/ui/DetailFields'
+import { CardsPageFooter } from '@/shared/ui/PageFooters'
 import { ProcessingStatusChip } from '@/shared/ui/ProcessingStatusChip'
 
-import type { PageRange } from '../lib/pageRange'
 import type { Ticket } from '../validators/ticket'
 
-import { TicketLink } from './TicketLink'
-
-// Two columns on a phone; one when the text is zoomed and two would not fit.
-const cardColumns = 'repeat(auto-fit, minmax(min(100%, 7.5rem), 1fr))'
-
-function cardFields(
-    ticket: Ticket,
-    columns: Dictionary['tickets']['columns'],
-): { label: string; value: ReactNode }[] {
+function cardFields(ticket: Ticket, columns: Dictionary['tickets']['columns']): DetailField[] {
     return [
         { label: columns.zone, value: ticket.zone.code },
         { label: columns.validUntil, value: formatDateTime(ticket.validUntil) },
@@ -56,56 +50,17 @@ export function TicketCards({ tickets, range, isUpdating, page, onPageChange }: 
             >
                 {tickets.map((ticket) => (
                     <Stack as="li" key={ticket.id} layerStyle="panel" gap="2" px="4" pb="4">
-                        <TicketLink
-                            ticketId={ticket.id}
-                            display="flex"
-                            flexWrap="wrap"
-                            columnGap="3"
-                            justifyContent="space-between"
-                            alignItems="center"
-                            minH="12"
-                            textDecoration="none"
-                        >
-                            <Text
-                                as="span"
-                                textStyle="plate"
-                                fontSize="1.0625rem"
-                                fontWeight="semibold"
-                            >
-                                {ticket.plate}
-                            </Text>
-                            <HStack as="span" gap="1" textStyle="sm" fontWeight="semibold">
-                                {t.tickets.details}
-                                <ChevronRight size="16" aria-hidden="true" />
-                            </HStack>
-                        </TicketLink>
-
-                        <Grid as="dl" templateColumns={cardColumns} gap="3">
-                            {cardFields(ticket, t.tickets.columns).map(({ label, value }) => (
-                                <Box key={label}>
-                                    <Text as="dt" fontSize="caption" color="fg.muted">
-                                        {label}
-                                    </Text>
-                                    <Box as="dd">{value}</Box>
-                                </Box>
-                            ))}
-                        </Grid>
+                        <CardDetailLink
+                            listPath={paths.tickets}
+                            id={ticket.id}
+                            plate={ticket.plate}
+                        />
+                        <CardFields fields={cardFields(ticket, t.tickets.columns)} />
                     </Stack>
                 ))}
             </Stack>
 
-            <Flex wrap="wrap" justify="space-between" align="center" gap="3">
-                <Text textStyle="sm" color="fg.muted">
-                    {t.tickets.shownShort(range.from, range.to, range.total)}
-                </Text>
-                <ListPagination
-                    label={t.pagination.listLabel}
-                    page={page}
-                    pageSize={range.pageSize}
-                    totalCount={range.total}
-                    onPageChange={onPageChange}
-                />
-            </Flex>
+            <CardsPageFooter range={range} page={page} onPageChange={onPageChange} />
         </Stack>
     )
 }

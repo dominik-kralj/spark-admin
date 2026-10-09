@@ -4,25 +4,21 @@ import type { ReactNode } from 'react'
 import type { Dictionary } from '@/shared/i18n/dictionary'
 import { useStrings } from '@/shared/i18n/useStrings'
 import { formatAmount, formatDateTime, formatMinutes, formatPercent } from '@/shared/lib/format'
+import { DetailFields, FieldTerm, type DetailField } from '@/shared/ui/DetailFields'
+import { MissingValue } from '@/shared/ui/MissingValue'
 import { ProcessingStatusChip } from '@/shared/ui/ProcessingStatusChip'
 
 import type { TicketDetail } from '../validators/ticket'
 
 import { CopyButton } from './CopyButton'
-import { MissingValue } from './MissingValue'
 
 type Strings = Dictionary['tickets']['detail']
-
-interface Field {
-    label: string
-    value: ReactNode
-}
 
 function orMissing<T>(value: T | null, format: (value: T) => string): ReactNode {
     return value === null ? <MissingValue /> : format(value)
 }
 
-function ticketFields(ticket: TicketDetail, fields: Strings['fields']): Field[] {
+function ticketFields(ticket: TicketDetail, fields: Strings['fields']): DetailField[] {
     return [
         { label: fields.plate, value: <Text textStyle="plate">{ticket.plate}</Text> },
         { label: fields.zone, value: ticket.zone.code },
@@ -49,9 +45,9 @@ function CopyableValue({ value, copyLabel }: { value: string | null; copyLabel: 
     )
 }
 
-function transactionFields(ticket: TicketDetail, strings: Strings): Field[] {
+function transactionFields(ticket: TicketDetail, strings: Strings): DetailField[] {
     const { fiscal } = ticket
-    const fields: Field[] = [
+    const fields: DetailField[] = [
         {
             label: strings.fields.transactionId,
             value: (
@@ -78,14 +74,6 @@ function transactionFields(ticket: TicketDetail, strings: Strings): Field[] {
     if (fiscal.lastError === null) return fields
 
     return [...fields, { label: strings.fields.fiscalError, value: fiscal.lastError }]
-}
-
-function FieldTerm({ children }: { children: string }) {
-    return (
-        <Text as="dt" fontSize="caption" color="fg.muted">
-            {children}
-        </Text>
-    )
 }
 
 export function TicketDetailContent({ ticket }: { ticket: TicketDetail }) {
@@ -120,14 +108,7 @@ export function TicketDetailContent({ ticket }: { ticket: TicketDetail }) {
                 <Heading as="h3" textStyle="md" color="spark.heading">
                     {strings.ticketSection}
                 </Heading>
-                <Grid as="dl" templateColumns="repeat(2, minmax(0, 1fr))" columnGap="4" rowGap="4">
-                    {ticketFields(ticket, strings.fields).map(({ label, value }) => (
-                        <Box key={label}>
-                            <FieldTerm>{label}</FieldTerm>
-                            <Box as="dd">{value}</Box>
-                        </Box>
-                    ))}
-                </Grid>
+                <DetailFields fields={ticketFields(ticket, strings.fields)} />
             </Stack>
 
             <Separator />
