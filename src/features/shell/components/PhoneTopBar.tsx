@@ -2,6 +2,7 @@ import { Button, Flex, IconButton, Stack } from '@chakra-ui/react'
 import { LogOut, Menu } from 'lucide-react'
 
 import { useStrings } from '@/shared/i18n/useStrings'
+import { phoneTopBarHeight } from '@/shared/theme/shellSizes'
 import { LanguageMenu } from '@/shared/ui/LanguageMenu'
 
 import { CityName } from './CityName'
@@ -15,9 +16,12 @@ export function PhoneTopBar({ userName, onSignOut }: ShellUserProps) {
     return (
         <Flex
             as="header"
+            position="sticky"
+            top="0"
+            zIndex="sticky"
             align="center"
             gap="2"
-            minH="14"
+            minH={phoneTopBarHeight}
             pl="1.5"
             pr="2"
             bg="bg"

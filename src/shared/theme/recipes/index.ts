@@ -1,5 +1,6 @@
 import { defineConfig } from '@chakra-ui/react'
 
+import { globalCss } from '../globalCss'
 import { layerStyles } from '../layerStyles'
 import { textStyles } from '../textStyles'
 
@@ -17,6 +18,7 @@ import { tabsRecipe } from './tabs'
 import { toastRecipe } from './toast'
 
 export const recipesConfig = defineConfig({
+    globalCss,
     theme: {
         layerStyles,
         textStyles,

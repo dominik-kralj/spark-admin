@@ -11,8 +11,10 @@ export function LoginHeading({ id }: { id: string }) {
             as="h1"
             id={id}
             display="flex"
+            flexWrap="wrap"
             alignItems="center"
-            gap="3"
+            columnGap="3"
+            rowGap="1"
             mb="3"
             fontSize="1.625rem"
             lineHeight="2.5rem"

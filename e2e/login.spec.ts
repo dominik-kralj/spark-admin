@@ -5,6 +5,7 @@ import { hr } from '../src/shared/i18n/hr'
 import { paths } from '../src/shared/paths'
 
 import { expectNoAxeViolations } from './axe'
+import { expectNoHorizontalScroll, zoomText } from './helpers'
 
 test.beforeEach(async ({ page }) => {
     await page.goto(paths.login)
@@ -69,4 +70,15 @@ test('a mouse keeps 40 px controls in a narrow window', async ({ page, isMobile 
     for (const control of loginControls(page)) {
         expect((await control.boundingBox())?.height).toBeCloseTo(40, 0)
     }
+})
+
+test('holds at 320 px with 200 % text zoom', async ({ page, isMobile }) => {
+    test.skip(!isMobile, 'the narrow phone width runs in the phone project')
+    await page.setViewportSize({ width: 320, height: 812 })
+    await page.getByRole('heading', { level: 1 }).waitFor()
+
+    await zoomText(page)
+
+    await expectNoHorizontalScroll(page)
+    await expect(page.getByRole('button', { name: hr.login.submit })).toBeInViewport()
 })
