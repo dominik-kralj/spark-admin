@@ -80,22 +80,18 @@ export function readDateText(value: string): DateText {
     return isRealDate(date) ? { date } : { error: 'dateInvalid' }
 }
 
-export const dateField = z.string().transform((value, context): CalendarDate => {
+function toCalendarDate(value: string, context: z.RefinementCtx): CalendarDate {
     const result = readDateText(value)
     if ('date' in result) return result.date
 
     context.addIssue({ code: 'custom', ...message(result.error) })
 
     return z.NEVER
-})
+}
+
+export const dateField = z.string().transform(toCalendarDate)
 
 /** A date that may be left empty, as in a filter: '' reads as null. */
-export const optionalDateField = z.string().transform((value, context): CalendarDate | null => {
-    const result = readDateText(value)
-    if ('date' in result) return result.date
-    if (result.error === 'required') return null
-
-    context.addIssue({ code: 'custom', ...message(result.error) })
-
-    return z.NEVER
-})
+export const optionalDateField = z
+    .string()
+    .transform((value, context) => (value.trim() === '' ? null : toCalendarDate(value, context)))

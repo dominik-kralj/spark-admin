@@ -38,7 +38,6 @@ const ticketKeys = {
         ['tickets', 'newCount', createdAfter, filters] as const,
 }
 
-/** How often Karte asks for the number of new tickets (`api-contract.md` ADM-4). */
 export const newTicketPollMs = 30_000
 
 async function fetchTicketPage(params: TicketListParams, signal: AbortSignal) {
@@ -70,7 +69,12 @@ function newestTicketTimeQuery(filters: TicketFilters) {
                 signal,
             )
 
-            return items[0]?.createdAt ?? new Date(0)
+            if (items[0] !== undefined) return items[0].createdAt
+
+            if (filters.createdFrom === undefined) return new Date(0)
+
+            // The count has no createdFrom, so with nothing loaded it counts from just before it.
+            return new Date(filters.createdFrom.getTime() - 1)
         },
         staleTime: Infinity,
     })

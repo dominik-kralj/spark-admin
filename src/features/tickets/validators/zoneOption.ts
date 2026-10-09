@@ -1,6 +1,5 @@
 import { z } from 'zod'
 
-/** Only what the zone filter needs from `GET /zones`. */
 export const zoneOptionsResponseSchema = z.array(
     z.object({ zoneId: z.number(), zoneCode: z.string() }),
 )

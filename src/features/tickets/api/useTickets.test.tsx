@@ -246,6 +246,16 @@ describe('useNewestTicketTime', () => {
             expect(result.current.data).toEqual(new Date(0))
         })
     })
+
+    it('counts from the start of the range when no ticket in a future range matches', async () => {
+        signInForTest()
+        const createdFrom = new Date('2099-01-01T00:00:00Z')
+        const { result } = renderHookWithQueryClient(() => useNewestTicketTime({ createdFrom }))
+
+        await waitFor(() => {
+            expect(result.current.data).toEqual(new Date('2098-12-31T23:59:59.999Z'))
+        })
+    })
 })
 
 describe('useTicketZoneOptions', () => {

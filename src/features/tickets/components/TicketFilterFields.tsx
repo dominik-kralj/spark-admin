@@ -11,7 +11,7 @@ import { DateInput } from '@/shared/ui/DateInput'
 import { FormField, type FieldControlProps } from '@/shared/ui/FormField'
 
 import { useTicketZoneOptions } from '../api/useTickets'
-import type { TicketFilterValues } from '../lib/ticketFilterValues'
+import type { TicketFilterValues } from '../validators/ticketFilterForm'
 import type { TicketFilterFormValues } from '../validators/ticketFilterForm'
 
 export type TicketFilterForm = UseFormReturn<TicketFilterFormValues, unknown, TicketFilterValues>
@@ -53,7 +53,7 @@ interface DateFilterFieldProps extends FilterFieldProps {
 export function DateFilterField({ form, name }: DateFilterFieldProps) {
     const t = useStrings()
     const label = t.tickets.filters[name]
-    const text = useWatch({ control: form.control, name })
+    const typedDate = useWatch({ control: form.control, name })
 
     return (
         <FormField
@@ -67,7 +67,7 @@ export function DateFilterField({ form, name }: DateFilterFieldProps) {
             {(control) => (
                 <DateInput
                     label={label}
-                    value={text}
+                    value={typedDate}
                     onPick={(picked) => {
                         form.setValue(name, picked, {
                             shouldValidate: form.formState.isSubmitted,

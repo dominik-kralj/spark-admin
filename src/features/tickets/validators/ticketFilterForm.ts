@@ -5,8 +5,6 @@ import { formatCalendarDate } from '@/shared/lib/format'
 import { processingStatuses } from '@/shared/lib/processingStatus'
 import { messageKey, normalisePlate, optionalDateField } from '@/shared/lib/validation'
 
-import type { TicketFilterValues } from '../lib/ticketFilterValues'
-
 export const ticketFilterFormSchema = z
     .object({
         plate: z.string().transform(normalisePlate),
@@ -20,17 +18,12 @@ export const ticketFilterFormSchema = z
     .refine(({ from, to }) => from === null || to === null || compareCalendarDates(from, to) <= 0, {
         path: ['to'],
         ...messageKey('dateRangeOrder'),
-    }) satisfies z.ZodType<TicketFilterValues>
+    })
 
 export type TicketFilterFormValues = z.input<typeof ticketFilterFormSchema>
 
-export const emptyTicketFilterForm: TicketFilterFormValues = {
-    plate: '',
-    from: '',
-    to: '',
-    zoneId: '',
-    fiscalStatus: '',
-}
+/** The list's filters as the user set them: whole days, not instants; '' or null when not set. */
+export type TicketFilterValues = z.output<typeof ticketFilterFormSchema>
 
 export function toTicketFilterFormValues(values: TicketFilterValues): TicketFilterFormValues {
     return {

@@ -1,26 +1,10 @@
-import {
-    nextDay,
-    readIsoDate,
-    startOfZagrebDay,
-    toIsoDate,
-    type CalendarDate,
-} from '@/shared/lib/calendarDate'
+import { nextDay, readIsoDate, startOfZagrebDay, toIsoDate } from '@/shared/lib/calendarDate'
 import { processingStatuses, type ProcessingStatus } from '@/shared/lib/processingStatus'
 import type { SearchParamUpdates } from '@/shared/lib/useSearchParams'
 import { normalisePlate } from '@/shared/lib/validation'
 
 import type { TicketFilters } from '../validators/ticket'
-
-/** The list's filters as the user set them: whole days, not instants. */
-export interface TicketFilterValues {
-    /** Normalised; '' when not set. */
-    plate: string
-    from: CalendarDate | null
-    /** Inclusive: the whole day counts. */
-    to: CalendarDate | null
-    zoneId: number | null
-    fiscalStatus: ProcessingStatus | null
-}
+import type { TicketFilterValues } from '../validators/ticketFilterForm'
 
 export type TicketFilterKey = keyof TicketFilterValues
 

@@ -5,7 +5,7 @@ import { useStrings } from '@/shared/i18n/useStrings'
 
 import { useTicketZoneOptions } from '../api/useTickets'
 import { filterTags } from '../lib/filterTags'
-import type { TicketFilterValues } from '../lib/ticketFilterValues'
+import type { TicketFilterValues } from '../validators/ticketFilterForm'
 
 interface FilterTagsProps {
     values: TicketFilterValues
@@ -13,7 +13,7 @@ interface FilterTagsProps {
     onClearDrawerFilters: () => void
 }
 
-/** Each tag removes its filter. Below lg the plate shows in its own field, so it has no tag. */
+// Below lg the plate is in its own field on the page, so it has no tag there.
 export function FilterTags({ values, onApply, onClearDrawerFilters }: FilterTagsProps) {
     const t = useStrings()
     const f = t.tickets.filters

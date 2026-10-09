@@ -3,7 +3,7 @@ import { formatCalendarDate } from '@/shared/lib/format'
 
 import type { ZoneOption } from '../validators/zoneOption'
 
-import type { TicketFilterValues } from './ticketFilterValues'
+import type { TicketFilterValues } from '../validators/ticketFilterForm'
 
 export interface FilterTag {
     id: 'plate' | 'range' | 'zone' | 'fiscal'

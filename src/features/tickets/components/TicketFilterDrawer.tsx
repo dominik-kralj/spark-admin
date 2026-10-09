@@ -1,12 +1,10 @@
 import { Button, Drawer, Flex, IconButton, Portal, Stack } from '@chakra-ui/react'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { X } from 'lucide-react'
-import { useForm } from 'react-hook-form'
 
 import { useStrings } from '@/shared/i18n/useStrings'
 
-import type { TicketFilterValues } from '../lib/ticketFilterValues'
-import { ticketFilterFormSchema, toTicketFilterFormValues } from '../validators/ticketFilterForm'
+import { useTicketFilterForm } from '../lib/useTicketFilterForm'
+import type { TicketFilterValues } from '../validators/ticketFilterForm'
 
 import { DateFilterField, FiscalFilterField, ZoneFilterField } from './TicketFilterFields'
 
@@ -16,18 +14,14 @@ interface FilterDrawerFormProps {
     onClear: () => void
 }
 
-// Mounted with the drawer, so each opening starts from the filters in use.
 function FilterDrawerForm({ values, onApply, onClear }: FilterDrawerFormProps) {
     const t = useStrings()
     const f = t.tickets.filters
-    const form = useForm({
-        resolver: zodResolver(ticketFilterFormSchema),
-        defaultValues: toTicketFilterFormValues(values),
-    })
+    const { form, submit } = useTicketFilterForm(values, onApply)
 
     return (
         <Flex asChild direction="column" flex="1" minH="0">
-            <form noValidate onSubmit={(event) => void form.handleSubmit(onApply)(event)}>
+            <form noValidate onSubmit={(event) => void submit(event)}>
                 <Drawer.Body p="4">
                     <Stack gap="5">
                         {/* One column: with its calendar button, a date does not fit half the drawer. */}
@@ -59,7 +53,6 @@ interface TicketFilterDrawerProps extends FilterDrawerFormProps {
     finalFocusEl: () => HTMLElement | null
 }
 
-/** Full screen on a phone, a side drawer on a tablet; nothing applies until Prikaži rezultate. */
 export function TicketFilterDrawer({
     isOpen,
     values,

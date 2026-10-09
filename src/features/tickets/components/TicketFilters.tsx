@@ -1,7 +1,8 @@
 import { Stack } from '@chakra-ui/react'
 import { useRef, useState } from 'react'
 
-import { noFilterValues, type TicketFilterValues } from '../lib/ticketFilterValues'
+import { noFilterValues } from '../lib/ticketFilterValues'
+import type { TicketFilterValues } from '../validators/ticketFilterForm'
 
 import { FilterTags } from './FilterTags'
 import { TicketFilterBar } from './TicketFilterBar'

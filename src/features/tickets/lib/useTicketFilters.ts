@@ -1,14 +1,11 @@
 import { pageParam } from '@/shared/lib/usePageSearchParam'
 import { useSearchParams } from '@/shared/lib/useSearchParams'
 
-import {
-    noFilterValues,
-    readFilterValues,
-    toFilterSearchParams,
-    type TicketFilterValues,
-} from './ticketFilterValues'
+import type { TicketFilterValues } from '../validators/ticketFilterForm'
 
-/** The Karte filters, kept in the URL; every change starts again from the first page. */
+import { noFilterValues, readFilterValues, toFilterSearchParams } from './ticketFilterValues'
+
+// Every change starts again from the first page.
 export function useTicketFilters() {
     const { searchParams, updateSearchParams } = useSearchParams()
     const values = readFilterValues(searchParams)

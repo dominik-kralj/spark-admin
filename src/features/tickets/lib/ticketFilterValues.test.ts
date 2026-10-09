@@ -1,13 +1,14 @@
 // @vitest-environment node
 import { describe, expect, it } from 'vitest'
 
+import type { TicketFilterValues } from '../validators/ticketFilterForm'
+
 import {
     activeDrawerFilterCount,
     noFilterValues,
     readFilterValues,
     toFilterSearchParams,
     toTicketFilters,
-    type TicketFilterValues,
 } from './ticketFilterValues'
 
 const allSet: TicketFilterValues = {

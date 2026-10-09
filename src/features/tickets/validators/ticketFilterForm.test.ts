@@ -3,11 +3,12 @@ import { describe, expect, it } from 'vitest'
 import { noFilterValues } from '../lib/ticketFilterValues'
 
 import {
-    emptyTicketFilterForm,
     ticketFilterFormSchema,
     toTicketFilterFormValues,
     type TicketFilterFormValues,
 } from './ticketFilterForm'
+
+const emptyTicketFilterForm = toTicketFilterFormValues(noFilterValues)
 
 function messageFor(values: Partial<TicketFilterFormValues>, field: keyof TicketFilterFormValues) {
     const result = ticketFilterFormSchema.safeParse({ ...emptyTicketFilterForm, ...values })
@@ -71,6 +72,12 @@ describe('toTicketFilterFormValues', () => {
             zoneId: '2',
             fiscalStatus: 'done',
         })
-        expect(toTicketFilterFormValues(noFilterValues)).toEqual(emptyTicketFilterForm)
+        expect(emptyTicketFilterForm).toEqual({
+            plate: '',
+            from: '',
+            to: '',
+            zoneId: '',
+            fiscalStatus: '',
+        })
     })
 })

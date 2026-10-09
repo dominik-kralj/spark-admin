@@ -1,13 +1,12 @@
-import { Box, Button, Flex } from '@chakra-ui/react'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { Badge, Box, Button, Flex } from '@chakra-ui/react'
 import { SlidersHorizontal } from 'lucide-react'
 import type { Ref } from 'react'
-import { useForm } from 'react-hook-form'
 
 import { useStrings } from '@/shared/i18n/useStrings'
 
-import { activeDrawerFilterCount, type TicketFilterValues } from '../lib/ticketFilterValues'
-import { ticketFilterFormSchema, toTicketFilterFormValues } from '../validators/ticketFilterForm'
+import { activeDrawerFilterCount } from '../lib/ticketFilterValues'
+import { useTicketFilterForm } from '../lib/useTicketFilterForm'
+import type { TicketFilterValues } from '../validators/ticketFilterForm'
 
 import {
     DateFilterField,
@@ -24,7 +23,6 @@ interface TicketFilterBarProps {
     drawerTriggerRef: Ref<HTMLButtonElement>
 }
 
-/** From lg every filter is inline; below it the plate stays and the rest are behind Filteri. */
 export function TicketFilterBar({
     values,
     onApply,
@@ -34,11 +32,7 @@ export function TicketFilterBar({
 }: TicketFilterBarProps) {
     const t = useStrings()
     const f = t.tickets.filters
-    // `values` follows the URL, so a removed tag or a drawer change shows here too.
-    const form = useForm({
-        resolver: zodResolver(ticketFilterFormSchema),
-        values: toTicketFilterFormValues(values),
-    })
+    const { form, submit } = useTicketFilterForm(values, onApply)
     const drawerCount = activeDrawerFilterCount(values)
 
     return (
@@ -58,7 +52,7 @@ export function TicketFilterBar({
                 role="search"
                 aria-label={f.label}
                 noValidate
-                onSubmit={(event) => void form.handleSubmit(onApply)(event)}
+                onSubmit={(event) => void submit(event)}
             >
                 <Box flex={{ md: '1 1 12rem' }} minW="0">
                     <PlateFilterField form={form} />
@@ -93,21 +87,9 @@ export function TicketFilterBar({
                     <SlidersHorizontal aria-hidden="true" />
                     {f.open}
                     {drawerCount > 0 && (
-                        <Box
-                            as="span"
-                            display="inline-flex"
-                            alignItems="center"
-                            justifyContent="center"
-                            h="5.5"
-                            minW="5.5"
-                            px="1.5"
-                            borderRadius="full"
-                            bg="spark.heading"
-                            color="white"
-                            textStyle="xs"
-                        >
+                        <Badge variant="solid" borderRadius="full" bg="spark.heading">
                             {drawerCount}
-                        </Box>
+                        </Badge>
                     )}
                 </Button>
             </form>
