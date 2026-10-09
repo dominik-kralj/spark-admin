@@ -1,6 +1,7 @@
 import type { ComponentType } from 'react'
 import { redirect, type RouteObject } from 'react-router'
 
+import { AppErrorPage, SectionErrorPage } from '@/ErrorPage'
 import { ProtectedLayout } from '@/features/auth/components/ProtectedLayout'
 import { redirectIfSignedIn, requireSession } from '@/features/auth/lib/sessionRedirects'
 import { PlaceholderPage } from '@/features/shell/components/PlaceholderPage'
@@ -25,13 +26,20 @@ const detailParams: Partial<Record<string, string>> = {
 
 function sectionRoute({ path, labelKey }: Section): RouteObject {
     const screen = screens[path]
-    if (screen === undefined) return { path, element: <PlaceholderPage labelKey={labelKey} /> }
+    if (screen === undefined) {
+        return {
+            path,
+            element: <PlaceholderPage labelKey={labelKey} />,
+            ErrorBoundary: SectionErrorPage,
+        }
+    }
 
     const detailParam = detailParams[path]
 
     return {
         path: detailParam === undefined ? path : `${path}/:${detailParam}?`,
         lazy: { Component: screen },
+        ErrorBoundary: SectionErrorPage,
     }
 }
 
@@ -41,6 +49,7 @@ export function createRoutes(): RouteObject[] {
         {
             // The first loader and lazy page are fast, so a blank screen beats a spinner flash.
             HydrateFallback: () => null,
+            ErrorBoundary: AppErrorPage,
             children: [
                 {
                     path: paths.login,
