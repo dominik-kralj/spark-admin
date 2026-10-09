@@ -32,8 +32,13 @@ export function AppShell({ userName, onSignOut }: AppShellProps) {
 
     // main keeps its place in the tree at every width, so a resize never remounts the page.
     // From md the shell is the window's height: a table page fits it and scrolls only its rows.
+    // On a phone, svh: dvh changes as the address bar slides, re-laying out the page mid-scroll.
     return (
-        <Grid templateColumns={columns[layout]} minH="100dvh" h={{ md: '100dvh' }}>
+        <Grid
+            templateColumns={columns[layout]}
+            minH={{ base: '100svh', md: '100dvh' }}
+            h={{ md: '100dvh' }}
+        >
             <SkipNavLink>{t.shell.skipToContent}</SkipNavLink>
             <LiveRegion />
 
