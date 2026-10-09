@@ -132,6 +132,111 @@ export const hr = {
             },
         },
     },
+    dailyTickets: {
+        description: 'Dnevne parkirne karte koje su izdali kontrolori.',
+        listLabel: 'Dnevne parkirne karte',
+        columns: {
+            createdAt: 'Vrijeme',
+            plate: 'Registracija',
+            zone: 'Zona',
+            address: 'Adresa',
+            inspector: 'Kontrolor',
+            amount: 'Iznos',
+            fiscal: 'Fiskalizacija',
+            action: 'Radnja',
+        },
+        moreInDetail: 'Adresa, kontrolor i iznos nalaze se u detaljima dnevne karte.',
+        loading: 'Učitavanje dnevnih karata…',
+        errorTitle: 'Dnevne karte nije moguće učitati',
+        empty: {
+            title: 'Još nema dnevnih karata',
+            description: 'Ovdje će se prikazati dnevne karte čim ih kontrolori izdaju na terenu.',
+        },
+        pastEnd: {
+            title: 'Ova stranica je prazna',
+            description: 'Popis dnevnih karata ima manje stranica. Vratite se na prvu stranicu.',
+            action: 'Na prvu stranicu',
+        },
+        filters: {
+            label: 'Filteri dnevnih karata',
+            noResults: {
+                title: 'Nema dnevnih karata za odabrane filtere',
+                description: 'Promijenite ili uklonite filtere da vidite više dnevnih karata.',
+            },
+        },
+        fiscalize: {
+            action: 'Fiskaliziraj ponovno',
+            actionFor: (plate: string) => `Fiskaliziraj ponovno DPK za ${plate}`,
+            confirmTitle: (plate: string) => `Fiskalizirati ponovno DPK za ${plate}?`,
+            confirmDescription:
+                'Račun se ponovno šalje Poreznoj upravi. Odgovor može stići tek za nekoliko sekundi.',
+            done: (plate: string) => `DPK za ${plate} je fiskaliziran.`,
+            failedAgain: (plate: string) => `Fiskalizacija DPK-a za ${plate} ponovno nije uspjela.`,
+            failedAgainDescription:
+                'Odgovor sustava nalazi se u detaljima karte. Ako se pogreška ponavlja, provjerite certifikat i postavke grada.',
+            started: (plate: string) =>
+                `Fiskalizacija DPK-a za ${plate} je u obradi. Status će se promijeniti kad Porezna uprava odgovori.`,
+            failed: 'Fiskalizacija nije pokrenuta.',
+            errors: {
+                network:
+                    'Poslužitelj nije odgovorio. Provjerite internetsku vezu i pokušajte ponovno.',
+                notFound: 'Dnevna karta više ne postoji.',
+                conflict:
+                    'Stanje fiskalizacije se u međuvremenu promijenilo. Popis i detalji su osvježeni.',
+                forbidden:
+                    'Nemate ovlasti za fiskalizaciju. Ako mislite da biste je trebali moći pokrenuti, javite se administratoru sustava.',
+                server: 'Došlo je do pogreške na poslužitelju. Pokušajte ponovno za nekoliko minuta.',
+            },
+        },
+        detail: {
+            title: (plate: string) => `Dnevna karta ${plate}`,
+            fallbackTitle: 'Detalji dnevne karte',
+            close: 'Zatvori detalje dnevne karte',
+            back: 'Natrag na DPK',
+            ticketSection: 'Podaci o dnevnoj karti',
+            photosSection: (count: number) => `Fotografije vozila (${String(count)})`,
+            fiscalSection: 'Fiskalizacija',
+            fields: {
+                plate: 'Registracija',
+                zone: 'Zona',
+                createdAt: 'Vrijeme izdavanja',
+                amount: 'Iznos',
+                address: 'Adresa',
+                inspector: 'Kontrolor',
+                status: 'Status',
+                jir: 'JIR',
+                zki: 'ZKI',
+            },
+            jirMissing: 'Nije dodijeljen',
+            failure: {
+                title: 'Fiskalizacija nije uspjela.',
+                description: 'Račun nije prijavljen Poreznoj upravi.',
+                response: (text: string) => `Odgovor sustava: ${text}`,
+                advice: 'Pokušajte ponovno; ako ne uspije, provjerite certifikat i postavke grada.',
+            },
+            photos: {
+                hint: 'Fotografije je snimio kontrolor pri izdavanju karte. Odaberite fotografiju za prikaz u punoj veličini.',
+                hintTouch:
+                    'Fotografije je snimio kontrolor pri izdavanju karte. Dodirnite fotografiju za prikaz u punoj veličini.',
+                enlarge: (index: number, total: number) =>
+                    `Povećaj fotografiju ${String(index)} od ${String(total)}`,
+                alt: (plate: string, index: number, total: number) =>
+                    `Fotografija vozila ${plate}, ${String(index)} od ${String(total)}`,
+                viewerTitle: (index: number, total: number) =>
+                    `Fotografija ${String(index)} od ${String(total)}`,
+                closeViewer: 'Zatvori fotografiju',
+                unavailable: 'Fotografija nije dostupna',
+                none: 'Uz ovu kartu nema fotografija vozila.',
+            },
+            loading: 'Učitavanje dnevne karte…',
+            errorTitle: 'Dnevnu kartu nije moguće učitati',
+            notFound: {
+                title: 'Dnevna karta nije pronađena',
+                description:
+                    'Dnevna karta ne postoji ili ne pripada vašem gradu. Provjerite poveznicu ili se vratite na popis dnevnih karata.',
+            },
+        },
+    },
     zones: {
         add: 'Dodaj zonu',
         listLabel: 'Parkirne zone',

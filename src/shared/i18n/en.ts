@@ -125,6 +125,111 @@ export const en: Dictionary = {
             },
         },
     },
+    dailyTickets: {
+        description: 'Daily parking tickets issued by inspectors.',
+        listLabel: 'Daily parking tickets',
+        columns: {
+            createdAt: 'Time',
+            plate: 'Plate',
+            zone: 'Zone',
+            address: 'Address',
+            inspector: 'Inspector',
+            amount: 'Amount',
+            fiscal: 'Fiscalization',
+            action: 'Action',
+        },
+        moreInDetail: "Address, inspector and amount are in the daily ticket's details.",
+        loading: 'Loading daily tickets…',
+        errorTitle: 'Daily tickets could not be loaded',
+        empty: {
+            title: 'No daily tickets yet',
+            description: 'Daily tickets show here as soon as inspectors issue them in the field.',
+        },
+        pastEnd: {
+            title: 'This page is empty',
+            description: 'The list of daily tickets has fewer pages. Go back to the first page.',
+            action: 'To the first page',
+        },
+        filters: {
+            label: 'Daily ticket filters',
+            noResults: {
+                title: 'No daily tickets match these filters',
+                description: 'Change or remove filters to see more daily tickets.',
+            },
+        },
+        fiscalize: {
+            action: 'Fiscalize again',
+            actionFor: (plate: string) => `Fiscalize the daily ticket for ${plate} again`,
+            confirmTitle: (plate: string) => `Fiscalize the daily ticket for ${plate} again?`,
+            confirmDescription:
+                'The receipt is sent to the Tax Administration again. The answer can take a few seconds.',
+            done: (plate: string) => `The daily ticket for ${plate} is fiscalized.`,
+            failedAgain: (plate: string) =>
+                `Fiscalization of the daily ticket for ${plate} failed again.`,
+            failedAgainDescription:
+                "The system's response is in the ticket's details. If the error repeats, check the certificate and the city settings.",
+            started: (plate: string) =>
+                `Fiscalization of the daily ticket for ${plate} is in progress. The status changes once the Tax Administration answers.`,
+            failed: 'Fiscalization did not start.',
+            errors: {
+                network: 'The server did not answer. Check your internet connection and try again.',
+                notFound: 'The daily ticket no longer exists.',
+                conflict:
+                    'The fiscalization status changed in the meantime. The list and details have been refreshed.',
+                forbidden:
+                    'You are not allowed to fiscalize. If you think you should be, contact your system administrator.',
+                server: 'Something went wrong on the server. Try again in a few minutes.',
+            },
+        },
+        detail: {
+            title: (plate: string) => `Daily ticket ${plate}`,
+            fallbackTitle: 'Daily ticket details',
+            close: 'Close daily ticket details',
+            back: 'Back to daily tickets',
+            ticketSection: 'Daily ticket',
+            photosSection: (count: number) => `Vehicle photos (${String(count)})`,
+            fiscalSection: 'Fiscalization',
+            fields: {
+                plate: 'Plate',
+                zone: 'Zone',
+                createdAt: 'Issued at',
+                amount: 'Amount',
+                address: 'Address',
+                inspector: 'Inspector',
+                status: 'Status',
+                jir: 'JIR',
+                zki: 'ZKI',
+            },
+            jirMissing: 'Not assigned',
+            failure: {
+                title: 'Fiscalization failed.',
+                description: 'The receipt was not reported to the Tax Administration.',
+                response: (text: string) => `System response: ${text}`,
+                advice: 'Try again; if it still fails, check the certificate and the city settings.',
+            },
+            photos: {
+                hint: 'The inspector took these photos when issuing the ticket. Choose a photo to see it full size.',
+                hintTouch:
+                    'The inspector took these photos when issuing the ticket. Tap a photo to see it full size.',
+                enlarge: (index: number, total: number) =>
+                    `Enlarge photo ${String(index)} of ${String(total)}`,
+                alt: (plate: string, index: number, total: number) =>
+                    `Photo of vehicle ${plate}, ${String(index)} of ${String(total)}`,
+                viewerTitle: (index: number, total: number) =>
+                    `Photo ${String(index)} of ${String(total)}`,
+                closeViewer: 'Close photo',
+                unavailable: 'Photo not available',
+                none: 'There are no vehicle photos with this ticket.',
+            },
+            loading: 'Loading daily ticket…',
+            errorTitle: 'The daily ticket could not be loaded',
+            notFound: {
+                title: 'Daily ticket not found',
+                description:
+                    'The daily ticket does not exist or does not belong to your city. Check the link or go back to the list of daily tickets.',
+            },
+        },
+    },
     zones: {
         add: 'Add zone',
         listLabel: 'Parking zones',

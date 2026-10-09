@@ -1,0 +1,128 @@
+import { Button, Text } from '@chakra-ui/react'
+import { ClipboardList } from 'lucide-react'
+
+import { useStrings } from '@/shared/i18n/useStrings'
+import { pageRange } from '@/shared/lib/pageRange'
+import type { TicketFilters } from '@/shared/lib/ticketFilterValues'
+import { pageParam, usePageSearchParam } from '@/shared/lib/usePageSearchParam'
+import { useSortSearchParams, type Sort } from '@/shared/lib/useSortSearchParams'
+import { EmptyState } from '@/shared/ui/EmptyState'
+import { ErrorState } from '@/shared/ui/ErrorState'
+import { LoadingState } from '@/shared/ui/LoadingState'
+
+import { useDailyTickets } from '../api/useDailyTickets'
+import type { DailyTicketSortKey } from '../validators/dailyTicket'
+
+import { DailyTicketCards } from './DailyTicketCards'
+import { DailyTicketTable } from './DailyTicketTable'
+
+const sortKeys = ['createdAt', 'plate', 'inspector'] as const
+
+const defaultSort: Sort<DailyTicketSortKey> = { key: 'createdAt', direction: 'desc' }
+
+// A new order starts again from the first page.
+const resetOnSort = [pageParam]
+
+const pageSize = 25
+
+const skeletonColumnWidths = [2, 2, 1, 3, 2, 1, 2, 2]
+
+interface DailyTicketListProps {
+    filters: TicketFilters
+    onClearFilters: () => void
+}
+
+export function DailyTicketList({ filters, onClearFilters }: DailyTicketListProps) {
+    const t = useStrings()
+    const strings = t.dailyTickets
+    const { page, setPage } = usePageSearchParam()
+    const { sort, sortBy } = useSortSearchParams(sortKeys, defaultSort, resetOnSort)
+    const dailyTickets = useDailyTickets({ page, pageSize, sort, filters })
+    const isFiltered = Object.keys(filters).length > 0
+
+    if (dailyTickets.isPending) {
+        return <LoadingState label={strings.loading} columnWidths={skeletonColumnWidths} />
+    }
+
+    if (dailyTickets.isError) {
+        return (
+            <ErrorState
+                title={strings.errorTitle}
+                error={dailyTickets.error}
+                onRetry={() => void dailyTickets.refetch()}
+                isRetrying={dailyTickets.isFetching}
+            />
+        )
+    }
+
+    if (dailyTickets.data.totalCount === 0 && isFiltered) {
+        return (
+            <EmptyState
+                icon={<ClipboardList />}
+                title={strings.filters.noResults.title}
+                description={strings.filters.noResults.description}
+                action={
+                    <Button variant="outline" onClick={onClearFilters}>
+                        {t.ticketFilters.clearAll}
+                    </Button>
+                }
+            />
+        )
+    }
+
+    if (dailyTickets.data.totalCount === 0) {
+        return (
+            <EmptyState
+                icon={<ClipboardList />}
+                title={strings.empty.title}
+                description={strings.empty.description}
+            />
+        )
+    }
+
+    if (dailyTickets.data.items.length === 0) {
+        return (
+            <EmptyState
+                icon={<ClipboardList />}
+                title={strings.pastEnd.title}
+                description={strings.pastEnd.description}
+                action={
+                    <Button
+                        variant="outline"
+                        onClick={() => {
+                            setPage(1)
+                        }}
+                    >
+                        {strings.pastEnd.action}
+                    </Button>
+                }
+            />
+        )
+    }
+
+    const range = pageRange(dailyTickets.data)
+
+    return (
+        <>
+            <DailyTicketTable
+                dailyTickets={dailyTickets.data.items}
+                range={range}
+                isUpdating={dailyTickets.isPlaceholderData}
+                sort={sort}
+                onSort={sortBy}
+                page={page}
+                onPageChange={setPage}
+            />
+            <Text hideBelow="md" hideFrom="lg" textStyle="sm" color="fg.muted">
+                {strings.moreInDetail}
+            </Text>
+            <DailyTicketCards
+                dailyTickets={dailyTickets.data.items}
+                range={range}
+                isUpdating={dailyTickets.isPlaceholderData}
+                page={page}
+                onPageChange={setPage}
+            />
+        </>
+    )
+}

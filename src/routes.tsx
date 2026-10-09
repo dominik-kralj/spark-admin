@@ -11,6 +11,8 @@ import { paths } from '@/shared/paths'
 const screens: Partial<Record<string, () => Promise<ComponentType>>> = {
     [paths.tickets]: async () =>
         (await import('@/features/tickets/components/TicketsPage')).TicketsPage,
+    [paths.dailyTickets]: async () =>
+        (await import('@/features/daily-tickets/components/DailyTicketsPage')).DailyTicketsPage,
     [paths.zones]: async () => (await import('@/features/zones/components/ZonesPage')).ZonesPage,
     [paths.privilegedOwners]: async () =>
         (await import('@/features/privileged-owners/components/PrivilegedOwnersPage'))
@@ -22,6 +24,7 @@ const screens: Partial<Record<string, () => Promise<ComponentType>>> = {
 // A section whose detail opens over its list, so a detail link works on its own.
 const detailParams: Partial<Record<string, string>> = {
     [paths.tickets]: 'ticketId',
+    [paths.dailyTickets]: 'ticketId',
 }
 
 function sectionRoute({ path, labelKey }: Section): RouteObject {

@@ -3,10 +3,12 @@ import { cleanup, configure } from '@testing-library/react'
 import { afterAll, afterEach, beforeAll } from 'vitest'
 
 import { resetLoginRateLimit } from '@/mocks/auth'
+import { resetDailyTickets } from '@/mocks/dailyTickets'
 import { resetInspectors } from '@/mocks/inspectors'
 import { resetPrivilegedOwners } from '@/mocks/privilegedOwners'
 import { resetTickets } from '@/mocks/tickets'
 import { resetZones } from '@/mocks/zones'
+import { toaster } from '@/shared/lib/toaster'
 
 import { server } from './server'
 import { installMatchMedia, resetViewport } from './viewport'
@@ -42,6 +44,9 @@ afterEach(() => {
     resetPrivilegedOwners()
     resetInspectors()
     resetTickets()
+    resetDailyTickets()
+    // The toaster is one store for the whole run; a toast left over would show in the next test.
+    toaster.remove()
     // Absent in files that opt into the node environment.
     if (typeof sessionStorage !== 'undefined') sessionStorage.clear()
     // The language choice lives here; every test starts in Croatian.
