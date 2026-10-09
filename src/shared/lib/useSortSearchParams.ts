@@ -24,10 +24,14 @@ function readSort<TKey extends string>(
     }
 }
 
-/** The list's sort order, kept in the URL; the default order leaves the URL clean. */
+/**
+ * The list's sort order, kept in the URL; the default order leaves the URL clean.
+ * A new order also clears `resetParams`, such as a page that no longer means the same rows.
+ */
 export function useSortSearchParams<TKey extends string>(
     keys: readonly TKey[],
     defaultSort: Sort<TKey>,
+    resetParams: readonly string[] = [],
 ) {
     const { searchParams, updateSearchParams } = useSearchParams()
     const sort = readSort(searchParams, { keys, defaultSort })
@@ -37,6 +41,7 @@ export function useSortSearchParams<TKey extends string>(
         const isDefault = key === defaultSort.key && direction === defaultSort.direction
 
         updateSearchParams({
+            ...Object.fromEntries(resetParams.map((name) => [name, null])),
             [sortParam]: isDefault ? null : key,
             [directionParam]: isDefault ? null : direction,
         })
