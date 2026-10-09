@@ -1,33 +1,50 @@
-import { Input, InputGroup, NativeSelect } from '@chakra-ui/react'
-import { Search } from 'lucide-react'
+import { IconButton, Input, InputGroup, NativeSelect } from '@chakra-ui/react'
+import { Search, X } from 'lucide-react'
 import type { ReactNode } from 'react'
-import { Controller, useWatch, type UseFormReturn } from 'react-hook-form'
+import { Controller, useWatch } from 'react-hook-form'
 
 import { useStrings } from '@/shared/i18n/useStrings'
-import { fieldMessage } from '@/shared/lib/fieldMessage'
 import { processingStatuses } from '@/shared/lib/processingStatus'
-import { normalisePlate } from '@/shared/lib/validation'
+import { normalisePlate, readDateText } from '@/shared/lib/validation'
 import { DateInput } from '@/shared/ui/DateInput'
 import { FormField, type FieldControlProps } from '@/shared/ui/FormField'
 
 import { useTicketZoneOptions } from '../api/useTickets'
-import type { TicketFilterValues } from '../validators/ticketFilterForm'
-import type { TicketFilterFormValues } from '../validators/ticketFilterForm'
-
-export type TicketFilterForm = UseFormReturn<TicketFilterFormValues, unknown, TicketFilterValues>
+import { dateFilterError, type DateFilterName } from '../lib/dateFilterError'
+import type { TicketFilterForm } from '../lib/useTicketFilterForm'
 
 interface FilterFieldProps {
     form: TicketFilterForm
 }
 
-export function PlateFilterField({ form }: FilterFieldProps) {
+interface PlateFilterFieldProps extends FilterFieldProps {
+    onClear: () => void
+}
+
+export function PlateFilterField({ form, onClear }: PlateFilterFieldProps) {
     const t = useStrings()
     const f = t.tickets.filters
+    const plate = useWatch({ control: form.control, name: 'plate' })
 
     return (
         <FormField label={f.plate}>
             {(control) => (
-                <InputGroup startElement={<Search size="16" aria-hidden="true" />}>
+                <InputGroup
+                    startElement={<Search size="16" aria-hidden="true" />}
+                    endElement={
+                        plate !== '' && (
+                            <IconButton
+                                aria-label={f.clearPlate}
+                                variant="ghost"
+                                size="xs"
+                                onClick={onClear}
+                            >
+                                <X aria-hidden="true" />
+                            </IconButton>
+                        )
+                    }
+                    endElementProps={{ pe: '1', pointerEvents: 'auto' }}
+                >
                     <Input
                         {...form.register('plate', {
                             onBlur: (event: { target: { value: string } }) => {
@@ -47,29 +64,36 @@ export function PlateFilterField({ form }: FilterFieldProps) {
 }
 
 interface DateFilterFieldProps extends FilterFieldProps {
-    name: 'from' | 'to'
+    name: DateFilterName
+    /** The bar lists its errors in one alert above it; the drawer shows each under its field. */
+    isErrorInAlert?: boolean
 }
 
-export function DateFilterField({ form, name }: DateFilterFieldProps) {
+export function DateFilterField({ form, name, isErrorInAlert = false }: DateFilterFieldProps) {
     const t = useStrings()
     const label = t.tickets.filters[name]
     const typedDate = useWatch({ control: form.control, name })
+    const otherDate = readDateText(
+        useWatch({ control: form.control, name: name === 'from' ? 'to' : 'from' }),
+    )
+    // The calendar offers only days that keep the range in order.
+    const bound = 'date' in otherDate ? otherDate.date : undefined
 
     return (
         <FormField
             label={label}
-            error={fieldMessage({
-                error: form.formState.errors[name],
-                ruleMessages: t.forms.validation,
-                t,
-            })}
+            error={dateFilterError(form, name, t)}
+            isErrorTextHidden={isErrorInAlert}
         >
             {(control) => (
                 <DateInput
                     label={label}
                     value={typedDate}
+                    min={name === 'to' ? bound : undefined}
+                    max={name === 'from' ? bound : undefined}
                     onPick={(picked) => {
                         form.setValue(name, picked, {
+                            shouldDirty: true,
                             shouldValidate: form.formState.isSubmitted,
                         })
                     }}

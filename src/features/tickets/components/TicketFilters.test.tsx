@@ -77,6 +77,35 @@ describe('Karte filters', () => {
         expect(screen.queryByRole('button', { name: /ZG1234/ })).not.toBeInTheDocument()
     })
 
+    it('clears the plate from inside its field, and drops an applied plate at once', async () => {
+        const { user, router } = await openPage(`${paths.tickets}?plate=ZG1234AB&zone=1`)
+        const plate = bar().getByRole('searchbox', { name: f.plate })
+
+        await user.click(bar().getByRole('button', { name: f.clearPlate }))
+
+        await waitFor(() => {
+            expect(router.state.location.search).toBe('?zone=1')
+        })
+        expect(plate).toHaveValue('')
+        expect(plate).toHaveFocus()
+        expect(bar().queryByRole('button', { name: f.clearPlate })).not.toBeInTheDocument()
+    })
+
+    it('offers only days after Datum od in the Datum do calendar', async () => {
+        const { user } = await openPage()
+
+        await user.type(bar().getByRole('textbox', { name: f.from }), '15.10.2026')
+        await user.type(bar().getByRole('textbox', { name: f.to }), '20.10.2026')
+        await user.click(bar().getByRole('button', { name: hr.forms.datePicker.open(f.to) }))
+
+        expect(
+            await bar().findByRole('button', { name: /(^|\s)14\. listopada 2026/ }),
+        ).toHaveAttribute('aria-disabled', 'true')
+        expect(
+            bar().getByRole('button', { name: /(^|\s)16\. listopada 2026/ }),
+        ).not.toHaveAttribute('aria-disabled', 'true')
+    })
+
     it('searches by plate on Enter', async () => {
         const { user, router } = await openPage()
 
@@ -112,20 +141,35 @@ describe('Karte filters', () => {
         ).toBeInTheDocument()
     })
 
-    it('blocks a range that ends before it starts', async () => {
-        const requests = listRequests()
+    it('moves an end typed before the start up to the start, so the range stays in order', async () => {
         const { user, router } = await openPage()
-        const sent = requests.length
 
         await user.type(bar().getByRole('textbox', { name: f.from }), '07.10.2026')
         await user.type(bar().getByRole('textbox', { name: f.to }), '06.10.2026')
         await user.click(bar().getByRole('button', { name: f.search }))
 
+        await waitFor(() => {
+            expect(router.state.location.search).toBe('?from=2026-10-07&to=2026-10-07')
+        })
+        expect(bar().getByRole('textbox', { name: f.to })).toHaveValue('07.10.2026')
+    })
+
+    it('lists an unreadable date in one alert above the bar, tied to its field', async () => {
+        const requests = listRequests()
+        const { user, router } = await openPage()
+        const sent = requests.length
+
+        await user.type(bar().getByRole('textbox', { name: f.to }), '31.02.2026')
+        await user.click(bar().getByRole('button', { name: f.search }))
+
         const to = bar().getByRole('textbox', { name: f.to })
         await waitFor(() => {
-            expect(to).toHaveAccessibleDescription(hr.forms.validation.dateRangeOrder)
+            expect(to).toHaveAccessibleDescription(hr.forms.validation.dateInvalid)
         })
         expect(to).toHaveAttribute('aria-invalid', 'true')
+        expect(
+            screen.getByText(`${f.to}: ${hr.forms.validation.dateInvalid}`, { exact: false }),
+        ).toBeInTheDocument()
         expect(router.state.location.search).toBe('')
         expect(requests).toHaveLength(sent)
     })
@@ -226,7 +270,75 @@ describe('Karte filters', () => {
             expect(bar().getByRole('searchbox', { name: f.plate })).toHaveValue('')
         })
         expect(bar().getByRole('textbox', { name: f.from })).toHaveValue('')
-        expect(screen.queryByRole('button', { name: f.remove(f.tags.zone('2A')) })).toBeNull()
+        await waitFor(() => {
+            expect(screen.queryByRole('button', { name: f.remove(f.tags.zone('2A')) })).toBeNull()
+        })
+    })
+
+    it('disables Pretraži until a field changes, and Očisti until there is something to clear', async () => {
+        const { user } = await openPage()
+        const search = bar().getByRole('button', { name: f.search })
+        const clear = bar().getByRole('button', { name: f.clear })
+        expect(search).toBeDisabled()
+        expect(clear).toBeDisabled()
+
+        await user.selectOptions(bar().getByRole('combobox', { name: f.zone }), 'ZONA1')
+
+        expect(search).toBeEnabled()
+        expect(clear).toBeEnabled()
+
+        await user.click(search)
+
+        await waitFor(() => {
+            expect(search).toBeDisabled()
+        })
+        expect(clear).toBeEnabled()
+    })
+
+    it('enables Pretraži once a date is picked from the calendar', async () => {
+        const { user } = await openPage()
+        const search = bar().getByRole('button', { name: f.search })
+
+        await user.click(bar().getByRole('button', { name: hr.forms.datePicker.open(f.from) }))
+        // The 15th is always in the month the calendar opens on.
+        await user.click(await bar().findByRole('button', { name: /(^|\s)15\. / }))
+
+        await waitFor(() => {
+            expect(bar().getByRole('textbox', { name: f.from })).not.toHaveValue('')
+        })
+        expect(search).toBeEnabled()
+    })
+
+    it('disables the drawer buttons until there is something to apply or clear', async () => {
+        const { user } = await openPage()
+
+        await user.click(bar().getByRole('button', { name: f.open }))
+        const drawer = await screen.findByRole('dialog', { name: f.drawerTitle })
+        expect(within(drawer).getByRole('button', { name: f.apply })).toBeDisabled()
+        expect(within(drawer).getByRole('button', { name: f.clearAll })).toBeDisabled()
+
+        await user.type(within(drawer).getByRole('textbox', { name: f.from }), '01.10.2026')
+
+        expect(within(drawer).getByRole('button', { name: f.apply })).toBeEnabled()
+        expect(within(drawer).getByRole('button', { name: f.clearAll })).toBeEnabled()
+    })
+
+    it('clears values typed but not yet searched, and their errors', async () => {
+        const { user, router } = await openPage()
+
+        await user.type(bar().getByRole('searchbox', { name: f.plate }), 'zg12')
+        await user.type(bar().getByRole('textbox', { name: f.from }), '2026-10-07')
+        await user.click(bar().getByRole('button', { name: f.search }))
+        expect(await bar().findByText(hr.forms.validation.dateFormat)).toBeInTheDocument()
+
+        await user.click(bar().getByRole('button', { name: f.clear }))
+
+        await waitFor(() => {
+            expect(bar().getByRole('searchbox', { name: f.plate })).toHaveValue('')
+        })
+        expect(bar().getByRole('textbox', { name: f.from })).toHaveValue('')
+        expect(bar().queryByText(hr.forms.validation.dateFormat)).not.toBeInTheDocument()
+        expect(router.state.location.search).toBe('')
     })
 
     it('says when no ticket matches, and clears the filters from there', async () => {
@@ -292,27 +404,28 @@ describe('Karte filter drawer (phone and tablet)', () => {
             expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
         })
         expect(router.state.location.search).toBe('?plate=ZG&from=2026-10-01&fiscal=pending')
-        await waitFor(() => {
-            expect(bar().getByRole('button', { name: f.openWithCount(2) })).toHaveFocus()
-        })
+        // Focus returns after the drawer's exit animation, which a full parallel run slows past 3 s.
+        await waitFor(
+            () => {
+                expect(bar().getByRole('button', { name: f.openWithCount(2) })).toHaveFocus()
+            },
+            { timeout: 5000 },
+        )
         await waitFor(() => {
             expect(requests.at(-1)?.get('fiscalStatus')).toBe('PENDING')
         })
         expect(requests.at(-1)?.get('page')).toBe('1')
     })
 
-    it('keeps the drawer open on an invalid range', async () => {
+    it('keeps the drawer open on a date it cannot read, with the error under the field', async () => {
         const { user, router } = await openPage()
 
         await user.click(bar().getByRole('button', { name: f.open }))
         const drawer = await screen.findByRole('dialog', { name: f.drawerTitle })
-        await user.type(within(drawer).getByRole('textbox', { name: f.from }), '07.10.2026')
-        await user.type(within(drawer).getByRole('textbox', { name: f.to }), '06.10.2026')
+        await user.type(within(drawer).getByRole('textbox', { name: f.from }), '31.02.2026')
         await user.click(within(drawer).getByRole('button', { name: f.apply }))
 
-        expect(
-            await within(drawer).findByText(hr.forms.validation.dateRangeOrder),
-        ).toBeInTheDocument()
+        expect(await within(drawer).findByText(hr.forms.validation.dateInvalid)).toBeVisible()
         expect(drawer).toBeInTheDocument()
         expect(router.state.location.search).toBe('')
     })

@@ -114,6 +114,8 @@ function newTicketCountQuery({ createdAfter, filters }: NewTicketCountParams) {
 
 const zoneOptionsQuery = queryOptions({
     queryKey: ticketKeys.zoneOptions,
+    // Zones change rarely; without this every mount of a filter asks again.
+    staleTime: 5 * 60_000,
     queryFn: async ({ signal }) =>
         toZoneOptions(await request('/zones', { schema: zoneOptionsResponseSchema, signal })),
 })

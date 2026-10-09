@@ -21,6 +21,9 @@ interface DateInputProps {
     value: string
     /** A day picked in the calendar, as DD.MM.GGGG text for the field. */
     onPick: (text: string) => void
+    /** The first and last day the calendar lets the user pick. */
+    min?: CalendarDate | undefined
+    max?: CalendarDate | undefined
     /** The text input the user types into. */
     children: ReactElement<InputElementProps>
 }
@@ -30,7 +33,7 @@ function toDateValue(date: CalendarDate): DateValue {
 }
 
 /** A typed DD.MM.GGGG field with a calendar button beside it. */
-export function DateInput({ label, value, onPick, children }: DateInputProps) {
+export function DateInput({ label, value, onPick, min, max, children }: DateInputProps) {
     const t = useStrings()
     const strings = t.forms.datePicker
     const typed = readDateText(value)
@@ -42,6 +45,8 @@ export function DateInput({ label, value, onPick, children }: DateInputProps) {
             // Inside a Field the picker adopts the field's input and writes to it in this format.
             format={formatCalendarDate}
             value={'date' in typed ? [toDateValue(typed.date)] : []}
+            min={min && toDateValue(min)}
+            max={max && toDateValue(max)}
             onValueChange={({ value: [picked] }) => {
                 if (picked !== undefined) onPick(formatCalendarDate(picked))
             }}

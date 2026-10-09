@@ -88,6 +88,7 @@ export const hr = {
             label: 'Filteri karata',
             plate: 'Registracija',
             platePlaceholder: 'npr. ZG1234AB',
+            clearPlate: 'Obriši registraciju',
             from: 'Datum od',
             to: 'Datum do',
             zone: 'Zona',
@@ -95,7 +96,8 @@ export const hr = {
             fiscal: 'Fiskalizacija',
             allStatuses: 'Svi statusi',
             search: 'Pretraži',
-            clear: 'Očisti',
+            notApplied: 'Filteri nisu primijenjeni.',
+            clear: 'Očisti filtere',
             clearAll: 'Očisti sve',
             open: 'Filteri',
             openWithCount: (count: number) =>

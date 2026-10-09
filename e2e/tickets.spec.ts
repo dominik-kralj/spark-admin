@@ -143,16 +143,21 @@ test.describe('Karte on a desktop', () => {
         await expectOnlyTableScrolls(page, table)
     })
 
-    test('blocks a date range that ends before it starts', async ({ page }) => {
+    test('lists an unreadable date above the bar without moving it', async ({ page }) => {
         await openList(page)
         const bar = page.getByRole('search', { name: f.label })
 
-        await bar.getByRole('textbox', { name: f.from }).fill('07.10.2026')
-        await bar.getByRole('textbox', { name: f.to }).fill('06.10.2026')
+        await bar.getByRole('textbox', { name: f.to }).fill('31.02.2026')
         await bar.getByRole('button', { name: f.search }).click()
 
-        await expect(bar.getByText(hr.forms.validation.dateRangeOrder)).toBeVisible()
+        await expect(
+            page.getByText(`${f.to}: ${hr.forms.validation.dateInvalid}`, { exact: false }),
+        ).toBeVisible()
         await expect(bar.getByRole('textbox', { name: f.to })).toBeFocused()
+        // The error grows only its own field: the other controls stay level with the inputs.
+        const plateTop = (await bar.getByRole('searchbox', { name: f.plate }).boundingBox())?.y
+        const searchTop = (await bar.getByRole('button', { name: f.search }).boundingBox())?.y
+        expect(Math.abs((plateTop ?? 0) - (searchTop ?? 0))).toBeLessThan(2)
         await expect(page).toHaveURL(paths.tickets)
     })
 })

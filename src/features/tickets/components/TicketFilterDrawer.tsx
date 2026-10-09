@@ -4,6 +4,7 @@ import { X } from 'lucide-react'
 import { useStrings } from '@/shared/i18n/useStrings'
 
 import { useTicketFilterForm } from '../lib/useTicketFilterForm'
+import { activeDrawerFilterCount } from '../lib/ticketFilterValues'
 import type { TicketFilterValues } from '../validators/ticketFilterForm'
 
 import { DateFilterField, FiscalFilterField, ZoneFilterField } from './TicketFilterFields'
@@ -18,6 +19,7 @@ function FilterDrawerForm({ values, onApply, onClear }: FilterDrawerFormProps) {
     const t = useStrings()
     const f = t.tickets.filters
     const { form, submit } = useTicketFilterForm(values, onApply)
+    const { isDirty } = form.formState
 
     return (
         <Flex asChild direction="column" flex="1" minH="0">
@@ -35,10 +37,14 @@ function FilterDrawerForm({ values, onApply, onClear }: FilterDrawerFormProps) {
 
                 <Drawer.Footer borderTopWidth="1px" borderColor="border" p="4">
                     <Stack gap="2" w="full">
-                        <Button type="submit" colorPalette="blue">
+                        <Button type="submit" colorPalette="blue" disabled={!isDirty}>
                             {f.apply}
                         </Button>
-                        <Button variant="outline" onClick={onClear}>
+                        <Button
+                            variant="outline"
+                            disabled={!isDirty && activeDrawerFilterCount(values) === 0}
+                            onClick={onClear}
+                        >
                             {f.clearAll}
                         </Button>
                     </Stack>
