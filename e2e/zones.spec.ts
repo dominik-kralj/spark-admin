@@ -54,6 +54,28 @@ test('scrolls only the table rows when the window is short', async ({ page, isMo
     await expect(page.getByText(hr.zones.total(2))).toBeInViewport()
 })
 
+test.describe('Zone list cache', () => {
+    test.skip(({ isMobile }) => isMobile, 'one browser is enough for the cache')
+
+    test('comes back from the cache within a minute, without asking again', async ({ page }) => {
+        let zoneRequests = 0
+        page.on('request', (request) => {
+            if (new URL(request.url()).pathname.endsWith('/zones')) zoneRequests += 1
+        })
+        await signIn(page)
+        await page.goto(paths.zones)
+        await expect(page.getByRole('table', { name: hr.zones.listLabel })).toBeVisible()
+        const firstVisit = zoneRequests
+
+        await page.getByRole('link', { name: hr.nav.inspectors }).click()
+        await expect(page.getByRole('heading', { level: 1, name: hr.nav.inspectors })).toBeVisible()
+        await page.getByRole('link', { name: hr.nav.zones }).click()
+
+        await expect(page.getByRole('table', { name: hr.zones.listLabel })).toBeVisible()
+        expect(zoneRequests).toBe(firstVisit)
+    })
+})
+
 test.describe('Zone list on a phone', () => {
     test.skip(({ isMobile }) => !isMobile, 'touch layouts run in the phone project')
 
