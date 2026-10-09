@@ -239,7 +239,8 @@ test.describe('Vrijedi do calendar', () => {
         await page.keyboard.press('Enter')
 
         await expect(dateField).toHaveValue('01.10.2026')
-        await expect(form.getByRole('button', { name: /1\. listopada 2026/ })).toBeHidden()
+        // \b keeps 11., 21. and 31. listopada out; strict mode rejects them while the calendar closes.
+        await expect(form.getByRole('button', { name: /\b1\. listopada 2026/ })).toBeHidden()
 
         await dateField.fill('')
         await dateField.pressSequentially('1.2.20')

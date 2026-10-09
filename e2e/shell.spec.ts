@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
 
 import { hr } from '../src/shared/i18n/hr'
 import { paths } from '../src/shared/paths'
@@ -82,6 +82,47 @@ test.describe('phone menu drawer', () => {
         await waitForAnimations(drawer)
         await expectNoHorizontalScroll(page)
         await expect(drawer.getByRole('button', { name: hr.shell.signOut })).toBeInViewport()
+    })
+})
+
+test.describe('phone top bar', () => {
+    test.skip(({ isMobile }) => !isMobile, 'touch layouts run in the phone project')
+
+    async function openScrollingPage(page: Page) {
+        // A short window, so even a few cards scroll.
+        await page.setViewportSize({ width: 375, height: 420 })
+        await signIn(page)
+        await page.goto(paths.privilegedOwners)
+        await expect(page.getByRole('list', { name: hr.privilegedOwners.listLabel })).toBeVisible()
+    }
+
+    test('stays at the top while the page scrolls, with the menu in reach', async ({ page }) => {
+        await openScrollingPage(page)
+
+        await page.evaluate(() => {
+            window.scrollTo(0, document.documentElement.scrollHeight)
+        })
+
+        expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(0)
+        expect((await page.getByRole('banner').boundingBox())?.y).toBe(0)
+        await page.getByRole('button', { name: hr.shell.openMenu }).click()
+        await expect(page.getByRole('dialog', { name: hr.shell.menu })).toBeVisible()
+    })
+
+    test('never hides the focused control under itself', async ({ page }) => {
+        await openScrollingPage(page)
+        await page.evaluate(() => {
+            window.scrollTo(0, document.documentElement.scrollHeight)
+        })
+
+        const list = page.getByRole('list', { name: hr.privilegedOwners.listLabel })
+        await list.getByRole('button').last().focus()
+        // Back into the card above, which is out of view above the bar.
+        for (let i = 0; i < 3; i += 1) await page.keyboard.press('Shift+Tab')
+
+        const banner = await page.getByRole('banner').boundingBox()
+        const focused = await page.locator(':focus').boundingBox()
+        expect(focused?.y).toBeGreaterThanOrEqual((banner?.y ?? 0) + (banner?.height ?? 0))
     })
 })
 
