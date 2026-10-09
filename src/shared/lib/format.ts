@@ -3,6 +3,7 @@ import type { CalendarDate } from './calendarDate'
 // Part of the format, which stays Croatian in every UI language.
 const currency = 'EUR'
 const minutesUnit = 'min'
+const percentSign = '%'
 
 const dateTimeFormat = new Intl.DateTimeFormat('hr-HR', {
     timeZone: 'Europe/Zagreb',
@@ -28,6 +29,8 @@ const decimalInputFormat = new Intl.NumberFormat('hr-HR', {
 })
 
 const integerFormat = new Intl.NumberFormat('hr-HR', { maximumFractionDigits: 0 })
+
+const rateFormat = new Intl.NumberFormat('hr-HR', { maximumFractionDigits: 2 })
 
 function zagrebParts(value: Date) {
     const parts = dateTimeFormat.formatToParts(value)
@@ -76,4 +79,9 @@ export function formatDecimal(amount: number): string {
 
 export function formatMinutes(minutes: number): string {
     return `${integerFormat.format(minutes)} ${minutesUnit}`
+}
+
+/** A rate such as VAT, given in percent (25 for 25 %). */
+export function formatPercent(rate: number): string {
+    return `${rateFormat.format(rate)} ${percentSign}`
 }
