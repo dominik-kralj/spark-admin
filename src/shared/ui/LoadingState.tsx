@@ -1,7 +1,6 @@
 import { Box, Grid, Skeleton, Stack, Text } from '@chakra-ui/react'
-import { useEffect } from 'react'
 
-import { announce } from '@/shared/lib/announcer'
+import { useAnnouncement } from '@/shared/lib/useAnnouncement'
 
 import { tableHeaderHeight, tableRowHeight } from '@/shared/theme/tableSizes'
 
@@ -15,13 +14,8 @@ const tableRows = [1, 2, 3]
 const cards = [1, 2]
 
 export function LoadingState({ label, columnWidths }: LoadingStateProps) {
-    useEffect(() => {
-        announce(label)
+    useAnnouncement(label)
 
-        return () => {
-            announce('')
-        }
-    }, [label])
     const gridTemplateColumns = columnWidths.map((width) => `${String(width)}fr`).join(' ')
 
     return (
