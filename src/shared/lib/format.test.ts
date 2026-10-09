@@ -8,6 +8,7 @@ import {
     formatDateTime,
     formatDecimal,
     formatMinutes,
+    formatPercent,
     formatTime,
 } from './format'
 
@@ -116,5 +117,17 @@ describe('formatMinutes', () => {
 describe('formatCalendarDate', () => {
     it('zero-pads day and month, with no time zone involved', () => {
         expect(formatCalendarDate({ year: 2027, month: 1, day: 5 })).toBe('05.01.2027')
+    })
+})
+
+describe('formatPercent', () => {
+    it('writes a whole rate with a space before the sign, as Croatian does', () => {
+        expect(formatPercent(25)).toBe('25 %')
+    })
+
+    it('keeps up to two decimals after a comma, without trailing zeros', () => {
+        expect(formatPercent(5.5)).toBe('5,5 %')
+        expect(formatPercent(13.25)).toBe('13,25 %')
+        expect(formatPercent(25.0)).toBe('25 %')
     })
 })

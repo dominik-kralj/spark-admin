@@ -70,6 +70,8 @@ test.describe('phone menu drawer', () => {
     test('holds at 320 px with 200 % text zoom', async ({ page }) => {
         await page.setViewportSize({ width: 320, height: 812 })
         await signIn(page)
+        // The URL changes before the lazy start page replaces the login form.
+        await page.getByRole('banner').waitFor()
         await zoomText(page)
 
         await expectNoHorizontalScroll(page)

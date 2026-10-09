@@ -8,6 +8,8 @@ import { sections, type Section } from '@/features/shell/lib/sections'
 import { paths } from '@/shared/paths'
 
 const screens: Partial<Record<string, () => Promise<ComponentType>>> = {
+    [paths.tickets]: async () =>
+        (await import('@/features/tickets/components/TicketsPage')).TicketsPage,
     [paths.zones]: async () => (await import('@/features/zones/components/ZonesPage')).ZonesPage,
     [paths.privilegedOwners]: async () =>
         (await import('@/features/privileged-owners/components/PrivilegedOwnersPage'))
@@ -16,11 +18,21 @@ const screens: Partial<Record<string, () => Promise<ComponentType>>> = {
         (await import('@/features/inspectors/components/InspectorsPage')).InspectorsPage,
 }
 
+// A section whose detail opens over its list, so a detail link works on its own.
+const detailParams: Partial<Record<string, string>> = {
+    [paths.tickets]: 'ticketId',
+}
+
 function sectionRoute({ path, labelKey }: Section): RouteObject {
     const screen = screens[path]
     if (screen === undefined) return { path, element: <PlaceholderPage labelKey={labelKey} /> }
 
-    return { path, lazy: { Component: screen } }
+    const detailParam = detailParams[path]
+
+    return {
+        path: detailParam === undefined ? path : `${path}/:${detailParam}?`,
+        lazy: { Component: screen },
+    }
 }
 
 // Fresh objects per router: React Router caches lazy results on the route objects.

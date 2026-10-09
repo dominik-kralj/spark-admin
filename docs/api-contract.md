@@ -203,8 +203,14 @@ interface TicketDetail extends TicketListItem {
   zki: string | null
   fiscalizedAt: string | null
   fiscalLastError: string | null
+  osnovica: number | null // [proposed] VAT base, DECIMAL(18,6)
+  stopaPDV: number | null // [proposed] VAT rate in percent, e.g. 25
+  iznosPDV: number | null // [proposed] VAT amount, DECIMAL(18,6)
 }
 ```
+
+The VAT fields are the TICKETS columns of the same names; the detail shows a
+dash while they are missing. [proposed]
 
 The driver's phone number is deliberately not in the contract: no screen
 shows it, and it is personal data.

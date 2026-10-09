@@ -10,6 +10,7 @@ import { drawerRecipe } from './drawer'
 import { emptyStateRecipe } from './emptyState'
 import { fieldRecipe } from './field'
 import { inputRecipe } from './input'
+import { linkRecipe } from './link'
 import { skeletonRecipe } from './skeleton'
 import { skipNavLinkRecipe } from './skipNavLink'
 import { tableRecipe } from './table'
@@ -23,6 +24,7 @@ export const recipesConfig = defineConfig({
         recipes: {
             button: buttonRecipe,
             input: inputRecipe,
+            link: linkRecipe,
             skeleton: skeletonRecipe,
             skipNavLink: skipNavLinkRecipe,
         },

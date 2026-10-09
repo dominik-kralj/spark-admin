@@ -20,7 +20,7 @@ describe('app shell on a phone', () => {
 
         expect(within(header).getByRole('button', { name: 'Otvori izbornik' })).toBeInTheDocument()
         expect(await within(header).findByText('Grad Samobor')).toBeInTheDocument()
-        expect(screen.queryByRole('navigation')).not.toBeInTheDocument()
+        expect(screen.queryByRole('navigation', { name: hr.shell.mainNav })).not.toBeInTheDocument()
     })
 
     it('opens the menu drawer, closes it with Escape and returns focus', async () => {
