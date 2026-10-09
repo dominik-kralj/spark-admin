@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { hr } from '@/shared/i18n/hr'
 import { paths } from '@/shared/paths'
 import { expectNoAxeViolations } from '@/test/axe'
+import { stubEmptyStartPage } from '@/test/emptyStartPage'
 import { renderRoute } from '@/test/render'
 import { signInForTest } from '@/test/session'
 import { setViewportWidth } from '@/test/viewport'
@@ -11,6 +12,7 @@ import { setViewportWidth } from '@/test/viewport'
 describe('app shell on a phone', () => {
     beforeEach(() => {
         signInForTest()
+        stubEmptyStartPage()
         setViewportWidth(375)
     })
 

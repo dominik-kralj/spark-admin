@@ -7,6 +7,7 @@ import { hr } from '@/shared/i18n/hr'
 import { languagePickerLabel } from '@/shared/i18n/language'
 import { paths } from '@/shared/paths'
 import { expectNoAxeViolations } from '@/test/axe'
+import { stubEmptyStartPage } from '@/test/emptyStartPage'
 import { renderRoute } from '@/test/render'
 import { server } from '@/test/server'
 import { signInForTest } from '@/test/session'
@@ -25,6 +26,7 @@ const navItems = [
 describe('app shell', () => {
     beforeEach(() => {
         signInForTest()
+        stubEmptyStartPage()
     })
 
     it('opens on Karte from the start page', async () => {
