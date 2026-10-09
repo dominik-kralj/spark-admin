@@ -463,6 +463,13 @@ export const hr = {
             server: 'Došlo je do pogreške na poslužitelju. Pokušajte ponovno za nekoliko minuta. Ako se pogreška ponavlja, javite se administratoru sustava.',
         },
     },
+    errorPage: {
+        title: 'Nešto je pošlo po zlu',
+        description:
+            'Stranicu nije moguće prikazati. Učitajte je ponovno; ako se pogreška ponovi, javite se administratoru sustava.',
+        reload: 'Učitaj ponovno',
+        home: 'Na početnu stranicu',
+    },
     notFound: {
         title: 'Stranica nije pronađena',
         description:

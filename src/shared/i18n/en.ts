@@ -449,6 +449,13 @@ export const en: Dictionary = {
             server: 'Something went wrong on the server. Try again in a few minutes. If the error persists, contact your system administrator.',
         },
     },
+    errorPage: {
+        title: 'Something went wrong',
+        description:
+            'This page cannot be shown. Load it again; if the error comes back, contact your system administrator.',
+        reload: 'Load again',
+        home: 'Go to the home page',
+    },
     notFound: {
         title: 'Page not found',
         description:
