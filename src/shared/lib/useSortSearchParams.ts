@@ -24,10 +24,7 @@ function readSort<TKey extends string>(
     }
 }
 
-/**
- * The list's sort order, kept in the URL; the default order leaves the URL clean.
- * A new order also clears `resetParams`, such as a page that no longer means the same rows.
- */
+/** The list's sort order in the URL (default leaves it clean); a new order clears `resetParams`. */
 export function useSortSearchParams<TKey extends string>(
     keys: readonly TKey[],
     defaultSort: Sort<TKey>,

@@ -112,14 +112,14 @@ describe('Karte detail', () => {
         })
     })
 
-    it('opens from a card on a phone, and its Zatvori button closes it', async () => {
+    it('opens from a card on a phone, and the back arrow closes it', async () => {
         const { user, router } = await renderRoute(paths.tickets)
         const list = await screen.findByRole('list', { name: hr.tickets.listLabel })
         const cardLink = within(list).getByRole('link', { name: /ZG5553AI/ })
 
         await user.click(cardLink)
         const drawer = await findDrawer('ZG5553AI')
-        await user.click(within(drawer).getByRole('button', { name: t.closeButton }))
+        await user.click(within(drawer).getByRole('button', { name: t.back }))
 
         await waitFor(() => {
             expect(screen.queryByRole('dialog')).not.toBeInTheDocument()

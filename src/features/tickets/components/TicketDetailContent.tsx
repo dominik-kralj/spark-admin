@@ -18,6 +18,10 @@ interface Field {
     value: ReactNode
 }
 
+function orMissing<T>(value: T | null, format: (value: T) => string): ReactNode {
+    return value === null ? <MissingValue /> : format(value)
+}
+
 function ticketFields(ticket: TicketDetail, fields: Strings['fields']): Field[] {
     return [
         { label: fields.plate, value: <Text textStyle="plate">{ticket.plate}</Text> },
@@ -26,9 +30,9 @@ function ticketFields(ticket: TicketDetail, fields: Strings['fields']): Field[] 
         { label: fields.validUntil, value: formatDateTime(ticket.validUntil) },
         { label: fields.duration, value: formatMinutes(ticket.parkingMinutes) },
         { label: fields.amount, value: formatAmount(ticket.amount) },
-        { label: fields.vatBase, value: formatAmount(ticket.vat.base) },
-        { label: fields.vatRate, value: formatPercent(ticket.vat.rate) },
-        { label: fields.vatAmount, value: formatAmount(ticket.vat.amount) },
+        { label: fields.vatBase, value: orMissing(ticket.vat.base, formatAmount) },
+        { label: fields.vatRate, value: orMissing(ticket.vat.rate, formatPercent) },
+        { label: fields.vatAmount, value: orMissing(ticket.vat.amount, formatAmount) },
     ]
 }
 
@@ -45,28 +49,35 @@ function CopyableValue({ value, copyLabel }: { value: string | null; copyLabel: 
     )
 }
 
-function transactionFields(ticket: TicketDetail, t: Strings): Field[] {
+function transactionFields(ticket: TicketDetail, strings: Strings): Field[] {
     const { fiscal } = ticket
     const fields: Field[] = [
         {
-            label: t.fields.transactionId,
-            value: <CopyableValue value={ticket.transactionId} copyLabel={t.copy.transactionId} />,
+            label: strings.fields.transactionId,
+            value: (
+                <CopyableValue
+                    value={ticket.transactionId}
+                    copyLabel={strings.copy.transactionId}
+                />
+            ),
         },
-        { label: t.fields.jir, value: <CopyableValue value={fiscal.jir} copyLabel={t.copy.jir} /> },
-        { label: t.fields.zki, value: <CopyableValue value={fiscal.zki} copyLabel={t.copy.zki} /> },
         {
-            label: t.fields.fiscalizedAt,
-            value:
-                fiscal.fiscalizedAt === null ? (
-                    <MissingValue />
-                ) : (
-                    formatDateTime(fiscal.fiscalizedAt)
-                ),
+            label: strings.fields.jir,
+            value: <CopyableValue value={fiscal.jir} copyLabel={strings.copy.jir} />,
+        },
+        {
+            label: strings.fields.zki,
+            value: <CopyableValue value={fiscal.zki} copyLabel={strings.copy.zki} />,
+        },
+        {
+            label: strings.fields.fiscalizedAt,
+            value: orMissing(fiscal.fiscalizedAt, formatDateTime),
         },
     ]
+
     if (fiscal.lastError === null) return fields
 
-    return [...fields, { label: t.fields.fiscalError, value: fiscal.lastError }]
+    return [...fields, { label: strings.fields.fiscalError, value: fiscal.lastError }]
 }
 
 function FieldTerm({ children }: { children: string }) {

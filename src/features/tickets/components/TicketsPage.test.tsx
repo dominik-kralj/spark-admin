@@ -193,6 +193,21 @@ describe('Karte list', () => {
         expect(await findTableRange(1, 25)).toBeInTheDocument()
     })
 
+    it('offers the first page when the page in the URL is past the end', async () => {
+        const { user, router } = await renderRoute(`${paths.tickets}?page=99`)
+
+        expect(
+            await screen.findByRole('heading', { level: 2, name: t.pastEnd.title }),
+        ).toBeInTheDocument()
+        expect(screen.queryByRole('table')).not.toBeInTheDocument()
+
+        await user.click(screen.getByRole('button', { name: t.pastEnd.action }))
+        await ticketsTable()
+
+        expect(await findTableRange(1, 25)).toBeInTheDocument()
+        expect(router.state.location.search).toBe('')
+    })
+
     it('keeps the current rows until the next page arrives', async () => {
         const { user } = await renderRoute(paths.tickets)
         const table = await ticketsTable()

@@ -79,6 +79,11 @@ export const hr = {
             title: 'Još nema plaćenih karata',
             description: 'Ovdje će se prikazati karte čim ih vozači plate putem WhatsAppa.',
         },
+        pastEnd: {
+            title: 'Ova stranica je prazna',
+            description: 'Popis karata ima manje stranica. Vratite se na prvu stranicu.',
+            action: 'Na prvu stranicu',
+        },
         detail: {
             title: (plate: string) => `Karta ${plate}`,
             fallbackTitle: 'Detalji karte',

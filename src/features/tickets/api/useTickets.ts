@@ -72,7 +72,7 @@ function newTicketCountQuery({ createdAfter, filters }: NewTicketCountParams) {
     })
 }
 
-/** One page of tickets; while the next page loads, the previous one stays on screen. */
+// The previous page stays on screen while the next one loads.
 export function useTickets(params: TicketListParams) {
     return useQuery({ ...ticketsQuery(params), placeholderData: keepPreviousData })
 }

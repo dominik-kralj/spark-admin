@@ -13,6 +13,9 @@ import type { Ticket } from '../validators/ticket'
 
 import { TicketLink } from './TicketLink'
 
+// Two columns on a phone; one when the text is zoomed and two would not fit.
+const cardColumns = 'repeat(auto-fit, minmax(min(100%, 7.5rem), 1fr))'
+
 function cardFields(
     ticket: Ticket,
     columns: Dictionary['tickets']['columns'],
@@ -56,6 +59,8 @@ export function TicketCards({ tickets, range, isUpdating, page, onPageChange }: 
                         <TicketLink
                             ticketId={ticket.id}
                             display="flex"
+                            flexWrap="wrap"
+                            columnGap="3"
                             justifyContent="space-between"
                             alignItems="center"
                             minH="12"
@@ -75,7 +80,7 @@ export function TicketCards({ tickets, range, isUpdating, page, onPageChange }: 
                             </HStack>
                         </TicketLink>
 
-                        <Grid as="dl" templateColumns="repeat(2, minmax(0, 1fr))" gap="3">
+                        <Grid as="dl" templateColumns={cardColumns} gap="3">
                             {cardFields(ticket, t.tickets.columns).map(({ label, value }) => (
                                 <Box key={label}>
                                     <Text as="dt" fontSize="caption" color="fg.muted">
@@ -89,7 +94,7 @@ export function TicketCards({ tickets, range, isUpdating, page, onPageChange }: 
                 ))}
             </Stack>
 
-            <Flex justify="space-between" align="center" gap="3">
+            <Flex wrap="wrap" justify="space-between" align="center" gap="3">
                 <Text textStyle="sm" color="fg.muted">
                     {t.tickets.shownShort(range.from, range.to, range.total)}
                 </Text>

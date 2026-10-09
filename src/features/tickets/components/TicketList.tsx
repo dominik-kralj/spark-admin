@@ -1,4 +1,4 @@
-import { Text } from '@chakra-ui/react'
+import { Button, Text } from '@chakra-ui/react'
 import { Ticket } from 'lucide-react'
 
 import { useStrings } from '@/shared/i18n/useStrings'
@@ -55,6 +55,26 @@ export function TicketList() {
                 icon={<Ticket />}
                 title={t.tickets.empty.title}
                 description={t.tickets.empty.description}
+            />
+        )
+    }
+
+    if (tickets.data.items.length === 0) {
+        return (
+            <EmptyState
+                icon={<Ticket />}
+                title={t.tickets.pastEnd.title}
+                description={t.tickets.pastEnd.description}
+                action={
+                    <Button
+                        variant="outline"
+                        onClick={() => {
+                            setPage(1)
+                        }}
+                    >
+                        {t.tickets.pastEnd.action}
+                    </Button>
+                }
             />
         )
     }

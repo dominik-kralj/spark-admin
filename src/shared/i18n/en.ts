@@ -72,6 +72,11 @@ export const en: Dictionary = {
             title: 'No paid tickets yet',
             description: 'Tickets appear here as soon as drivers pay for them over WhatsApp.',
         },
+        pastEnd: {
+            title: 'This page is empty',
+            description: 'The ticket list has fewer pages. Go back to the first page.',
+            action: 'Go to the first page',
+        },
         detail: {
             title: (plate: string) => `Ticket ${plate}`,
             fallbackTitle: 'Ticket details',

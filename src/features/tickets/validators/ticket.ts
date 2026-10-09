@@ -49,9 +49,9 @@ const ticketFields = {
 const ticketDetailFields = {
     ...ticketFields,
     transactionId: z.union([z.number(), z.string()]),
-    osnovica: z.number(),
-    stopaPDV: z.number(),
-    iznosPDV: z.number(),
+    osnovica: z.number().nullish(),
+    stopaPDV: z.number().nullish(),
+    iznosPDV: z.number().nullish(),
     jir: z.string().nullish(),
     zki: z.string().nullish(),
     fiscalizedAt: utcDateTimeSchema.nullish(),
@@ -96,8 +96,8 @@ export interface Ticket {
 
 export interface TicketDetail extends Ticket {
     transactionId: string
-    /** Base, rate in percent and VAT amount, at full precision. */
-    vat: { base: number; rate: number; amount: number }
+    /** Base, rate in percent and VAT amount, at full precision; not in the contract yet. */
+    vat: { base: number | null; rate: number | null; amount: number | null }
     fiscal: {
         status: ProcessingStatus
         jir: string | null
@@ -164,7 +164,11 @@ export function toTicketDetail(raw: TicketDetailResponse): TicketDetail {
     return {
         ...toTicket(raw),
         transactionId: String(raw.transactionId),
-        vat: { base: raw.osnovica, rate: raw.stopaPDV, amount: raw.iznosPDV },
+        vat: {
+            base: raw.osnovica ?? null,
+            rate: raw.stopaPDV ?? null,
+            amount: raw.iznosPDV ?? null,
+        },
         fiscal: {
             status: statusForRaw[raw.fiscalStatus],
             jir: raw.jir ?? null,

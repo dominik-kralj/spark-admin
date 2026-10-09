@@ -7,7 +7,7 @@ import { useAnnouncement } from '@/shared/lib/useAnnouncement'
 import { EmptyState } from '@/shared/ui/EmptyState'
 import { ErrorState } from '@/shared/ui/ErrorState'
 
-import type { useTicket } from '../api/useTickets'
+import { useTicket } from '../api/useTickets'
 
 import { TicketDetailContent } from './TicketDetailContent'
 
@@ -24,9 +24,9 @@ function DetailLoading({ label }: { label: string }) {
     )
 }
 
-/** The detail's loading, not-found and error states, then the ticket. */
-export function TicketDetailBody({ ticket }: { ticket: ReturnType<typeof useTicket> }) {
+export function TicketDetailBody({ ticketId }: { ticketId: string }) {
     const t = useStrings()
+    const ticket = useTicket(ticketId)
     const strings = t.tickets.detail
 
     if (ticket.isPending) return <DetailLoading label={strings.loading} />

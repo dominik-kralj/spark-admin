@@ -9,12 +9,11 @@ interface TicketLinkProps extends Omit<LinkProps, 'asChild' | 'href'> {
     children: ReactNode
 }
 
-/** Opens a ticket's detail over the list. */
 export function TicketLink({ ticketId, children, ...linkProps }: TicketLinkProps) {
     const { search } = useLocation()
 
     return (
-        <Link asChild color="spark.blue.700" textDecoration="underline" {...linkProps}>
+        <Link asChild {...linkProps}>
             <RouterLink
                 to={ticketDetailPath(ticketId, search)}
                 state={fromListState}

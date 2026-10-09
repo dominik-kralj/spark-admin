@@ -6,19 +6,9 @@ import { useStrings } from '@/shared/i18n/useStrings'
 import { useLastDefined } from '@/shared/lib/useLastDefined'
 
 import { useTicket } from '../api/useTickets'
+import { visibleRowLink } from '../lib/visibleRowLink'
 
 import { TicketDetailBody } from './TicketDetailBody'
-
-/** The row link for this ticket that is on screen: the table's or the card's. */
-function visibleRowLink(ticketId: string): HTMLElement | null {
-    const links = document.querySelectorAll<HTMLElement>('[data-ticket-link]')
-
-    return (
-        [...links].find(
-            (link) => link.dataset.ticketLink === ticketId && link.getClientRects().length > 0,
-        ) ?? null
-    )
-}
 
 interface TicketDetailDrawerProps {
     /** The ticket in the URL; undefined while no detail is open. */
@@ -39,7 +29,7 @@ export function TicketDetailDrawer({ ticketId, onClose }: TicketDetailDrawerProp
                 if (!open) onClose()
             }}
             initialFocusEl={() => titleRef.current}
-            // Opened from a link, focus would return to it anyway; opened from the URL, it goes there too.
+            // A detail opened from its URL has no opener to return focus to; the row link is it.
             finalFocusEl={() =>
                 shownTicketId === undefined ? null : visibleRowLink(shownTicketId)
             }
@@ -119,7 +109,7 @@ function TicketDetailPanel({ ticketId, titleRef }: TicketDetailPanelProps) {
             </Flex>
 
             <Drawer.Body p={{ base: '4', md: '6' }}>
-                <TicketDetailBody ticket={ticket} />
+                <TicketDetailBody ticketId={ticketId} />
             </Drawer.Body>
         </>
     )

@@ -1,6 +1,5 @@
 import type { TicketPage } from '../validators/ticket'
 
-/** Which rows a page shows: "Prikazano 26–50 od 300". */
 export interface PageRange {
     from: number
     to: number

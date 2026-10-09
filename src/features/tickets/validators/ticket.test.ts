@@ -148,6 +148,16 @@ describe('ticket detail mapping', () => {
         expect(detail.vat).toEqual({ base: 0.564, rate: 25, amount: 0.141 })
     })
 
+    it('accepts a detail without VAT, which the contract does not have yet', () => {
+        const bare = without(rawDetail, 'osnovica', 'stopaPDV', 'iznosPDV')
+
+        expect(toTicketDetail(ticketDetailResponseSchema.parse(bare)).vat).toEqual({
+            base: null,
+            rate: null,
+            amount: null,
+        })
+    })
+
     it('accepts a transaction id sent as a string', () => {
         const detail = toTicketDetail(
             ticketDetailResponseSchema.parse({ ...rawDetail, transactionId: '20261006-000412' }),
