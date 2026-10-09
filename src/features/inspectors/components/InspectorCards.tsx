@@ -9,6 +9,7 @@ import { fullName } from '../lib/fullName'
 import { inactiveTint } from '../lib/inactiveTint'
 import type { Inspector } from '../validators/inspector'
 
+import { InspectorDeleteButton } from './InspectorDeleteButton'
 import { InspectorStatusChip } from './InspectorStatusChip'
 
 function cardFields(
@@ -24,9 +25,10 @@ function cardFields(
 interface InspectorCardsProps {
     inspectors: Inspector[]
     onEdit: (inspector: Inspector) => void
+    onDelete: (inspector: Inspector) => void
 }
 
-export function InspectorCards({ inspectors, onEdit }: InspectorCardsProps) {
+export function InspectorCards({ inspectors, onEdit, onDelete }: InspectorCardsProps) {
     const t = useStrings()
 
     return (
@@ -81,6 +83,12 @@ export function InspectorCards({ inspectors, onEdit }: InspectorCardsProps) {
                                 </Box>
                             ))}
                         </Grid>
+
+                        <InspectorDeleteButton
+                            inspector={inspector}
+                            onDelete={onDelete}
+                            placement="card"
+                        />
                     </Stack>
                 )
             })}

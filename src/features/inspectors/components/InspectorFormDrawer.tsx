@@ -31,14 +31,23 @@ import {
 } from '../validators/inspectorForm'
 
 import { ActiveSwitch } from './ActiveSwitch'
+import { InspectorDeleteButton } from './InspectorDeleteButton'
 
 interface InspectorFormDrawerProps {
     isOpen: boolean
     inspector: Inspector | null
     onClose: () => void
+    onDelete: (inspector: Inspector) => void
+    finalFocusEl: () => HTMLElement | null
 }
 
-export function InspectorFormDrawer({ isOpen, inspector, onClose }: InspectorFormDrawerProps) {
+export function InspectorFormDrawer({
+    isOpen,
+    inspector,
+    onClose,
+    onDelete,
+    finalFocusEl,
+}: InspectorFormDrawerProps) {
     const t = useStrings()
     const createInspector = useCreateInspector()
     const updateInspector = useUpdateInspector()
@@ -105,7 +114,17 @@ export function InspectorFormDrawer({ isOpen, inspector, onClose }: InspectorFor
             isDirty={isDirty}
             isSaving={isSubmitting}
             isSaveDisabled={!isAdding && (!isDirty || isPinMissing)}
+            destructiveAction={
+                !isAdding && (
+                    <InspectorDeleteButton
+                        inspector={inspector}
+                        onDelete={onDelete}
+                        placement="form"
+                    />
+                )
+            }
             onClose={onClose}
+            finalFocusEl={finalFocusEl}
             onSubmit={(event) => void handleSubmit(save)(event)}
         >
             <Text color="fg.muted">{t.inspectors.form.intro}</Text>

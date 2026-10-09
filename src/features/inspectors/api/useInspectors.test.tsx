@@ -26,6 +26,7 @@ const firstInspector: Inspector = {
     surname: 'Horvat',
     oib: '12345678901',
     isActive: true,
+    ticketCount: 42,
 }
 
 const firstInspectorDetail: InspectorDetail = { ...firstInspector, pin: '1234' }
@@ -33,7 +34,7 @@ const firstInspectorDetail: InspectorDetail = { ...firstInspector, pin: '1234' }
 const otherCityInspectorId = 4
 const otherCityOib = '45678901234'
 
-const newInspectorFields: Omit<Inspector, 'id'> = {
+const newInspectorFields: Omit<Inspector, 'id' | 'ticketCount'> = {
     name: 'Ivana',
     surname: 'Kos',
     oib: '56789012345',
@@ -117,7 +118,11 @@ describe('useCreateInspector', () => {
             created = await result.current.create.mutateAsync(newInspector)
         })
 
-        expect(created).toEqual({ id: expect.any(Number) as number, ...newInspectorFields })
+        expect(created).toEqual({
+            id: expect.any(Number) as number,
+            ...newInspectorFields,
+            ticketCount: 0,
+        })
         await waitFor(() => {
             expect(result.current.inspectors.data).toContainEqual(created)
         })

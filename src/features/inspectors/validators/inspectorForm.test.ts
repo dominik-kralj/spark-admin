@@ -76,6 +76,7 @@ describe('inspector form', () => {
                 surname: 'Šimić',
                 oib: '34567890123',
                 isActive: false,
+                ticketCount: 7,
                 pin: '1111',
             }),
         ).toEqual({

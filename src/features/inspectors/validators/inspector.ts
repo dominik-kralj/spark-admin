@@ -9,6 +9,7 @@ export const inspectorResponseSchema = z.object({
     surname: z.string(),
     oib: z.string(),
     isActive: z.boolean(),
+    ticketCount: z.number().nullish(),
 })
 
 export const inspectorListResponseSchema = z.array(inspectorResponseSchema)
@@ -19,7 +20,7 @@ type InspectorResponse = z.output<typeof inspectorResponseSchema>
 
 type InspectorDetailResponse = z.output<typeof inspectorDetailResponseSchema>
 
-type InspectorRequest = Omit<InspectorDetailResponse, 'inspectorId'>
+type InspectorRequest = Omit<InspectorDetailResponse, 'inspectorId' | 'ticketCount'>
 
 export interface Inspector {
     id: number
@@ -27,13 +28,15 @@ export interface Inspector {
     surname: string
     oib: string
     isActive: boolean
+    /** Daily tickets issued; null when the API leaves it out, and then the server decides a delete. */
+    ticketCount: number | null
 }
 
 export interface InspectorDetail extends Inspector {
     pin: string
 }
 
-export type InspectorInput = Omit<InspectorDetail, 'id'>
+export type InspectorInput = Omit<InspectorDetail, 'id' | 'ticketCount'>
 
 export type InspectorField = keyof InspectorInput
 
@@ -44,6 +47,7 @@ export function toInspector(raw: InspectorResponse): Inspector {
         surname: raw.surname,
         oib: raw.oib,
         isActive: raw.isActive,
+        ticketCount: raw.ticketCount ?? null,
     }
 }
 

@@ -208,7 +208,7 @@ The PRIVILEGED_OWNERS columns in camelCase, without `tenantId`, `createdAt` and
 The shape is `api-contract.md` ADM-6: the INSPECTORS columns in camelCase,
 without `tenantId`. The list leaves out `pin`; one inspector's detail carries
 it. Mapping to the domain `Inspector` (`id`, `name`, `surname`, `oib`,
-`isActive`) and `InspectorDetail` (plus `pin`) is in
+`isActive`, `ticketCount`) and `InspectorDetail` (plus `pin`) is in
 `src/features/inspectors/validators/inspector.ts`.
 
 ```json
@@ -217,28 +217,30 @@ it. Mapping to the domain `Inspector` (`id`, `name`, `surname`, `oib`,
   "name": "Marko",
   "surname": "Horvat",
   "oib": "12345678901",
-  "isActive": true
+  "isActive": true,
+  "ticketCount": 42
 }
 ```
 
-| Call                            | Body                                        | Success                           | Errors                                       |
-| ------------------------------- | ------------------------------------------- | --------------------------------- | -------------------------------------------- |
-| `GET /inspectors`               |                                             | `200 Inspector[]`, no `pin`       |                                              |
-| `GET /inspectors/{inspectorId}` |                                             | `200 InspectorDetail`, with `pin` | `404`                                        |
-| `POST /inspectors`              | inspector without `inspectorId`, with `pin` | `201 Inspector`                   | `400` field errors; `409 duplicate` on `oib` |
-| `PUT /inspectors/{inspectorId}` | inspector without `inspectorId`, with `pin` | `200 Inspector`                   | same, plus `404`                             |
+| Call                               | Body                                        | Success                           | Errors                                                            |
+| ---------------------------------- | ------------------------------------------- | --------------------------------- | ----------------------------------------------------------------- |
+| `GET /inspectors`                  |                                             | `200 Inspector[]`, no `pin`       |                                                                   |
+| `GET /inspectors/{inspectorId}`    |                                             | `200 InspectorDetail`, with `pin` | `404`                                                             |
+| `POST /inspectors`                 | inspector without `inspectorId`, with `pin` | `201 Inspector`                   | `400` field errors; `409 duplicate` on `oib`                      |
+| `PUT /inspectors/{inspectorId}`    | inspector without `inspectorId`, with `pin` | `200 Inspector`                   | same, plus `404`                                                  |
+| `DELETE /inspectors/{inspectorId}` |                                             | `204`                             | `409 inUse` when anything points at them; `404` counts as deleted |
 
-| Item       | Assumption                                                                                                                                                                       | Source                                          |
-| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
-| List       | a plain array of the signed-in city's inspectors, sorted in the browser by surname, then name; no paging                                                                         | `api-contract.md` Lists                         |
-| Tenant     | from the JWT; another city's inspector answers `404`                                                                                                                             | `api-contract.md` Transport                     |
-| PIN        | readable by the admin: the edit form loads it from the detail and shows it masked, with a button to reveal it. The list never carries it, and every save sends it                | user decision; `api-contract.md` D11            |
-| PIN format | 1 to 4 digits, sent as a string so leading zeros survive (`0420`); the mock rejects anything else with a `400`                                                                   | spec: `Pin VARCHAR(4)`, `CK_INSPECTORS_Pin`     |
-| Limits     | `name` and `surname` 1–100 characters, trimmed; `oib` exactly 11 digits, no checksum (open question #1)                                                                          | spec: INSPECTORS columns                        |
-| Uniqueness | `oib` unique per city: `409 { code: 'duplicate', field: 'oib' }`. Two inspectors may share a PIN, and the form does not warn; a `409` on `pin` would still show on the PIN field | spec: `UQ_INSPECTORS_Tenant_Oib`; user decision |
-| Active     | `isActive` is sent on every save; a new inspector defaults to active in the form                                                                                                 | spec: `DF_INSPECTORS_IsActive DEFAULT (1)`      |
-| Delete     | none: an inspector is switched off instead, because tickets point at them                                                                                                        | `api-contract.md` ADM-6                         |
-| Update     | `PUT` replaces every field; the list cache takes the returned inspector without a refetch, and the detail is fetched again on the next edit                                      | `api-contract.md` Writes                        |
+| Item       | Assumption                                                                                                                                                                                                                                                                                                                                                                                | Source                                                                          |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| List       | a plain array of the signed-in city's inspectors, sorted in the browser by surname, then name; no paging                                                                                                                                                                                                                                                                                  | `api-contract.md` Lists                                                         |
+| Tenant     | from the JWT; another city's inspector answers `404`                                                                                                                                                                                                                                                                                                                                      | `api-contract.md` Transport                                                     |
+| PIN        | readable by the admin: the edit form loads it from the detail and shows it masked, with a button to reveal it. The list never carries it, and every save sends it                                                                                                                                                                                                                         | user decision; `api-contract.md` D11                                            |
+| PIN format | 1 to 4 digits, sent as a string so leading zeros survive (`0420`); the mock rejects anything else with a `400`                                                                                                                                                                                                                                                                            | spec: `Pin VARCHAR(4)`, `CK_INSPECTORS_Pin`                                     |
+| Limits     | `name` and `surname` 1–100 characters, trimmed; `oib` exactly 11 digits, no checksum (open question #1)                                                                                                                                                                                                                                                                                   | spec: INSPECTORS columns                                                        |
+| Uniqueness | `oib` unique per city: `409 { code: 'duplicate', field: 'oib' }`. Two inspectors may share a PIN, and the form does not warn; a `409` on `pin` would still show on the PIN field                                                                                                                                                                                                          | spec: `UQ_INSPECTORS_Tenant_Oib`; user decision                                 |
+| Active     | `isActive` is sent on every save; a new inspector defaults to active in the form                                                                                                                                                                                                                                                                                                          | spec: `DF_INSPECTORS_IsActive DEFAULT (1)`                                      |
+| Delete     | only an inspector with no tickets (user decision). The list carries `ticketCount`, the daily tickets they issued [proposed]; with tickets the delete is disabled and says to deactivate instead. The server still answers `409 inUse` when anything points at them (tickets or `PARKING_OBSERVATIONS`), and the dialog says so. A missing `ticketCount` leaves the decision to the server | user decision; spec: `TICKETS.InspectorId`, `FK_PARKING_OBSERVATIONS_INSPECTOR` |
+| Update     | `PUT` replaces every field; the list cache takes the returned inspector without a refetch, and the detail is fetched again on the next edit                                                                                                                                                                                                                                               | `api-contract.md` Writes                                                        |
 
 ### Tickets (`src/features/tickets/api/useTickets.ts`)
 

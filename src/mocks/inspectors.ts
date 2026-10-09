@@ -13,6 +13,8 @@ interface InspectorRow {
     surname: string
     pin: string
     isActive: boolean
+    /** Daily tickets this inspector issued (TICKETS.InspectorId). */
+    ticketCount: number
 }
 
 // The design's rows.
@@ -25,6 +27,7 @@ const seedInspectors: InspectorRow[] = [
         surname: 'Horvat',
         pin: '1234',
         isActive: true,
+        ticketCount: 42,
     },
     {
         inspectorId: 2,
@@ -34,6 +37,7 @@ const seedInspectors: InspectorRow[] = [
         surname: 'Novak',
         pin: '2580',
         isActive: true,
+        ticketCount: 0,
     },
     {
         inspectorId: 3,
@@ -43,6 +47,7 @@ const seedInspectors: InspectorRow[] = [
         surname: 'Šimić',
         pin: '1111',
         isActive: false,
+        ticketCount: 7,
     },
     // Another city's inspector: hidden from the list, 404 by id, and its OIB stays free here.
     {
@@ -53,6 +58,7 @@ const seedInspectors: InspectorRow[] = [
         surname: 'Marić',
         pin: '9999',
         isActive: true,
+        ticketCount: 3,
     },
 ]
 
@@ -86,6 +92,7 @@ function toResponse(row: InspectorRow) {
         surname: row.surname,
         oib: row.oib,
         isActive: row.isActive,
+        ticketCount: row.ticketCount,
     }
 }
 
@@ -145,6 +152,7 @@ export const inspectorHandlers = [
             inspectorId: Math.max(...inspectors.map((row) => row.inspectorId)) + 1,
             tenantId,
             ...result.body,
+            ticketCount: 0,
         }
         inspectors.push(inspector)
 
@@ -161,5 +169,18 @@ export const inspectorHandlers = [
         Object.assign(existing, result.body)
 
         return HttpResponse.json(toResponse(existing))
+    }),
+
+    // Tickets point at the inspector who issued them, so only one with none can go.
+    http.delete(apiUrl('/inspectors/:inspectorId'), ({ params }) => {
+        const existing = findInspector(Number(params.inspectorId))
+        if (existing === undefined) return notFound()
+        if (existing.ticketCount > 0) {
+            return HttpResponse.json({ status: 409, code: 'inUse' }, { status: 409 })
+        }
+
+        inspectors = inspectors.filter((inspector) => inspector !== existing)
+
+        return new HttpResponse(null, { status: 204 })
     }),
 ]

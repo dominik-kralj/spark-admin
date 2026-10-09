@@ -1,4 +1,4 @@
-import { IconButton, Stack } from '@chakra-ui/react'
+import { IconButton, Stack, useMediaQuery } from '@chakra-ui/react'
 import { Plus } from 'lucide-react'
 
 import { useStrings } from '@/shared/i18n/useStrings'
@@ -8,13 +8,25 @@ import { PageHeader } from '@/shared/ui/PageHeader'
 import type { Inspector } from '../validators/inspector'
 
 import { AddInspectorButton } from './AddInspectorButton'
+import { InspectorDeleteDialog } from './InspectorDeleteDialog'
 import { InspectorFormDrawer } from './InspectorFormDrawer'
 import { InspectorList } from './InspectorList'
 
 export function InspectorsPage() {
     const t = useStrings()
-    // Inspectors are deactivated, never deleted, so only the form is used.
-    const { form, openForm, closeForm } = useEditAndDeleteOverlays<Inspector>()
+    const {
+        form,
+        deleteDialog,
+        afterDeleteFocusRef,
+        openForm,
+        closeForm,
+        openDeleteDialog,
+        closeDeleteDialog,
+        finishDelete,
+        focusAfterDelete,
+    } = useEditAndDeleteOverlays<Inspector>()
+    // Focus after a delete goes to the add button on screen: text from md, icon below.
+    const [isFromMd] = useMediaQuery(['(min-width: 768px)'], { ssr: false })
 
     function openAddForm() {
         openForm(null)
@@ -27,8 +39,12 @@ export function InspectorsPage() {
                 description={t.inspectors.description}
                 action={
                     <>
-                        <AddInspectorButton onClick={openAddForm} />
+                        <AddInspectorButton
+                            ref={isFromMd ? afterDeleteFocusRef : undefined}
+                            onClick={openAddForm}
+                        />
                         <IconButton
+                            ref={isFromMd ? undefined : afterDeleteFocusRef}
                             hideFrom="md"
                             aria-label={t.inspectors.add}
                             colorPalette="blue"
@@ -40,13 +56,24 @@ export function InspectorsPage() {
                 }
             />
 
-            <InspectorList onAdd={openAddForm} onEdit={openForm} />
+            <InspectorList onAdd={openAddForm} onEdit={openForm} onDelete={openDeleteDialog} />
 
             <InspectorFormDrawer
                 key={`form-${String(form.key)}`}
                 isOpen={form.isOpen}
                 inspector={form.item}
                 onClose={closeForm}
+                onDelete={openDeleteDialog}
+                finalFocusEl={focusAfterDelete}
+            />
+
+            <InspectorDeleteDialog
+                key={`delete-${String(deleteDialog.key)}`}
+                isOpen={deleteDialog.isOpen}
+                inspector={deleteDialog.item}
+                onCancel={closeDeleteDialog}
+                onDeleted={finishDelete}
+                finalFocusEl={focusAfterDelete}
             />
         </Stack>
     )
