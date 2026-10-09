@@ -6,7 +6,7 @@ import {
     useQueryClient,
 } from '@tanstack/react-query'
 
-import { request } from '@/shared/api'
+import { deleteRequest, request } from '@/shared/api'
 
 import {
     inspectorDetailResponseSchema,
@@ -15,7 +15,6 @@ import {
     toInspector,
     toInspectorDetail,
     toInspectorRequest,
-    type InspectorDetail,
     type InspectorInput,
 } from '../validators/inspector'
 
@@ -81,7 +80,7 @@ export function useUpdateInspector() {
     const queryClient = useQueryClient()
 
     return useMutation({
-        mutationFn: async ({ id, ...input }: InspectorDetail) =>
+        mutationFn: async ({ id, ...input }: InspectorInput & { id: number }) =>
             toInspector(
                 await request(`/inspectors/${String(id)}`, {
                     method: 'PUT',
@@ -95,5 +94,14 @@ export function useUpdateInspector() {
             )
             await queryClient.invalidateQueries({ queryKey: inspectorKeys.detail(saved.id) })
         },
+    })
+}
+
+export function useDeleteInspector() {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: (id: number) => deleteRequest(`/inspectors/${String(id)}`),
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: inspectorsQuery.queryKey }),
     })
 }

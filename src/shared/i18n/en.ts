@@ -362,6 +362,27 @@ export const en: Dictionary = {
             notSaved: 'The inspector was not saved. Correct the marked fields.',
             saved: (name: string) => `Inspector ${name} saved`,
         },
+        delete: {
+            button: 'Delete',
+            deleteInspector: (name: string) => `Delete inspector ${name}`,
+            formButton: 'Delete inspector',
+            onlyDeactivate: (count: number) =>
+                `Issued ${String(count)} ${count === 1 ? 'ticket' : 'tickets'}, so they can only be deactivated.`,
+            title: (name: string) => `Delete inspector ${name}?`,
+            description: (name: string) =>
+                `${name} will be deleted for good and can no longer sign in to the Inspector app. This cannot be undone.`,
+            confirm: 'Delete inspector',
+            deleted: (name: string) => `Inspector ${name} was deleted`,
+            failed: 'The inspector was not deleted.',
+            errors: {
+                network:
+                    'The server did not respond. Check your internet connection and try again.',
+                forbidden: 'You do not have permission to delete inspectors.',
+                conflict:
+                    'The inspector has issued tickets or recorded vehicles, so they cannot be deleted. You can deactivate them.',
+                server: 'Something went wrong on the server. Try again in a few minutes.',
+            },
+        },
         deactivate: {
             title: (name: string) => `Deactivate inspector ${name}?`,
             description: (name: string) =>

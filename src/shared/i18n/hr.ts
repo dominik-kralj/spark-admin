@@ -371,6 +371,27 @@ export const hr = {
             notSaved: 'Kontrolor nije spremljen. Ispravite označena polja.',
             saved: (name: string) => `Kontrolor ${name} je spremljen`,
         },
+        delete: {
+            button: 'Obriši',
+            deleteInspector: (name: string) => `Obriši kontrolora ${name}`,
+            formButton: 'Obriši kontrolora',
+            onlyDeactivate: (count: number) =>
+                `Izdao je ${String(count)} ${plural(count, { one: 'kartu', few: 'karte', other: 'karata' })}, pa ga se može samo deaktivirati.`,
+            title: (name: string) => `Obrisati kontrolora ${name}?`,
+            description: (name: string) =>
+                `${name} trajno će se obrisati i više se neće moći prijaviti u aplikaciju Inspector. Ovu radnju nije moguće poništiti.`,
+            confirm: 'Obriši kontrolora',
+            deleted: (name: string) => `Kontrolor ${name} je obrisan`,
+            failed: 'Kontrolor nije obrisan.',
+            errors: {
+                network:
+                    'Poslužitelj nije odgovorio. Provjerite internetsku vezu i pokušajte ponovno.',
+                forbidden: 'Nemate ovlasti za brisanje kontrolora.',
+                conflict:
+                    'Kontrolor je izdao karte ili zabilježio vozila, pa ga se ne može obrisati. Možete ga deaktivirati.',
+                server: 'Došlo je do pogreške na poslužitelju. Pokušajte ponovno za nekoliko minuta.',
+            },
+        },
         deactivate: {
             title: (name: string) => `Deaktivirati kontrolora ${name}?`,
             description: (name: string) =>

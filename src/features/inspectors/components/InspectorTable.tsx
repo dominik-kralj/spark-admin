@@ -1,4 +1,4 @@
-import { IconButton, Table } from '@chakra-ui/react'
+import { HStack, IconButton, Table } from '@chakra-ui/react'
 import { Pencil } from 'lucide-react'
 
 import { useStrings } from '@/shared/i18n/useStrings'
@@ -10,6 +10,7 @@ import { fullName } from '../lib/fullName'
 import { inactiveTint } from '../lib/inactiveTint'
 import type { Inspector } from '../validators/inspector'
 
+import { InspectorDeleteButton } from './InspectorDeleteButton'
 import { InspectorStatusChip } from './InspectorStatusChip'
 
 interface InspectorTableProps {
@@ -17,6 +18,7 @@ interface InspectorTableProps {
     surnameSortDirection: SortDirection
     onSortBySurname: () => void
     onEdit: (inspector: Inspector) => void
+    onDelete: (inspector: Inspector) => void
 }
 
 export function InspectorTable({
@@ -24,6 +26,7 @@ export function InspectorTable({
     surnameSortDirection,
     onSortBySurname,
     onEdit,
+    onDelete,
 }: InspectorTableProps) {
     const t = useStrings()
     const { columns } = t.inspectors
@@ -58,16 +61,23 @@ export function InspectorTable({
                             <InspectorStatusChip isActive={inspector.isActive} />
                         </Table.Cell>
                         <Table.Cell textAlign="end">
-                            <IconButton
-                                aria-label={t.inspectors.editInspector(fullName(inspector))}
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                    onEdit(inspector)
-                                }}
-                            >
-                                <Pencil aria-hidden="true" />
-                            </IconButton>
+                            <HStack gap="2" justify="flex-end">
+                                <IconButton
+                                    aria-label={t.inspectors.editInspector(fullName(inspector))}
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => {
+                                        onEdit(inspector)
+                                    }}
+                                >
+                                    <Pencil aria-hidden="true" />
+                                </IconButton>
+                                <InspectorDeleteButton
+                                    inspector={inspector}
+                                    onDelete={onDelete}
+                                    placement="row"
+                                />
+                            </HStack>
                         </Table.Cell>
                     </Table.Row>
                 ))}

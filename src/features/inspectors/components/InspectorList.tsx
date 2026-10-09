@@ -23,9 +23,10 @@ const skeletonColumnWidths = [1, 1, 1, 1, 1]
 interface InspectorListProps {
     onAdd: () => void
     onEdit: (inspector: Inspector) => void
+    onDelete: (inspector: Inspector) => void
 }
 
-export function InspectorList({ onAdd, onEdit }: InspectorListProps) {
+export function InspectorList({ onAdd, onEdit, onDelete }: InspectorListProps) {
     const t = useStrings()
     const inspectors = useInspectors()
     const { sort, sortBy } = useSortSearchParams(sortKeys, defaultSort)
@@ -68,8 +69,9 @@ export function InspectorList({ onAdd, onEdit }: InspectorListProps) {
                     sortBy('surname')
                 }}
                 onEdit={onEdit}
+                onDelete={onDelete}
             />
-            <InspectorCards inspectors={sortedInspectors} onEdit={onEdit} />
+            <InspectorCards inspectors={sortedInspectors} onEdit={onEdit} onDelete={onDelete} />
         </>
     )
 }

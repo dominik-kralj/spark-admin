@@ -338,6 +338,7 @@ interface Inspector {
   surname: string // up to 100
   oib: string // exactly 11 digits, unique in the city
   isActive: boolean
+  ticketCount: number // [proposed] daily tickets this inspector issued (TICKETS.InspectorId)
 }
 // The admin sees the PIN in the edit form; the list never carries it (D11).
 interface InspectorDetail extends Inspector {
@@ -346,15 +347,18 @@ interface InspectorDetail extends Inspector {
 type InspectorInput = Omit<InspectorDetail, 'inspectorId'>
 ```
 
-| Call                            | Body             | Success               | Conflicts                       |
-| ------------------------------- | ---------------- | --------------------- | ------------------------------- |
-| `GET /inspectors`               |                  | `200 Inspector[]`     |                                 |
-| `GET /inspectors/{inspectorId}` |                  | `200 InspectorDetail` |                                 |
-| `POST /inspectors`              | `InspectorInput` | `201 Inspector`       | `409 duplicate`, `field`: `oib` |
-| `PUT /inspectors/{inspectorId}` | `InspectorInput` | `200 Inspector`       | same                            |
+| Call                               | Body             | Success               | Conflicts                       |
+| ---------------------------------- | ---------------- | --------------------- | ------------------------------- |
+| `GET /inspectors`                  |                  | `200 Inspector[]`     |                                 |
+| `GET /inspectors/{inspectorId}`    |                  | `200 InspectorDetail` |                                 |
+| `POST /inspectors`                 | `InspectorInput` | `201 Inspector`       | `409 duplicate`, `field`: `oib` |
+| `PUT /inspectors/{inspectorId}`    | `InspectorInput` | `200 Inspector`       | same                            |
+| `DELETE /inspectors/{inspectorId}` |                  | `204`                 | `409 inUse`                     |
 
-There is no delete: an inspector is switched off with `isActive: false`,
-because tickets and observations keep pointing at them.
+An inspector who issued tickets is switched off with `isActive: false`, not
+deleted, because tickets keep pointing at them. Only one with nothing pointing
+at them (no tickets, no `PARKING_OBSERVATIONS`) can be deleted; otherwise the
+server answers `409 { "code": "inUse" }`. [proposed]
 
 ### ADM-7 Reports (Izvještaji), provisional
 

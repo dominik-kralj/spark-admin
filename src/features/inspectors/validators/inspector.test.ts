@@ -28,11 +28,17 @@ const inspectorFields = {
     isActive: true,
 }
 
-const inspector: Inspector = { id: 4, ...inspectorFields }
+const inspector: Inspector = { id: 4, ...inspectorFields, ticketCount: null }
 
 const inspectorInput: InspectorInput = { ...inspectorFields, pin: '1234' }
 
 describe('inspector mapping', () => {
+    it('carries the number of tickets the inspector issued', () => {
+        expect(
+            toInspector(inspectorResponseSchema.parse({ ...rawInspector, ticketCount: 42 })),
+        ).toEqual({ ...inspector, ticketCount: 42 })
+    })
+
     it('maps a raw inspector to the domain', () => {
         expect(toInspector(inspectorResponseSchema.parse(rawInspector))).toEqual(inspector)
     })

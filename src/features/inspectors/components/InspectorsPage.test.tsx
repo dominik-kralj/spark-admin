@@ -65,9 +65,9 @@ describe('Inspector list', () => {
         const headers = within(table).getAllByRole('columnheader')
         expect(headers.map((header) => header.textContent)).toEqual(columnHeaders)
         expect(bodyRows(table).map(rowCells)).toEqual([
-            ['Marko', 'Horvat', '12345678901', 'Aktivan', ''],
+            ['Marko', 'Horvat', '12345678901', 'Aktivan', hr.inspectors.delete.onlyDeactivate(42)],
             ['Petra', 'Novak', '23456789012', 'Aktivan', ''],
-            ['Davor', 'Šimić', '34567890123', 'Neaktivan', ''],
+            ['Davor', 'Šimić', '34567890123', 'Neaktivan', hr.inspectors.delete.onlyDeactivate(7)],
         ])
         expect(
             within(table).getByRole('button', { name: 'Uredi kontrolora Davor Šimić' }),
