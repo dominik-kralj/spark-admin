@@ -213,6 +213,60 @@ export const hr = {
             },
         },
     },
+    inspectors: {
+        description:
+            'Kontrolori se u aplikaciju Inspector prijavljuju PIN-om. Neaktivni se ne mogu prijaviti.',
+        add: 'Dodaj kontrolora',
+        listLabel: 'Kontrolori',
+        columns: {
+            name: 'Ime',
+            surname: 'Prezime',
+            oib: 'OIB',
+            status: 'Status',
+        },
+        status: {
+            active: 'Aktivan',
+            inactive: 'Neaktivan',
+        },
+        actions: 'Radnje',
+        edit: 'Uredi',
+        editInspector: (name: string) => `Uredi kontrolora ${name}`,
+        loading: 'Učitavanje kontrolora…',
+        errorTitle: 'Kontrolore nije moguće učitati',
+        empty: {
+            title: 'Još nema kontrolora',
+            description:
+                'Dodajte kontrolora kako bi se mogao prijaviti u aplikaciju Inspector i izdavati dnevne karte.',
+        },
+        total: (count: number, active: number) =>
+            `Ukupno ${String(count)} ${plural(count, { one: 'kontrolor', few: 'kontrolora', other: 'kontrolora' })}, ${String(active)} ${plural(active, { one: 'aktivan', few: 'aktivna', other: 'aktivnih' })}`,
+        form: {
+            intro: 'Sva su polja obavezna.',
+            labels: {
+                name: 'Ime',
+                surname: 'Prezime',
+                oib: 'OIB',
+                pin: 'PIN',
+                isActive: 'Aktivan',
+            },
+            pinHelp: 'Do 4 znamenke. Kontrolor se njime prijavljuje u aplikaciju Inspector.',
+            pinLoadError: 'PIN nije moguće učitati',
+            showPin: 'Prikaži PIN',
+            activeHelp: 'Aktivan kontrolor može se prijaviti i izdavati dnevne karte.',
+            yes: 'Da',
+            no: 'Ne',
+            tooLong: (maxLength: number) => `Upišite najviše ${String(maxLength)} znakova.`,
+            duplicateOib: 'Kontrolor s ovim OIB-om već postoji. Provjerite upisani OIB.',
+            notSaved: 'Kontrolor nije spremljen. Ispravite označena polja.',
+            saved: (name: string) => `Kontrolor ${name} je spremljen`,
+        },
+        deactivate: {
+            title: (name: string) => `Deaktivirati kontrolora ${name}?`,
+            description: (name: string) =>
+                `${name} više se neće moći prijaviti u aplikaciju Inspector. Karte koje je izdao ostaju spremljene. Možete ga ponovno aktivirati kad god želite.`,
+            confirm: 'Deaktiviraj',
+        },
+    },
     forms: {
         close: 'Zatvori obrazac',
         cancel: 'Odustani',

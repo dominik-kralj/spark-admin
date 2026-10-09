@@ -205,6 +205,60 @@ export const en: Dictionary = {
             },
         },
     },
+    inspectors: {
+        description:
+            'Inspectors sign in to the Inspector app with a PIN. Inactive ones cannot sign in.',
+        add: 'Add inspector',
+        listLabel: 'Inspectors',
+        columns: {
+            name: 'First name',
+            surname: 'Surname',
+            oib: 'OIB',
+            status: 'Status',
+        },
+        status: {
+            active: 'Active',
+            inactive: 'Inactive',
+        },
+        actions: 'Actions',
+        edit: 'Edit',
+        editInspector: (name: string) => `Edit inspector ${name}`,
+        loading: 'Loading inspectors…',
+        errorTitle: 'Inspectors could not be loaded',
+        empty: {
+            title: 'No inspectors yet',
+            description:
+                'Add an inspector so they can sign in to the Inspector app and issue daily tickets.',
+        },
+        total: (count: number, active: number) =>
+            `${String(count)} ${count === 1 ? 'inspector' : 'inspectors'} in total, ${String(active)} active`,
+        form: {
+            intro: 'All fields are required.',
+            labels: {
+                name: 'First name',
+                surname: 'Surname',
+                oib: 'OIB',
+                pin: 'PIN',
+                isActive: 'Active',
+            },
+            pinHelp: 'Up to 4 digits. The inspector signs in to the Inspector app with it.',
+            pinLoadError: 'The PIN could not be loaded',
+            showPin: 'Show PIN',
+            activeHelp: 'An active inspector can sign in and issue daily tickets.',
+            yes: 'Yes',
+            no: 'No',
+            tooLong: (maxLength: number) => `Enter at most ${String(maxLength)} characters.`,
+            duplicateOib: 'An inspector with this OIB already exists. Check the OIB.',
+            notSaved: 'The inspector was not saved. Correct the marked fields.',
+            saved: (name: string) => `Inspector ${name} saved`,
+        },
+        deactivate: {
+            title: (name: string) => `Deactivate inspector ${name}?`,
+            description: (name: string) =>
+                `${name} will no longer be able to sign in to the Inspector app. The tickets they issued stay saved. You can activate them again at any time.`,
+            confirm: 'Deactivate',
+        },
+    },
     forms: {
         close: 'Close form',
         cancel: 'Cancel',

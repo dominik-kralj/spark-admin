@@ -333,20 +333,19 @@ interface Inspector {
   oib: string // exactly 11 digits, unique in the city
   isActive: boolean
 }
-// The PIN is write-only: it is never returned (D11).
-interface InspectorCreate extends Omit<Inspector, 'inspectorId'> {
+// The admin sees the PIN in the edit form; the list never carries it (D11).
+interface InspectorDetail extends Inspector {
   pin: string // 1 to 4 digits
 }
-interface InspectorUpdate extends Omit<Inspector, 'inspectorId'> {
-  pin?: string // left out = keep the current PIN
-}
+type InspectorInput = Omit<InspectorDetail, 'inspectorId'>
 ```
 
-| Call                            | Body              | Success           | Conflicts                                |
-| ------------------------------- | ----------------- | ----------------- | ---------------------------------------- |
-| `GET /inspectors`               |                   | `200 Inspector[]` |                                          |
-| `POST /inspectors`              | `InspectorCreate` | `201 Inspector`   | `409 duplicate`, `field`: `oib` or `pin` |
-| `PUT /inspectors/{inspectorId}` | `InspectorUpdate` | `200 Inspector`   | same                                     |
+| Call                            | Body             | Success               | Conflicts                       |
+| ------------------------------- | ---------------- | --------------------- | ------------------------------- |
+| `GET /inspectors`               |                  | `200 Inspector[]`     |                                 |
+| `GET /inspectors/{inspectorId}` |                  | `200 InspectorDetail` |                                 |
+| `POST /inspectors`              | `InspectorInput` | `201 Inspector`       | `409 duplicate`, `field`: `oib` |
+| `PUT /inspectors/{inspectorId}` | `InspectorInput` | `200 Inspector`       | same                            |
 
 There is no delete: an inspector is switched off with `isActive: false`,
 because tickets and observations keep pointing at them.
@@ -460,7 +459,7 @@ Passwords are never returned. The frontend marks the signed-in user's own row
 | D8  | "Fiscalize again": does the call wait for the result, or queue it and return `PROCESSING`?                                                                                                                                                             | ADM-5        |
 | D9  | Zones: what does `price` cover (the spec says "per hour" in one place, the table pairs it with `DurationMinutes`)? Can a zone with tickets be deleted, or is `409 zoneInUse` right?                                                                    | ADM-2        |
 | D10 | Privileged owners: is delete allowed (the spec lists only view, add, edit; the design has delete)? May one plate have two entries? Is a privilege tied to a zone (the Inspector check returns a zone for it, the table has none)?                      | ADM-3        |
-| D11 | Inspector PIN: agree it is write-only, and that it must be unique in the city, since Inspector login finds the inspector by city and PIN alone.                                                                                                        | ADM-6        |
+| D11 | Inspector PIN: the edit form shows it (user decision), so `GET /inspectors/{id}` returns it; the list does not. PINs need not be unique; how does Inspector login tell two inspectors with one PIN apart?                                              | ADM-6        |
 | D12 | City settings: `CITY_TENANTS` has no IBAN column and no report e-mail. The design has one "Adresa" field; the table has four address columns, which the contract follows. Which fields may the city edit itself?                                       | ADM-7, ADM-8 |
 | D13 | Admin users: table and fields, password rules (the form has to state them), whether a username can change, delete or deactivate.                                                                                                                       | ADM-1, ADM-9 |
 | D14 | Reports: the list of reports, their columns and parameters, and whether the preview is data (as proposed) or the PDF itself.                                                                                                                           | ADM-7        |

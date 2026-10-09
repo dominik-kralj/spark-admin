@@ -12,6 +12,8 @@ const screens: Partial<Record<string, () => Promise<ComponentType>>> = {
     [paths.privilegedOwners]: async () =>
         (await import('@/features/privileged-owners/components/PrivilegedOwnersPage'))
             .PrivilegedOwnersPage,
+    [paths.inspectors]: async () =>
+        (await import('@/features/inspectors/components/InspectorsPage')).InspectorsPage,
 }
 
 function sectionRoute({ path, labelKey }: Section): RouteObject {

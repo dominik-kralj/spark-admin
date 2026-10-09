@@ -1,13 +1,14 @@
-import { Alert, Box, Button, Field, Flex, HStack, IconButton, Input, Stack } from '@chakra-ui/react'
+import { Alert, Box, Button, Field, Flex, Input, Stack } from '@chakra-ui/react'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CircleAlert, Eye, EyeOff, Info } from 'lucide-react'
-import { useId, useState } from 'react'
+import { CircleAlert, Info } from 'lucide-react'
+import { useId } from 'react'
 import { useForm } from 'react-hook-form'
 import { useLocation, useNavigate, useSearchParams } from 'react-router'
 
 import { useStrings } from '@/shared/i18n/useStrings'
 import { focusOnMount } from '@/shared/lib/focusOnMount'
 import { LanguageMenu } from '@/shared/ui/LanguageMenu'
+import { SecretInput } from '@/shared/ui/SecretInput'
 
 import { useAuth } from '../api/useAuth'
 import { loginErrorMessage } from '../lib/loginErrorMessage'
@@ -26,7 +27,6 @@ export function LoginPage() {
     // Chakra links field errors only via aria-errormessage, so inputs add aria-describedby.
     const usernameErrorId = useId()
     const passwordErrorId = useId()
-    const [isPasswordVisible, setIsPasswordVisible] = useState(false)
     const {
         register,
         handleSubmit,
@@ -116,24 +116,12 @@ export function LoginPage() {
                         ids={{ errorText: passwordErrorId }}
                     >
                         <Field.Label>{t.login.password}</Field.Label>
-                        <HStack w="full" gap="2">
-                            <Input
-                                {...register('password')}
-                                aria-describedby={errors.password ? passwordErrorId : undefined}
-                                type={isPasswordVisible ? 'text' : 'password'}
-                                autoComplete="current-password"
-                            />
-                            <IconButton
-                                aria-label={t.login.showPassword}
-                                aria-pressed={isPasswordVisible}
-                                onClick={() => {
-                                    setIsPasswordVisible((isVisible) => !isVisible)
-                                }}
-                                variant="outline"
-                            >
-                                {isPasswordVisible ? <EyeOff /> : <Eye />}
-                            </IconButton>
-                        </HStack>
+                        <SecretInput
+                            {...register('password')}
+                            showLabel={t.login.showPassword}
+                            aria-describedby={errors.password ? passwordErrorId : undefined}
+                            autoComplete="current-password"
+                        />
                         <Field.ErrorText fontSize="caption">
                             <CircleAlert size="14" />
                             {errors.password && t.login.passwordRequired}
