@@ -18,7 +18,7 @@ export function TicketFilters({ values, onApply, onClear }: TicketFiltersProps) 
     const [isDrawerOpen, setIsDrawerOpen] = useState(false)
     const drawerTriggerRef = useRef<HTMLButtonElement>(null)
 
-    // Below lg the plate has its own field on the page, so clearing the rest keeps it.
+    // Below xl the plate has its own field on the page, so clearing the rest keeps it.
     function clearDrawerFilters() {
         onApply({ ...noFilterValues, plate: values.plate })
     }

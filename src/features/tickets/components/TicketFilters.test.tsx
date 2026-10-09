@@ -74,9 +74,7 @@ describe('Karte filters', () => {
             expect(requests.at(-1)?.get('plate')).toBe('ZG1234')
         })
         expect(requests.at(-1)?.get('page')).toBe('1')
-        expect(
-            screen.getByRole('button', { name: f.remove(f.tags.plate('ZG1234')) }),
-        ).toBeInTheDocument()
+        expect(screen.queryByRole('button', { name: /ZG1234/ })).not.toBeInTheDocument()
     })
 
     it('searches by plate on Enter', async () => {
@@ -228,7 +226,7 @@ describe('Karte filters', () => {
             expect(bar().getByRole('searchbox', { name: f.plate })).toHaveValue('')
         })
         expect(bar().getByRole('textbox', { name: f.from })).toHaveValue('')
-        expect(screen.queryByText(f.active)).not.toBeInTheDocument()
+        expect(screen.queryByRole('button', { name: f.remove(f.tags.zone('2A')) })).toBeNull()
     })
 
     it('says when no ticket matches, and clears the filters from there', async () => {

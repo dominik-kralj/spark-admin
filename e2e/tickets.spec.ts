@@ -113,9 +113,10 @@ test.describe('Karte on a desktop', () => {
             `${paths.tickets}?plate=ZG12&from=2026-10-06&to=2026-10-06&zone=1`,
         )
         await expect(table.getByRole('row').nth(1)).toContainText('ZG1234AB')
+        // The bar shows every value, so the tags stay below xl.
         await expect(
             page.getByRole('button', { name: f.remove(f.tags.zone('ZONA1')) }),
-        ).toBeVisible()
+        ).toBeHidden()
         await expectNoHorizontalScroll(page)
         await expectNoAxeViolations(page)
 
@@ -125,8 +126,21 @@ test.describe('Karte on a desktop', () => {
         await expect(bar.getByRole('combobox', { name: f.zone })).toHaveValue('1')
         await expect(table.getByRole('row').nth(1)).toContainText('ZG1234AB')
 
-        await page.getByRole('button', { name: f.remove(f.tags.zone('ZONA1')) }).click()
-        await expect(page).toHaveURL(`${paths.tickets}?plate=ZG12&from=2026-10-06&to=2026-10-06`)
+        await bar.getByRole('button', { name: f.clear }).click()
+        await expect(page).toHaveURL(paths.tickets)
+    })
+
+    test('keeps the filter bar to one row on a laptop window', async ({ page }) => {
+        await page.setViewportSize({ width: 1280, height: 600 })
+        await openList(page)
+        const bar = page.getByRole('search', { name: f.label })
+        const table = page.getByRole('table', { name: t.listLabel })
+        await expect(table.getByRole('row')).toHaveCount(26)
+
+        const plate = await bar.getByRole('searchbox', { name: f.plate }).boundingBox()
+        const clear = await bar.getByRole('button', { name: f.clear }).boundingBox()
+        expect(Math.abs((clear?.y ?? 0) - (plate?.y ?? 0))).toBeLessThan(10)
+        await expectOnlyTableScrolls(page, table)
     })
 
     test('blocks a date range that ends before it starts', async ({ page }) => {
@@ -230,9 +244,6 @@ test.describe('Karte on a phone', () => {
         await expect(list.getByRole('listitem').first()).toContainText('ZG1234AB')
         const zoneTag = page.getByRole('button', { name: f.remove(f.tags.zone('ZONA1')) })
         await expectTouchTargets(zoneTag)
-        await expect(
-            page.getByRole('button', { name: f.remove(f.tags.plate('ZG1234')) }),
-        ).toBeHidden()
         await expectNoHorizontalScroll(page)
 
         await page.reload()

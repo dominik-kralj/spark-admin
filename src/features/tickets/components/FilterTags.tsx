@@ -1,4 +1,4 @@
-import { Button, Flex, Text } from '@chakra-ui/react'
+import { Button, Flex } from '@chakra-ui/react'
 import { X } from 'lucide-react'
 
 import { useStrings } from '@/shared/i18n/useStrings'
@@ -13,27 +13,21 @@ interface FilterTagsProps {
     onClearDrawerFilters: () => void
 }
 
-// Below lg the plate is in its own field on the page, so it has no tag there.
+// From xl every filter is a field in the bar, which already shows its value.
 export function FilterTags({ values, onApply, onClearDrawerFilters }: FilterTagsProps) {
     const t = useStrings()
     const f = t.tickets.filters
     const zones = useTicketZoneOptions()
     const tags = filterTags({ values, zones: zones.data ?? [], t })
-    const hasDrawerTags = tags.some((tag) => tag.id !== 'plate')
 
     if (tags.length === 0) return null
 
     return (
-        <Flex hideBelow={hasDrawerTags ? undefined : 'lg'} wrap="wrap" align="center" gap="2">
-            <Text hideBelow="lg" color="fg.muted">
-                {f.active}
-            </Text>
-
+        <Flex hideFrom="xl" wrap="wrap" align="center" gap="2">
             {tags.map((tag) => (
                 <Button
                     key={tag.id}
-                    hideBelow={tag.id === 'plate' ? 'lg' : undefined}
-                    size={{ base: 'sm', lg: 'xs' }}
+                    size="sm"
                     variant="outline"
                     fontWeight="normal"
                     aria-label={f.remove(tag.label)}
@@ -46,18 +40,15 @@ export function FilterTags({ values, onApply, onClearDrawerFilters }: FilterTags
                 </Button>
             ))}
 
-            {hasDrawerTags && (
-                <Button
-                    hideBelow="md"
-                    hideFrom="lg"
-                    size="sm"
-                    variant="ghost"
-                    colorPalette="blue"
-                    onClick={onClearDrawerFilters}
-                >
-                    {f.clearAll}
-                </Button>
-            )}
+            <Button
+                hideBelow="md"
+                size="sm"
+                variant="ghost"
+                colorPalette="blue"
+                onClick={onClearDrawerFilters}
+            >
+                {f.clearAll}
+            </Button>
         </Flex>
     )
 }

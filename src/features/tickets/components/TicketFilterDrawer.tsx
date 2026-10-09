@@ -1,4 +1,4 @@
-import { Button, Drawer, Flex, IconButton, Portal, Stack } from '@chakra-ui/react'
+import { Button, Drawer, Flex, IconButton, Portal, SimpleGrid, Stack } from '@chakra-ui/react'
 import { X } from 'lucide-react'
 
 import { useStrings } from '@/shared/i18n/useStrings'
@@ -24,9 +24,10 @@ function FilterDrawerForm({ values, onApply, onClear }: FilterDrawerFormProps) {
             <form noValidate onSubmit={(event) => void submit(event)}>
                 <Drawer.Body p="4">
                     <Stack gap="5">
-                        {/* One column: with its calendar button, a date does not fit half the drawer. */}
-                        <DateFilterField form={form} name="from" />
-                        <DateFilterField form={form} name="to" />
+                        <SimpleGrid columns={2} columnGap="3" rowGap="5">
+                            <DateFilterField form={form} name="from" />
+                            <DateFilterField form={form} name="to" />
+                        </SimpleGrid>
                         <ZoneFilterField form={form} />
                         <FiscalFilterField form={form} />
                     </Stack>

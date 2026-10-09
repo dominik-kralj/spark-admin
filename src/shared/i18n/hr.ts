@@ -103,9 +103,7 @@ export const hr = {
             drawerTitle: 'Filteri',
             close: 'Zatvori filtere',
             apply: 'Prikaži rezultate',
-            active: 'Aktivni filteri:',
             tags: {
-                plate: (plate: string) => `Registracija: ${plate}`,
                 range: (from: string, to: string) => `Razdoblje: ${from} – ${to}`,
                 rangeFrom: (from: string) => `Razdoblje: od ${from}`,
                 rangeTo: (to: string) => `Razdoblje: do ${to}`,

@@ -95,9 +95,7 @@ export const en: Dictionary = {
             drawerTitle: 'Filters',
             close: 'Close filters',
             apply: 'Show results',
-            active: 'Active filters:',
             tags: {
-                plate: (plate: string) => `Plate: ${plate}`,
                 range: (from: string, to: string) => `Period: ${from} – ${to}`,
                 rangeFrom: (from: string) => `Period: from ${from}`,
                 rangeTo: (to: string) => `Period: to ${to}`,

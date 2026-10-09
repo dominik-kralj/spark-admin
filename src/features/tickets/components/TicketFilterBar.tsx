@@ -39,14 +39,13 @@ export function TicketFilterBar({
         <Flex
             asChild
             direction={{ base: 'column', md: 'row' }}
-            wrap={{ lg: 'wrap' }}
             align={{ base: 'stretch', md: 'flex-end' }}
             gap="3"
-            p={{ lg: '4' }}
-            bg={{ lg: 'bg' }}
-            borderWidth={{ lg: '1px' }}
+            p={{ xl: '3' }}
+            bg={{ xl: 'bg' }}
+            borderWidth={{ xl: '1px' }}
             borderColor="border"
-            borderRadius={{ lg: 'lg' }}
+            borderRadius={{ xl: 'lg' }}
         >
             <form
                 role="search"
@@ -54,32 +53,32 @@ export function TicketFilterBar({
                 noValidate
                 onSubmit={(event) => void submit(event)}
             >
-                <Box flex={{ md: '1 1 12rem' }} minW="0">
+                <Box flex={{ md: '1 1 auto' }} minW="0">
                     <PlateFilterField form={form} />
                 </Box>
-                <Box hideBelow="lg" flex="0 0 10rem">
+                <Box hideBelow="xl" flex="0 0 8.75rem">
                     <DateFilterField form={form} name="from" />
                 </Box>
-                <Box hideBelow="lg" flex="0 0 10rem">
+                <Box hideBelow="xl" flex="0 0 8.75rem">
                     <DateFilterField form={form} name="to" />
                 </Box>
-                <Box hideBelow="lg" flex="0 0 8.5rem">
+                <Box hideBelow="xl" flex="0 0 7.5rem">
                     <ZoneFilterField form={form} />
                 </Box>
-                <Box hideBelow="lg" flex="0 0 10.5rem">
+                <Box hideBelow="xl" flex="0 0 9.5rem">
                     <FiscalFilterField form={form} />
                 </Box>
 
-                <Button hideBelow="lg" type="submit" colorPalette="blue">
+                <Button hideBelow="xl" type="submit" colorPalette="blue">
                     {f.search}
                 </Button>
-                <Button hideBelow="lg" variant="ghost" colorPalette="blue" onClick={onClear}>
+                <Button hideBelow="xl" variant="ghost" colorPalette="blue" onClick={onClear}>
                     {f.clear}
                 </Button>
 
                 <Button
                     ref={drawerTriggerRef}
-                    hideFrom="lg"
+                    hideFrom="xl"
                     variant="outline"
                     aria-label={drawerCount > 0 ? f.openWithCount(drawerCount) : undefined}
                     onClick={onOpenDrawer}

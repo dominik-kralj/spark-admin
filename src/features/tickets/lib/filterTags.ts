@@ -6,7 +6,7 @@ import type { ZoneOption } from '../validators/zoneOption'
 import type { TicketFilterValues } from '../validators/ticketFilterForm'
 
 export interface FilterTag {
-    id: 'plate' | 'range' | 'zone' | 'fiscal'
+    id: 'range' | 'zone' | 'fiscal'
     label: string
     /** The filters once this tag is removed. */
     without: TicketFilterValues
@@ -31,17 +31,12 @@ function rangeLabel(
     return null
 }
 
-/** One tag per active filter, in the order of the filter bar; the date range is one tag. */
+/** One tag per filter behind the Filteri button; the date range is one tag. */
 export function filterTags({ values, zones, t }: FilterTagsArgs): FilterTag[] {
     const { tags } = t.tickets.filters
     const range = rangeLabel(values, tags)
     const zoneCode = zones.find((zone) => zone.id === values.zoneId)?.code ?? String(values.zoneId)
     const candidates: (FilterTag | false)[] = [
-        values.plate !== '' && {
-            id: 'plate',
-            label: tags.plate(values.plate),
-            without: { ...values, plate: '' },
-        },
         range !== null && {
             id: 'range',
             label: range,

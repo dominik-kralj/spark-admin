@@ -1,6 +1,13 @@
-import { DatePicker, HStack, IconButton, parseDate, type DateValue } from '@chakra-ui/react'
+import {
+    DatePicker,
+    IconButton,
+    InputGroup,
+    parseDate,
+    type DateValue,
+    type InputElementProps,
+} from '@chakra-ui/react'
 import { CalendarDays } from 'lucide-react'
-import type { ReactNode } from 'react'
+import type { ReactElement } from 'react'
 
 import { useStrings } from '@/shared/i18n/useStrings'
 import { toIsoDate, type CalendarDate } from '@/shared/lib/calendarDate'
@@ -15,7 +22,7 @@ interface DateInputProps {
     /** A day picked in the calendar, as DD.MM.GGGG text for the field. */
     onPick: (text: string) => void
     /** The text input the user types into. */
-    children: ReactNode
+    children: ReactElement<InputElementProps>
 }
 
 function toDateValue(date: CalendarDate): DateValue {
@@ -49,14 +56,18 @@ export function DateInput({ label, value, onPick, children }: DateInputProps) {
             }}
         >
             <DatePicker.Control>
-                <HStack gap="2" w="full">
+                <InputGroup
+                    endElement={
+                        <DatePicker.Trigger asChild unstyled>
+                            <IconButton variant="ghost" size="xs">
+                                <CalendarDays aria-hidden="true" />
+                            </IconButton>
+                        </DatePicker.Trigger>
+                    }
+                    endElementProps={{ pe: '1', pointerEvents: 'auto' }}
+                >
                     {children}
-                    <DatePicker.Trigger asChild unstyled>
-                        <IconButton variant="outline" flex="none">
-                            <CalendarDays aria-hidden="true" />
-                        </IconButton>
-                    </DatePicker.Trigger>
-                </HStack>
+                </InputGroup>
             </DatePicker.Control>
 
             {/* Not portalled: the form drawer traps focus, so the calendar must sit inside it. */}
