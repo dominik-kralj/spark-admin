@@ -5,6 +5,7 @@ import { afterAll, afterEach, beforeAll } from 'vitest'
 import { resetLoginRateLimit } from '@/mocks/auth'
 import { resetInspectors } from '@/mocks/inspectors'
 import { resetPrivilegedOwners } from '@/mocks/privilegedOwners'
+import { resetTickets } from '@/mocks/tickets'
 import { resetZones } from '@/mocks/zones'
 
 import { server } from './server'
@@ -40,6 +41,7 @@ afterEach(() => {
     resetZones()
     resetPrivilegedOwners()
     resetInspectors()
+    resetTickets()
     // Absent in files that opt into the node environment.
     if (typeof sessionStorage !== 'undefined') sessionStorage.clear()
     // The language choice lives here; every test starts in Croatian.

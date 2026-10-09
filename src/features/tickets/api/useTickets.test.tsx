@@ -5,7 +5,13 @@ import { mockTicketIds } from '@/mocks/tickets'
 import { renderHookWithQueryClient } from '@/test/render'
 import { signInForTest } from '@/test/session'
 
-import { useNewTicketCount, useTicket, useTickets } from './useTickets'
+import {
+    useNewestTicketTime,
+    useNewTicketCount,
+    useTicket,
+    useTicketZoneOptions,
+    useTickets,
+} from './useTickets'
 import type { TicketFilters, TicketListParams, TicketPage } from '../validators/ticket'
 
 const seedCount = 300
@@ -216,5 +222,52 @@ describe('useNewTicketCount', () => {
         )
 
         expect(result.current.fetchStatus).toBe('idle')
+    })
+})
+
+describe('useNewestTicketTime', () => {
+    it('finds the newest ticket that matches the filters', async () => {
+        signInForTest()
+        const { result } = renderHookWithQueryClient(() => useNewestTicketTime({ zoneId: 2 }))
+
+        // ZG5553AI, 09:11 in Zagreb, is the newest in 2A.
+        await waitFor(() => {
+            expect(result.current.data).toEqual(new Date('2026-10-06T07:11:00Z'))
+        })
+    })
+
+    it('counts from the start of time when no ticket matches', async () => {
+        signInForTest()
+        const { result } = renderHookWithQueryClient(() =>
+            useNewestTicketTime({ plate: 'NOSUCHPLATE' }),
+        )
+
+        await waitFor(() => {
+            expect(result.current.data).toEqual(new Date(0))
+        })
+    })
+
+    it('counts from the start of the range when no ticket in a future range matches', async () => {
+        signInForTest()
+        const createdFrom = new Date('2099-01-01T00:00:00Z')
+        const { result } = renderHookWithQueryClient(() => useNewestTicketTime({ createdFrom }))
+
+        await waitFor(() => {
+            expect(result.current.data).toEqual(new Date('2098-12-31T23:59:59.999Z'))
+        })
+    })
+})
+
+describe('useTicketZoneOptions', () => {
+    it("lists the city's zones by code", async () => {
+        signInForTest()
+        const { result } = renderHookWithQueryClient(() => useTicketZoneOptions())
+
+        await waitFor(() => {
+            expect(result.current.data).toEqual([
+                { id: 2, code: '2A' },
+                { id: 1, code: 'ZONA1' },
+            ])
+        })
     })
 })

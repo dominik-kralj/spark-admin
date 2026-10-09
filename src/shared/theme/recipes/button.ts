@@ -8,6 +8,7 @@ export const buttonRecipe = defineRecipe({
             outline: { borderColor: 'border.emphasized' },
         },
         size: {
+            xs: { [onTouch]: { h: '11', minW: '11', textStyle: 'sm' } },
             sm: { [onTouch]: { h: '11', minW: '11', textStyle: 'md' } },
             md: { [onTouch]: { h: '12', minW: '12', textStyle: 'md' } },
         },

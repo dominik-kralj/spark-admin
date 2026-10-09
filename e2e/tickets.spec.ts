@@ -13,6 +13,7 @@ import {
 } from './helpers'
 
 const t = hr.tickets
+const f = t.filters
 
 async function openList(page: Page): Promise<void> {
     await signIn(page)
@@ -95,6 +96,70 @@ test.describe('Karte on a desktop', () => {
         await expect(page).toHaveURL(paths.tickets)
         await expect(page.getByRole('table').getByRole('link', { name: 'KA4410CD' })).toBeFocused()
     })
+
+    test('filters inline at 1440 px, and keeps the filters on reload', async ({ page }) => {
+        await openList(page)
+        const bar = page.getByRole('search', { name: f.label })
+        const table = page.getByRole('table', { name: t.listLabel })
+        await expect(bar.getByRole('button', { name: f.open })).toBeHidden()
+
+        await bar.getByRole('searchbox', { name: f.plate }).fill('zg 12')
+        await bar.getByRole('textbox', { name: f.from }).fill('06.10.2026')
+        await bar.getByRole('textbox', { name: f.to }).fill('06.10.2026')
+        await bar.getByRole('combobox', { name: f.zone }).selectOption({ label: 'ZONA1' })
+        await bar.getByRole('button', { name: f.search }).click()
+
+        await expect(page).toHaveURL(
+            `${paths.tickets}?plate=ZG12&from=2026-10-06&to=2026-10-06&zone=1`,
+        )
+        await expect(table.getByRole('row').nth(1)).toContainText('ZG1234AB')
+        // The bar shows every value, so the tags stay below xl.
+        await expect(
+            page.getByRole('button', { name: f.remove(f.tags.zone('ZONA1')) }),
+        ).toBeHidden()
+        await expectNoHorizontalScroll(page)
+        await expectNoAxeViolations(page)
+
+        await page.reload()
+
+        await expect(bar.getByRole('searchbox', { name: f.plate })).toHaveValue('ZG12')
+        await expect(bar.getByRole('combobox', { name: f.zone })).toHaveValue('1')
+        await expect(table.getByRole('row').nth(1)).toContainText('ZG1234AB')
+
+        await bar.getByRole('button', { name: f.clear }).click()
+        await expect(page).toHaveURL(paths.tickets)
+    })
+
+    test('keeps the filter bar to one row on a laptop window', async ({ page }) => {
+        await page.setViewportSize({ width: 1280, height: 600 })
+        await openList(page)
+        const bar = page.getByRole('search', { name: f.label })
+        const table = page.getByRole('table', { name: t.listLabel })
+        await expect(table.getByRole('row')).toHaveCount(26)
+
+        const plate = await bar.getByRole('searchbox', { name: f.plate }).boundingBox()
+        const clear = await bar.getByRole('button', { name: f.clear }).boundingBox()
+        expect(Math.abs((clear?.y ?? 0) - (plate?.y ?? 0))).toBeLessThan(10)
+        await expectOnlyTableScrolls(page, table)
+    })
+
+    test('lists an unreadable date above the bar without moving it', async ({ page }) => {
+        await openList(page)
+        const bar = page.getByRole('search', { name: f.label })
+
+        await bar.getByRole('textbox', { name: f.to }).fill('31.02.2026')
+        await bar.getByRole('button', { name: f.search }).click()
+
+        await expect(
+            page.getByText(`${f.to}: ${hr.forms.validation.dateInvalid}`, { exact: false }),
+        ).toBeVisible()
+        await expect(bar.getByRole('textbox', { name: f.to })).toBeFocused()
+        // The error grows only its own field: the other controls stay level with the inputs.
+        const plateTop = (await bar.getByRole('searchbox', { name: f.plate }).boundingBox())?.y
+        const searchTop = (await bar.getByRole('button', { name: f.search }).boundingBox())?.y
+        expect(Math.abs((plateTop ?? 0) - (searchTop ?? 0))).toBeLessThan(2)
+        await expect(page).toHaveURL(paths.tickets)
+    })
 })
 
 test.describe('Karte on a tablet', () => {
@@ -151,6 +216,47 @@ test.describe('Karte on a phone', () => {
             await expect(list.getByRole('listitem').first()).not.toContainText('ZG1234AB')
         })
     }
+
+    test('filters by plate on the page and the rest in the drawer at 375 px', async ({ page }) => {
+        await page.setViewportSize({ width: 375, height: 812 })
+        await openList(page)
+        const bar = page.getByRole('search', { name: f.label })
+        const list = page.getByRole('list', { name: t.listLabel })
+        const plate = bar.getByRole('searchbox', { name: f.plate })
+        await expect(bar.getByRole('textbox', { name: f.from })).toBeHidden()
+
+        await plate.fill('zg1234')
+        await plate.press('Enter')
+
+        await expect(page).toHaveURL(`${paths.tickets}?plate=ZG1234`)
+        await expect(plate).toHaveValue('ZG1234')
+
+        const trigger = bar.getByRole('button', { name: f.open })
+        await expectTouchTargets(trigger)
+        await trigger.click()
+        const drawer = page.getByRole('dialog', { name: f.drawerTitle })
+        await waitForAnimations(drawer)
+
+        expect((await drawer.boundingBox())?.width).toBe(375)
+        await expectTouchTargets(drawer.getByRole('button').filter({ visible: true }))
+        await expectNoAxeViolations(page)
+        await drawer.getByRole('combobox', { name: f.zone }).selectOption({ label: 'ZONA1' })
+        await drawer.getByRole('button', { name: f.apply }).click()
+
+        await expect(drawer).toBeHidden()
+        await expect(page).toHaveURL(`${paths.tickets}?plate=ZG1234&zone=1`)
+        await expect(bar.getByRole('button', { name: f.openWithCount(1) })).toBeFocused()
+        await expect(list.getByRole('listitem').first()).toContainText('ZG1234AB')
+        const zoneTag = page.getByRole('button', { name: f.remove(f.tags.zone('ZONA1')) })
+        await expectTouchTargets(zoneTag)
+        await expectNoHorizontalScroll(page)
+
+        await page.reload()
+
+        await expect(bar.getByRole('searchbox', { name: f.plate })).toHaveValue('ZG1234')
+        await zoneTag.click()
+        await expect(page).toHaveURL(`${paths.tickets}?plate=ZG1234`)
+    })
 
     test('opens a ticket full screen and goes back to its card', async ({ page }) => {
         await openList(page)

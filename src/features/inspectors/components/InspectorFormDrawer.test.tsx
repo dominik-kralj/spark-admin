@@ -443,12 +443,15 @@ describe('Inspector form', () => {
 
         await expectFormClosed()
         const table = screen.getByRole('table', { name: t.listLabel })
-        // The drawer hands focus back as its exit ends, which can follow its removal.
-        await waitFor(() => {
-            expect(
-                within(table).getByRole('button', { name: t.editInspector('Petra Novak') }),
-            ).toHaveFocus()
-        })
+        // The drawer hands focus back as its exit ends, which a full parallel run slows past 3 s.
+        await waitFor(
+            () => {
+                expect(
+                    within(table).getByRole('button', { name: t.editInspector('Petra Novak') }),
+                ).toHaveFocus()
+            },
+            { timeout: 5000 },
+        )
     })
 
     it('opens the edit form from a card on a phone', async () => {

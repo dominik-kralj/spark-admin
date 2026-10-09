@@ -1,9 +1,16 @@
-import { DatePicker, HStack, IconButton, parseDate, type DateValue } from '@chakra-ui/react'
+import {
+    DatePicker,
+    IconButton,
+    InputGroup,
+    parseDate,
+    type DateValue,
+    type InputElementProps,
+} from '@chakra-ui/react'
 import { CalendarDays } from 'lucide-react'
-import type { ReactNode } from 'react'
+import type { ReactElement } from 'react'
 
 import { useStrings } from '@/shared/i18n/useStrings'
-import type { CalendarDate } from '@/shared/lib/calendarDate'
+import { toIsoDate, type CalendarDate } from '@/shared/lib/calendarDate'
 import { formatCalendarDate } from '@/shared/lib/format'
 import { readDateText } from '@/shared/lib/validation'
 
@@ -14,18 +21,19 @@ interface DateInputProps {
     value: string
     /** A day picked in the calendar, as DD.MM.GGGG text for the field. */
     onPick: (text: string) => void
+    /** The first and last day the calendar lets the user pick. */
+    min?: CalendarDate | undefined
+    max?: CalendarDate | undefined
     /** The text input the user types into. */
-    children: ReactNode
+    children: ReactElement<InputElementProps>
 }
 
-function toDateValue({ year, month, day }: CalendarDate): DateValue {
-    const pad = (part: number) => String(part).padStart(2, '0')
-
-    return parseDate(`${String(year).padStart(4, '0')}-${pad(month)}-${pad(day)}`)
+function toDateValue(date: CalendarDate): DateValue {
+    return parseDate(toIsoDate(date))
 }
 
 /** A typed DD.MM.GGGG field with a calendar button beside it. */
-export function DateInput({ label, value, onPick, children }: DateInputProps) {
+export function DateInput({ label, value, onPick, min, max, children }: DateInputProps) {
     const t = useStrings()
     const strings = t.forms.datePicker
     const typed = readDateText(value)
@@ -37,6 +45,8 @@ export function DateInput({ label, value, onPick, children }: DateInputProps) {
             // Inside a Field the picker adopts the field's input and writes to it in this format.
             format={formatCalendarDate}
             value={'date' in typed ? [toDateValue(typed.date)] : []}
+            min={min && toDateValue(min)}
+            max={max && toDateValue(max)}
             onValueChange={({ value: [picked] }) => {
                 if (picked !== undefined) onPick(formatCalendarDate(picked))
             }}
@@ -51,14 +61,18 @@ export function DateInput({ label, value, onPick, children }: DateInputProps) {
             }}
         >
             <DatePicker.Control>
-                <HStack gap="2" w="full">
+                <InputGroup
+                    endElement={
+                        <DatePicker.Trigger asChild unstyled>
+                            <IconButton variant="ghost" size="xs">
+                                <CalendarDays aria-hidden="true" />
+                            </IconButton>
+                        </DatePicker.Trigger>
+                    }
+                    endElementProps={{ pe: '1', pointerEvents: 'auto' }}
+                >
                     {children}
-                    <DatePicker.Trigger asChild unstyled>
-                        <IconButton variant="outline" flex="none">
-                            <CalendarDays aria-hidden="true" />
-                        </IconButton>
-                    </DatePicker.Trigger>
-                </HStack>
+                </InputGroup>
             </DatePicker.Control>
 
             {/* Not portalled: the form drawer traps focus, so the calendar must sit inside it. */}

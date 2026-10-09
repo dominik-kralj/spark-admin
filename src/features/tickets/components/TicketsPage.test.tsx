@@ -24,8 +24,9 @@ const columnHeaders = [
     'Fiskalizacija',
 ]
 
+// A first render of 25 rows and 25 cards can pass the default 3 s while every file runs at once.
 async function ticketsTable() {
-    return screen.findByRole('table', { name: t.listLabel })
+    return screen.findByRole('table', { name: t.listLabel }, { timeout: 5000 })
 }
 
 function bodyRows(table: HTMLElement) {
@@ -283,9 +284,15 @@ describe('Karte list', () => {
     })
 
     it('shows the error state and loads again on retry', async () => {
+        let failures = 1
         server.use(
-            http.get(apiUrl('/tickets'), () => new HttpResponse(null, { status: 500 }), {
-                once: true,
+            // Only the page request fails; the new-ticket lookup asks for one ticket.
+            http.get(apiUrl('/tickets'), ({ request }) => {
+                const isPage = new URL(request.url).searchParams.get('pageSize') !== '1'
+                if (!isPage || failures === 0) return undefined
+                failures -= 1
+
+                return new HttpResponse(null, { status: 500 })
             }),
         )
         const { user, container } = await renderRoute(paths.tickets)

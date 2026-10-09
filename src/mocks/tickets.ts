@@ -196,12 +196,39 @@ function seedTickets(): TicketRow[] {
     return [...ownRows, otherCity]
 }
 
-const tickets: readonly TicketRow[] = seedTickets()
+const seededTickets: readonly TicketRow[] = seedTickets()
+
+let tickets: readonly TicketRow[] = seededTickets
+let nextTransactionId = 100_000 + seedSize + 1
+
+export function resetTickets(): void {
+    tickets = seededTickets
+    nextTransactionId = 100_000 + seedSize + 1
+}
+
+/** A driver pays for a ticket now, in this city: it is the newest one from then on. */
+export function addMockTicket({ plate, zoneId }: { plate: string; zoneId: number }): void {
+    const row = toRow(
+        {
+            createdAt: new Date(),
+            plate,
+            zoneId,
+            parkingMinutes: 60,
+            paymentStatus: 'DONE',
+            fiscalStatus: 'PENDING',
+        },
+        nextTransactionId,
+        mockAdminUser.tenantId,
+    )
+    nextTransactionId += 1
+    tickets = [row, ...tickets]
+}
 
 export const mockTicketIds = {
-    newest: tickets[0]?.ticketId ?? '',
-    fiscalFailed: tickets.find((row) => row.vehicleRegistration === 'KA4410CD')?.ticketId ?? '',
-    otherCity: tickets.at(-1)?.ticketId ?? '',
+    newest: seededTickets[0]?.ticketId ?? '',
+    fiscalFailed:
+        seededTickets.find((row) => row.vehicleRegistration === 'KA4410CD')?.ticketId ?? '',
+    otherCity: seededTickets.at(-1)?.ticketId ?? '',
 }
 
 const statusSchema = z.enum(['PENDING', 'PROCESSING', 'DONE', 'FAIL'])

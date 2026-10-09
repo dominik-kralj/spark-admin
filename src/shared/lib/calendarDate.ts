@@ -19,6 +19,36 @@ export function isRealDate({ year, month, day }: CalendarDate): boolean {
     return year >= 1 && day >= 1 && day <= daysInMonth(year, month)
 }
 
+export function nextDay({ year, month, day }: CalendarDate): CalendarDate {
+    if (day < daysInMonth(year, month)) return { year, month, day: day + 1 }
+    if (month < 12) return { year, month: month + 1, day: 1 }
+
+    return { year: year + 1, month: 1, day: 1 }
+}
+
+/** Negative when `a` comes first, 0 for the same day, positive when `a` comes later. */
+export function compareCalendarDates(a: CalendarDate, b: CalendarDate): number {
+    return a.year - b.year || a.month - b.month || a.day - b.day
+}
+
+const pad = (part: number, length: number) => String(part).padStart(length, '0')
+
+/** YYYY-MM-DD, as a URL or a date library writes a day. */
+export function toIsoDate({ year, month, day }: CalendarDate): string {
+    return `${pad(year, 4)}-${pad(month, 2)}-${pad(day, 2)}`
+}
+
+const isoDatePattern = /^(\d{4})-(\d{2})-(\d{2})$/
+
+export function readIsoDate(text: string): CalendarDate | null {
+    const match = isoDatePattern.exec(text)
+    if (match === null) return null
+
+    const date = { year: Number(match[1]), month: Number(match[2]), day: Number(match[3]) }
+
+    return isRealDate(date) ? date : null
+}
+
 const zagrebClock = new Intl.DateTimeFormat('en-US', {
     timeZone: 'Europe/Zagreb',
     year: 'numeric',
@@ -47,9 +77,16 @@ function zagrebOffset(instant: number): number {
     return wallClock - Math.floor(instant / 1000) * 1000
 }
 
+function zagrebWallClock(asIfUtc: number): Date {
+    return new Date(asIfUtc - zagrebOffset(asIfUtc))
+}
+
+/** 00:00 on that day in Zagreb, as an instant. */
+export function startOfZagrebDay({ year, month, day }: CalendarDate): Date {
+    return zagrebWallClock(Date.UTC(year, month - 1, day))
+}
+
 /** 23:59:59.999 on that day in Zagreb, as an instant. Clocks change at night, never near midnight. */
 export function endOfZagrebDay({ year, month, day }: CalendarDate): Date {
-    const asIfUtc = Date.UTC(year, month - 1, day, 23, 59, 59, 999)
-
-    return new Date(asIfUtc - zagrebOffset(asIfUtc))
+    return zagrebWallClock(Date.UTC(year, month - 1, day, 23, 59, 59, 999))
 }

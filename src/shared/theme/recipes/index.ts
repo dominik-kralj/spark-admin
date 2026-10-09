@@ -12,6 +12,7 @@ import { emptyStateRecipe } from './emptyState'
 import { fieldRecipe } from './field'
 import { inputRecipe } from './input'
 import { linkRecipe } from './link'
+import { nativeSelectRecipe } from './nativeSelect'
 import { skeletonRecipe } from './skeleton'
 import { skipNavLinkRecipe } from './skipNavLink'
 import { tableRecipe } from './table'
@@ -36,6 +37,7 @@ export const recipesConfig = defineConfig({
             drawer: drawerRecipe,
             emptyState: emptyStateRecipe,
             field: fieldRecipe,
+            nativeSelect: nativeSelectRecipe,
             table: tableRecipe,
             tabs: tabsRecipe,
             toast: toastRecipe,
