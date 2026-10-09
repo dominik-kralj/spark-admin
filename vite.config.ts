@@ -20,7 +20,7 @@ export default defineConfig(({ mode }) => {
             setupFiles: ['./src/test/setup.ts'],
             css: false,
             // Chakra in jsdom is slow, and a form journey runs past 5 s when every file runs at once.
-            testTimeout: 15_000,
+            testTimeout: 30_000,
             // Away from Zagreb and across midnight from it, so format tests catch local-time leaks.
             env: { TZ: 'America/Los_Angeles' },
         },

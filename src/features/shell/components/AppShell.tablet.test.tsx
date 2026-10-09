@@ -83,7 +83,10 @@ describe('app shell on a tablet', () => {
         const menu = await screen.findByRole('dialog', { name: 'Izbornik' })
         await user.click(within(menu).getByRole('link', { name: 'Kontrolori' }))
 
-        expect(router.state.location.pathname).toBe('/kontrolori')
+        // Kontrolori is a lazy route, so the navigation ends after its module loads.
+        await waitFor(() => {
+            expect(router.state.location.pathname).toBe('/kontrolori')
+        })
         await waitFor(() => {
             expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
         })

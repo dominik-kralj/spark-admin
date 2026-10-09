@@ -202,3 +202,38 @@ The PRIVILEGED_OWNERS columns in camelCase, without `tenantId`, `createdAt` and
 | Duplicates | a plate may appear more than once; the mock does not check (D10)                                                                                                                                                                                  | `api-contract.md` D10                                  |
 | Update     | `PUT` replaces all fields; the list cache takes the returned entry without a refetch                                                                                                                                                              | `api-contract.md` Writes                               |
 | Delete     | `DELETE /privileged-owners/{privilegedOwnerId}` answers `204`; the client treats a `404` as already deleted and refreshes the list. Whether the backend allows delete at all is D10                                                               | design; `api-contract.md` D10                          |
+
+### Inspectors (`src/features/inspectors/api/useInspectors.ts`)
+
+The shape is `api-contract.md` ADM-6: the INSPECTORS columns in camelCase,
+without `tenantId` and without `pin`. Mapping to the domain `Inspector` (`id`,
+`name`, `surname`, `oib`, `isActive`) is in
+`src/features/inspectors/validators/inspector.ts`.
+
+```json
+{
+  "inspectorId": 1,
+  "name": "Marko",
+  "surname": "Horvat",
+  "oib": "12345678901",
+  "isActive": true
+}
+```
+
+| Call                            | Body                                                        | Success           | Errors                                       |
+| ------------------------------- | ----------------------------------------------------------- | ----------------- | -------------------------------------------- |
+| `GET /inspectors`               |                                                             | `200 Inspector[]` |                                              |
+| `POST /inspectors`              | inspector without `inspectorId`, with `pin`                 | `201 Inspector`   | `400` field errors; `409 duplicate` on `oib` |
+| `PUT /inspectors/{inspectorId}` | inspector without `inspectorId`; `pin` only when it changes | `200 Inspector`   | same, plus `404`                             |
+
+| Item       | Assumption                                                                                                                                                                          | Source                                      |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- |
+| List       | a plain array of the signed-in city's inspectors, sorted in the browser by surname, then name; no paging                                                                            | `api-contract.md` Lists                     |
+| Tenant     | from the JWT; another city's inspector answers `404`                                                                                                                                | `api-contract.md` Transport                 |
+| PIN        | write-only: never in a response, so the list cannot show it and the edit form starts empty. A `PUT` without `pin` keeps the current one                                             | `api-contract.md` D11                       |
+| PIN format | 1 to 4 digits, sent as a string so leading zeros survive (`0420`); the mock rejects anything else with a `400`                                                                      | spec: `Pin VARCHAR(4)`, `CK_INSPECTORS_Pin` |
+| Limits     | `name` and `surname` 1–100 characters, trimmed; `oib` exactly 11 digits, no checksum (open question #1)                                                                             | spec: INSPECTORS columns                    |
+| Uniqueness | `oib` unique per city: `409 { code: 'duplicate', field: 'oib' }`. PINs are not checked by the mock (the spec has no constraint); a `409` on `pin` would still show on the PIN field | spec: `UQ_INSPECTORS_Tenant_Oib`; D11       |
+| Active     | `isActive` is sent on every save; a new inspector defaults to active in the form                                                                                                    | spec: `DF_INSPECTORS_IsActive DEFAULT (1)`  |
+| Delete     | none: an inspector is switched off instead, because tickets point at them                                                                                                           | `api-contract.md` ADM-6                     |
+| Update     | `PUT` replaces every field but the PIN; the list cache takes the returned inspector without a refetch                                                                               | `api-contract.md` Writes                    |

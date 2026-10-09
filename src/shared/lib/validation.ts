@@ -56,10 +56,10 @@ export function filterPin(value: string): string {
     return value.replace(/\D/g, '').slice(0, pinMaxLength)
 }
 
-export const pinField = z
-    .string()
-    .min(1, message('required'))
-    .regex(/^\d{0,4}$/, message('pinInvalid'))
+/** For an edit, where an empty PIN keeps the current one. */
+export const optionalPinField = z.string().regex(/^\d{0,4}$/, message('pinInvalid'))
+
+export const pinField = optionalPinField.min(1, message('required'))
 
 // DD.MM.GGGG; the trailing dot of the Croatian spelling (31.12.2026.) is allowed.
 const datePattern = /^(\d{1,2})\.(\d{1,2})\.(\d{4})\.?$/

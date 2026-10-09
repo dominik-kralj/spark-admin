@@ -1,6 +1,7 @@
 import type { HttpHandler } from 'msw'
 
 import { authHandlers } from './auth'
+import { inspectorHandlers } from './inspectors'
 import { privilegedOwnerHandlers } from './privilegedOwners'
 import { tenantHandlers } from './tenant'
 import { zoneHandlers } from './zones'
@@ -11,4 +12,5 @@ export const handlers: HttpHandler[] = [
     ...tenantHandlers,
     ...zoneHandlers,
     ...privilegedOwnerHandlers,
+    ...inspectorHandlers,
 ]
