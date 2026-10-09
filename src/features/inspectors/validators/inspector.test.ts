@@ -3,8 +3,10 @@ import { describe, expect, it } from 'vitest'
 import { ApiError } from '@/shared/api'
 
 import {
+    inspectorDetailResponseSchema,
     inspectorResponseSchema,
     toInspector,
+    toInspectorDetail,
     toInspectorFieldErrors,
     toInspectorRequest,
     type Inspector,
@@ -35,10 +37,20 @@ describe('inspector mapping', () => {
         expect(toInspector(inspectorResponseSchema.parse(rawInspector))).toEqual(inspector)
     })
 
-    it('drops a PIN the response should not carry', () => {
+    it('keeps a PIN out of a list entry even if the response carries one', () => {
         const parsed = inspectorResponseSchema.parse({ ...rawInspector, pin: '1234' })
 
         expect(toInspector(parsed)).not.toHaveProperty('pin')
+    })
+
+    it('maps a raw inspector detail to the domain with its PIN, leading zeros kept', () => {
+        const parsed = inspectorDetailResponseSchema.parse({ ...rawInspector, pin: '0042' })
+
+        expect(toInspectorDetail(parsed)).toEqual({ ...inspector, pin: '0042' })
+    })
+
+    it('rejects a detail without a PIN', () => {
+        expect(inspectorDetailResponseSchema.safeParse(rawInspector).success).toBe(false)
     })
 
     it('maps a domain inspector to the request body, with its PIN', () => {
@@ -51,15 +63,11 @@ describe('inspector mapping', () => {
         })
     })
 
-    it('leaves the PIN out of the request when it is not being changed', () => {
-        expect(toInspectorRequest(inspectorFields)).not.toHaveProperty('pin')
-    })
-
-    it('round-trips: domain to request to response to domain', () => {
+    it('round-trips: domain to request to detail response to domain', () => {
         const request = toInspectorRequest(inspectorInput)
-        const response = inspectorResponseSchema.parse({ inspectorId: 4, ...request })
+        const response = inspectorDetailResponseSchema.parse({ inspectorId: 4, ...request })
 
-        expect(toInspector(response)).toEqual(inspector)
+        expect(toInspectorDetail(response)).toEqual({ ...inspector, pin: '1234' })
     })
 
     it('rejects a response with isActive sent as a number', () => {

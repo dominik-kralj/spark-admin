@@ -65,23 +65,20 @@ export function resetInspectors(): void {
 resetInspectors()
 
 const text = z.string().trim().min(1).max(100)
-const pin = z.string().regex(/^\d{1,4}$/)
 
 const inspectorBodySchema = z.object({
     name: text,
     surname: text,
     oib: z.string().regex(/^\d{11}$/),
+    pin: z.string().regex(/^\d{1,4}$/),
     isActive: z.boolean(),
 })
 
-const newInspectorBodySchema = inspectorBodySchema.extend({ pin })
-const inspectorUpdateBodySchema = inspectorBodySchema.extend({ pin: pin.optional() })
-
-type InspectorBody = z.output<typeof inspectorUpdateBodySchema>
+type InspectorBody = z.output<typeof inspectorBodySchema>
 
 const tenantId = mockAdminUser.tenantId
 
-// The PIN is write-only: it never leaves the mock.
+// A list entry and a saved inspector leave the PIN out; only the detail carries it.
 function toResponse(row: InspectorRow) {
     return {
         inspectorId: row.inspectorId,
@@ -108,18 +105,10 @@ function hasDuplicateOib(body: InspectorBody, ownId: number | null): boolean {
     )
 }
 
-type BodyResult<TBody> = { body: TBody } | { response: Response }
+type BodyResult = { body: InspectorBody } | { response: Response }
 
-interface ReadBodyOptions<TBody> {
-    schema: z.ZodType<TBody>
-    ownId: number | null
-}
-
-async function readInspectorBody<TBody extends InspectorBody>(
-    request: Request,
-    { schema, ownId }: ReadBodyOptions<TBody>,
-): Promise<BodyResult<TBody>> {
-    const parsed = schema.safeParse(await request.json())
+async function readInspectorBody(request: Request, ownId: number | null): Promise<BodyResult> {
+    const parsed = inspectorBodySchema.safeParse(await request.json())
     if (!parsed.success) return { response: validationProblem(parsed.error) }
 
     if (hasDuplicateOib(parsed.data, ownId)) {
@@ -141,11 +130,15 @@ export const inspectorHandlers = [
         ),
     ),
 
+    http.get(apiUrl('/inspectors/:inspectorId'), ({ params }) => {
+        const existing = findInspector(Number(params.inspectorId))
+        if (existing === undefined) return notFound()
+
+        return HttpResponse.json({ ...toResponse(existing), pin: existing.pin })
+    }),
+
     http.post(apiUrl('/inspectors'), async ({ request }) => {
-        const result = await readInspectorBody(request, {
-            schema: newInspectorBodySchema,
-            ownId: null,
-        })
+        const result = await readInspectorBody(request, null)
         if ('response' in result) return result.response
 
         const inspector = {
@@ -162,14 +155,10 @@ export const inspectorHandlers = [
         const existing = findInspector(Number(params.inspectorId))
         if (existing === undefined) return notFound()
 
-        const result = await readInspectorBody(request, {
-            schema: inspectorUpdateBodySchema,
-            ownId: existing.inspectorId,
-        })
+        const result = await readInspectorBody(request, existing.inspectorId)
         if ('response' in result) return result.response
 
-        const { pin: newPin = existing.pin, ...fields } = result.body
-        Object.assign(existing, fields, { pin: newPin })
+        Object.assign(existing, result.body)
 
         return HttpResponse.json(toResponse(existing))
     }),

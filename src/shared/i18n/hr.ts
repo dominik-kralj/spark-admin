@@ -242,7 +242,6 @@ export const hr = {
             `Ukupno ${String(count)} ${plural(count, { one: 'kontrolor', few: 'kontrolora', other: 'kontrolora' })}, ${String(active)} ${plural(active, { one: 'aktivan', few: 'aktivna', other: 'aktivnih' })}`,
         form: {
             intro: 'Sva su polja obavezna.',
-            introEdit: 'Sva su polja obavezna osim PIN-a.',
             labels: {
                 name: 'Ime',
                 surname: 'Prezime',
@@ -251,7 +250,7 @@ export const hr = {
                 isActive: 'Aktivan',
             },
             pinHelp: 'Do 4 znamenke. Kontrolor se njime prijavljuje u aplikaciju Inspector.',
-            pinHelpEdit: 'Do 4 znamenke. Ostavite prazno da kontrolor zadrži dosadašnji PIN.',
+            pinLoadError: 'PIN nije moguće učitati',
             showPin: 'Prikaži PIN',
             activeHelp: 'Aktivan kontrolor može se prijaviti i izdavati dnevne karte.',
             yes: 'Da',

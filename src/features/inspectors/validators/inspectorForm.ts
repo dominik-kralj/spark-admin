@@ -1,26 +1,22 @@
 import { z } from 'zod'
 
-import { oibField, optionalPinField, pinField, requiredText } from '@/shared/lib/validation'
+import { oibField, pinField, requiredText } from '@/shared/lib/validation'
 
-import type { Inspector, InspectorInput } from './inspector'
+import type { InspectorDetail } from './inspector'
 
 export const nameMaxLength = 100
 
-const inspectorFields = {
+export const inspectorFormSchema = z.object({
     name: requiredText(nameMaxLength),
     surname: requiredText(nameMaxLength),
     oib: oibField,
+    pin: pinField,
     isActive: z.boolean(),
-}
+})
 
-export const newInspectorFormSchema = z.object({ ...inspectorFields, pin: pinField })
+export type InspectorFormValues = z.input<typeof inspectorFormSchema>
 
-/** Empty keeps the inspector's current PIN, which the form never sees. */
-export const editInspectorFormSchema = z.object({ ...inspectorFields, pin: optionalPinField })
-
-export type InspectorFormValues = z.input<typeof newInspectorFormSchema>
-
-export type ValidInspectorFormValues = z.output<typeof newInspectorFormSchema>
+export type ValidInspectorFormValues = z.output<typeof inspectorFormSchema>
 
 export const emptyInspectorForm: InspectorFormValues = {
     name: '',
@@ -30,16 +26,12 @@ export const emptyInspectorForm: InspectorFormValues = {
     isActive: true,
 }
 
-export function toInspectorInput({ pin, ...values }: ValidInspectorFormValues): InspectorInput {
-    return pin === '' ? values : { ...values, pin }
-}
-
-export function toInspectorFormValues(inspector: Inspector): InspectorFormValues {
+export function toInspectorFormValues(inspector: InspectorDetail): InspectorFormValues {
     return {
         name: inspector.name,
         surname: inspector.surname,
         oib: inspector.oib,
-        pin: '',
+        pin: inspector.pin,
         isActive: inspector.isActive,
     }
 }

@@ -234,7 +234,6 @@ export const en: Dictionary = {
             `${String(count)} ${count === 1 ? 'inspector' : 'inspectors'} in total, ${String(active)} active`,
         form: {
             intro: 'All fields are required.',
-            introEdit: 'All fields except the PIN are required.',
             labels: {
                 name: 'First name',
                 surname: 'Surname',
@@ -243,7 +242,7 @@ export const en: Dictionary = {
                 isActive: 'Active',
             },
             pinHelp: 'Up to 4 digits. The inspector signs in to the Inspector app with it.',
-            pinHelpEdit: 'Up to 4 digits. Leave it empty to keep the current PIN.',
+            pinLoadError: 'The PIN could not be loaded',
             showPin: 'Show PIN',
             activeHelp: 'An active inspector can sign in and issue daily tickets.',
             yes: 'Yes',

@@ -86,6 +86,9 @@ async function addAndDeactivate(page: Page, editButton: (name: string) => Locato
 
     await editButton('Marko Horvat').click()
     const editForm = page.getByRole('dialog', { name: t.editInspector('Marko Horvat') })
+    const pin = editForm.getByLabel(labels.pin, { exact: true })
+    await expect(pin).toHaveValue('1234')
+    await expect(pin).toHaveAttribute('type', 'password')
     const activeSwitch = editForm.getByRole('switch', { name: labels.isActive })
     await expect(activeSwitch).toBeChecked()
     await waitForAnimations(editForm)

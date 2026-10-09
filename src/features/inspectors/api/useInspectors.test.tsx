@@ -7,10 +7,16 @@ import { renderHookWithQueryClient } from '@/test/render'
 import { server } from '@/test/server'
 import { signInForTest } from '@/test/session'
 
-import { useCreateInspector, useInspectors, useUpdateInspector } from './useInspectors'
+import {
+    useCreateInspector,
+    useInspector,
+    useInspectors,
+    useUpdateInspector,
+} from './useInspectors'
 import {
     toInspectorFieldErrors,
     type Inspector,
+    type InspectorDetail,
     type InspectorInput,
 } from '../validators/inspector'
 
@@ -21,6 +27,8 @@ const firstInspector: Inspector = {
     oib: '12345678901',
     isActive: true,
 }
+
+const firstInspectorDetail: InspectorDetail = { ...firstInspector, pin: '1234' }
 
 const otherCityInspectorId = 4
 const otherCityOib = '45678901234'
@@ -136,11 +144,11 @@ describe('useCreateInspector', () => {
         expect(toInspectorFieldErrors(error)).toEqual({ oib: 'duplicate' })
     })
 
-    it('rejects a missing PIN, a short OIB and an empty name with a 400 on each field', async () => {
+    it('rejects an empty PIN, a short OIB and an empty name with a 400 on each field', async () => {
         const { result } = renderInspectorHooks()
 
         const error = await mutationError(() =>
-            result.current.create.mutateAsync({ ...newInspectorFields, name: ' ', oib: '123' }),
+            result.current.create.mutateAsync({ ...newInspector, name: ' ', oib: '123', pin: '' }),
         )
 
         expect(error).toMatchObject({ kind: 'validation', status: 400 })
@@ -163,31 +171,34 @@ describe('useCreateInspector', () => {
 })
 
 describe('useUpdateInspector', () => {
-    it('saves the inspector without a PIN and puts it in the cached list', async () => {
+    it('saves the inspector and puts it, without its PIN, in the cached list', async () => {
         const { result } = renderInspectorHooks()
         await loadedInspectors(result)
-        const deactivated = { ...firstInspector, isActive: false }
 
         await act(async () => {
-            await result.current.update.mutateAsync(deactivated)
+            await result.current.update.mutateAsync({ ...firstInspectorDetail, isActive: false })
         })
 
-        expect(result.current.inspectors.data?.[0]).toEqual(deactivated)
+        expect(result.current.inspectors.data?.[0]).toEqual({ ...firstInspector, isActive: false })
     })
 
-    it('sends a new PIN when one is given', async () => {
-        let body: unknown
-        server.events.on('request:start', async ({ request }) => {
-            if (request.method === 'PUT') body = await request.clone().json()
+    it('saves a new PIN, which the detail then returns', async () => {
+        signInForTest()
+        const { result } = renderHookWithQueryClient(() => ({
+            detail: useInspector(firstInspector.id),
+            update: useUpdateInspector(),
+        }))
+        await waitFor(() => {
+            expect(result.current.detail.data?.pin).toBe('1234')
         })
-        const { result } = renderInspectorHooks()
 
         await act(async () => {
-            await result.current.update.mutateAsync({ ...firstInspector, pin: '0007' })
+            await result.current.update.mutateAsync({ ...firstInspectorDetail, pin: '0007' })
         })
 
-        expect(body).toMatchObject({ pin: '0007' })
-        server.events.removeAllListeners()
+        await waitFor(() => {
+            expect(result.current.detail.data?.pin).toBe('0007')
+        })
     })
 
     it("allows an inspector to keep its own OIB, but not take another inspector's", async () => {
@@ -196,10 +207,13 @@ describe('useUpdateInspector', () => {
         if (second === undefined) throw new Error('Expected a second seed inspector')
 
         await act(async () => {
-            await result.current.update.mutateAsync({ ...firstInspector, surname: 'Horvat-Kos' })
+            await result.current.update.mutateAsync({
+                ...firstInspectorDetail,
+                surname: 'Horvat-Kos',
+            })
         })
         const error = await mutationError(() =>
-            result.current.update.mutateAsync({ ...second, oib: firstInspector.oib }),
+            result.current.update.mutateAsync({ ...second, pin: '2580', oib: firstInspector.oib }),
         )
 
         expect(toInspectorFieldErrors(error)).toEqual({ oib: 'duplicate' })
@@ -212,9 +226,32 @@ describe('useUpdateInspector', () => {
         const { result } = renderInspectorHooks()
 
         const error = await mutationError(() =>
-            result.current.update.mutateAsync({ ...firstInspector, id }),
+            result.current.update.mutateAsync({ ...firstInspectorDetail, id }),
         )
 
         expect(error).toMatchObject({ kind: 'notFound', status: 404 })
+    })
+})
+
+describe('useInspector', () => {
+    it("loads one inspector's detail with the PIN", async () => {
+        signInForTest()
+        const { result } = renderHookWithQueryClient(() => useInspector(firstInspector.id))
+
+        await waitFor(() => {
+            expect(result.current.data).toEqual(firstInspectorDetail)
+        })
+    })
+
+    it.each([
+        ['does not exist', 999],
+        ['belongs to another city', otherCityInspectorId],
+    ])('answers 404 for an inspector that %s', async (_case, id) => {
+        signInForTest()
+        const { result } = renderHookWithQueryClient(() => useInspector(id))
+
+        await waitFor(() => {
+            expect(result.current.error).toMatchObject({ kind: 'notFound', status: 404 })
+        })
     })
 })

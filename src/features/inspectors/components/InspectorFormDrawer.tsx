@@ -10,11 +10,12 @@ import { toaster } from '@/shared/lib/toaster'
 import { filterPin } from '@/shared/lib/validation'
 import { ConfirmDialog } from '@/shared/ui/ConfirmDialog'
 import { ErrorAlert } from '@/shared/ui/ErrorAlert'
+import { ErrorState } from '@/shared/ui/ErrorState'
 import { FormDrawer } from '@/shared/ui/FormDrawer'
 import { FormField } from '@/shared/ui/FormField'
 import { SecretInput } from '@/shared/ui/SecretInput'
 
-import { useCreateInspector, useUpdateInspector } from '../api/useInspectors'
+import { useCreateInspector, useInspector, useUpdateInspector } from '../api/useInspectors'
 import { fullName } from '../lib/fullName'
 import { inspectorFieldMessage } from '../lib/inspectorFieldMessage'
 import {
@@ -23,11 +24,9 @@ import {
     type InspectorField,
 } from '../validators/inspector'
 import {
-    editInspectorFormSchema,
     emptyInspectorForm,
-    newInspectorFormSchema,
+    inspectorFormSchema,
     toInspectorFormValues,
-    toInspectorInput,
     type ValidInspectorFormValues,
 } from '../validators/inspectorForm'
 
@@ -43,6 +42,7 @@ export function InspectorFormDrawer({ isOpen, inspector, onClose }: InspectorFor
     const t = useStrings()
     const createInspector = useCreateInspector()
     const updateInspector = useUpdateInspector()
+    const detail = useInspector(inspector?.id ?? null)
     const [isConfirmingDeactivation, setIsConfirmingDeactivation] = useState(false)
     const isAdding = inspector === null
     const savedName = isAdding ? '' : fullName(inspector)
@@ -55,8 +55,13 @@ export function InspectorFormDrawer({ isOpen, inspector, onClose }: InspectorFor
         control,
         formState: { errors, isDirty, isSubmitting, submitCount },
     } = useForm({
-        resolver: zodResolver(isAdding ? newInspectorFormSchema : editInspectorFormSchema),
-        defaultValues: isAdding ? emptyInspectorForm : toInspectorFormValues(inspector),
+        resolver: zodResolver(inspectorFormSchema),
+        // The list has every field but the PIN, so an edit can start before the detail loads.
+        defaultValues: isAdding
+            ? emptyInspectorForm
+            : toInspectorFormValues({ ...inspector, pin: '' }),
+        ...(detail.data && { values: toInspectorFormValues(detail.data) }),
+        resetOptions: { keepDirtyValues: true },
         mode: 'onTouched',
     })
 
@@ -65,14 +70,13 @@ export function InspectorFormDrawer({ isOpen, inspector, onClose }: InspectorFor
     const saveError = saveMutation.error
     const hasFieldErrors = Object.keys(toInspectorFieldErrors(saveError)).length > 0
     const hasInvalidFields = submitCount > 0 && Object.keys(errors).length > 0
+    const isPinMissing = !isAdding && detail.data === undefined
 
     async function save(values: ValidInspectorFormValues) {
-        const input = toInspectorInput(values)
-
         try {
             const saved = isAdding
-                ? await createInspector.mutateAsync(input)
-                : await updateInspector.mutateAsync({ id: inspector.id, ...input })
+                ? await createInspector.mutateAsync(values)
+                : await updateInspector.mutateAsync({ id: inspector.id, ...values })
             toaster.success({ title: t.inspectors.form.saved(fullName(saved)) })
             onClose()
         } catch (error) {
@@ -100,13 +104,20 @@ export function InspectorFormDrawer({ isOpen, inspector, onClose }: InspectorFor
             title={isAdding ? t.inspectors.add : t.inspectors.editInspector(savedName)}
             isDirty={isDirty}
             isSaving={isSubmitting}
-            isSaveDisabled={!isAdding && !isDirty}
+            isSaveDisabled={!isAdding && (!isDirty || isPinMissing)}
             onClose={onClose}
             onSubmit={(event) => void handleSubmit(save)(event)}
         >
-            <Text color="fg.muted">
-                {isAdding ? t.inspectors.form.intro : t.inspectors.form.introEdit}
-            </Text>
+            <Text color="fg.muted">{t.inspectors.form.intro}</Text>
+
+            {detail.isError && (
+                <ErrorState
+                    title={t.inspectors.form.pinLoadError}
+                    error={detail.error}
+                    onRetry={() => void detail.refetch()}
+                    isRetrying={detail.isFetching}
+                />
+            )}
 
             {saveError && !hasFieldErrors && (
                 <ErrorAlert
@@ -147,7 +158,7 @@ export function InspectorFormDrawer({ isOpen, inspector, onClose }: InspectorFor
 
             <FormField
                 label={t.inspectors.form.labels.pin}
-                helperText={isAdding ? t.inspectors.form.pinHelp : t.inspectors.form.pinHelpEdit}
+                helperText={t.inspectors.form.pinHelp}
                 error={fieldError('pin')}
             >
                 {(fieldControl) => (
@@ -163,6 +174,7 @@ export function InspectorFormDrawer({ isOpen, inspector, onClose }: InspectorFor
                         autoComplete="off"
                         fontFamily="mono"
                         w="7.5rem"
+                        disabled={isPinMissing}
                     />
                 )}
             </FormField>

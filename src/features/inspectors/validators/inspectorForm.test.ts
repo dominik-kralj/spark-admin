@@ -1,11 +1,9 @@
 import { describe, expect, it } from 'vitest'
 
 import {
-    editInspectorFormSchema,
     emptyInspectorForm,
-    newInspectorFormSchema,
+    inspectorFormSchema,
     toInspectorFormValues,
-    toInspectorInput,
     type InspectorFormValues,
 } from './inspectorForm'
 
@@ -17,8 +15,8 @@ const filled: InspectorFormValues = {
     isActive: true,
 }
 
-function issues(schema: typeof newInspectorFormSchema, values: InspectorFormValues) {
-    const result = schema.safeParse(values)
+function issues(values: InspectorFormValues) {
+    const result = inspectorFormSchema.safeParse(values)
 
     return result.success
         ? {}
@@ -39,7 +37,7 @@ describe('inspector form', () => {
     })
 
     it('trims names and keeps the PIN with its leading zeros', () => {
-        expect(toInspectorInput(newInspectorFormSchema.parse(filled))).toEqual({
+        expect(inspectorFormSchema.parse(filled)).toEqual({
             name: 'Marko',
             surname: 'Horvat',
             oib: '12345678901',
@@ -48,8 +46,8 @@ describe('inspector form', () => {
         })
     })
 
-    it('needs every field, the PIN included, for a new inspector', () => {
-        expect(issues(newInspectorFormSchema, emptyInspectorForm)).toEqual({
+    it('needs every field, the PIN included', () => {
+        expect(issues(emptyInspectorForm)).toEqual({
             name: 'required',
             surname: 'required',
             oib: 'required',
@@ -58,46 +56,33 @@ describe('inspector form', () => {
     })
 
     it('rejects an OIB that is not exactly 11 digits', () => {
-        expect(issues(newInspectorFormSchema, { ...filled, oib: '1234567890' })).toEqual({
-            oib: 'oibInvalid',
-        })
-        expect(issues(newInspectorFormSchema, { ...filled, oib: '1234567890a' })).toEqual({
-            oib: 'oibInvalid',
-        })
+        expect(issues({ ...filled, oib: '1234567890' })).toEqual({ oib: 'oibInvalid' })
+        expect(issues({ ...filled, oib: '1234567890a' })).toEqual({ oib: 'oibInvalid' })
+    })
+
+    it('rejects a PIN that is not digits only', () => {
+        expect(issues({ ...filled, pin: '12a' })).toEqual({ pin: 'pinInvalid' })
     })
 
     it('rejects a name over 100 characters', () => {
-        expect(issues(newInspectorFormSchema, { ...filled, name: 'a'.repeat(101) })).toEqual({
-            name: 'tooLong',
-        })
+        expect(issues({ ...filled, name: 'a'.repeat(101) })).toEqual({ name: 'tooLong' })
     })
 
-    it('lets an edit leave the PIN empty, which keeps the current one', () => {
-        const values = editInspectorFormSchema.parse({ ...filled, pin: '' })
-
-        expect(toInspectorInput(values)).not.toHaveProperty('pin')
-    })
-
-    it('still checks a PIN typed into an edit', () => {
-        expect(issues(editInspectorFormSchema, { ...filled, pin: '12a' })).toEqual({
-            pin: 'pinInvalid',
-        })
-    })
-
-    it('loads an inspector into the form without a PIN', () => {
+    it('loads an inspector into the form with its PIN', () => {
         expect(
             toInspectorFormValues({
-                id: 1,
+                id: 3,
                 name: 'Davor',
                 surname: 'Šimić',
                 oib: '34567890123',
                 isActive: false,
+                pin: '1111',
             }),
         ).toEqual({
             name: 'Davor',
             surname: 'Šimić',
             oib: '34567890123',
-            pin: '',
+            pin: '1111',
             isActive: false,
         })
     })

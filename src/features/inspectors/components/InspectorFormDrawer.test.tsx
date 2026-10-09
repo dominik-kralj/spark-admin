@@ -1,5 +1,5 @@
 import { screen, waitFor, within } from '@testing-library/react'
-import { http, HttpResponse } from 'msw'
+import { delay, http, HttpResponse } from 'msw'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 
 import { apiUrl } from '@/mocks/url'
@@ -244,7 +244,7 @@ describe('Inspector form', () => {
         expect(field(form, 'surname')).toHaveValue('Kos')
     })
 
-    it('pre-fills the edit form without the PIN, which may stay empty', async () => {
+    it('pre-fills the edit form with the stored PIN, masked until shown', async () => {
         const bodies = captureBodies('put', '/inspectors/:inspectorId')
         const rendered = await renderRoute(paths.inspectors)
         const form = await openEditForm(rendered, 'Marko Horvat')
@@ -252,20 +252,101 @@ describe('Inspector form', () => {
         expect(field(form, 'name')).toHaveValue('Marko')
         expect(field(form, 'surname')).toHaveValue('Horvat')
         expect(field(form, 'oib')).toHaveValue('12345678901')
-        expect(pinField(form)).toHaveValue('')
-        expect(pinField(form)).toHaveAccessibleDescription(t.form.pinHelpEdit)
-        expect(within(form).getByText(t.form.introEdit)).toBeInTheDocument()
         expect(activeSwitch(form)).toBeChecked()
+        const pin = pinField(form)
+        await waitFor(() => {
+            expect(pin).toHaveValue('1234')
+        })
+        expect(pin).toHaveAttribute('type', 'password')
+        expect(pin).toBeEnabled()
+
+        await rendered.user.click(within(form).getByRole('button', { name: t.form.showPin }))
+
+        expect(pin).toHaveAttribute('type', 'text')
 
         await fillForm(rendered, form, { surname: 'Horvat-Kos' })
         await save(rendered, form)
 
         await expectFormClosed()
         expect(bodies).toEqual([
-            { name: 'Marko', surname: 'Horvat-Kos', oib: '12345678901', isActive: true },
+            {
+                name: 'Marko',
+                surname: 'Horvat-Kos',
+                oib: '12345678901',
+                pin: '1234',
+                isActive: true,
+            },
         ])
         const table = screen.getByRole('table', { name: t.listLabel })
         expect(await within(table).findByRole('cell', { name: 'Horvat-Kos' })).toBeInTheDocument()
+    })
+
+    it('keeps the PIN field and Spremi off until the PIN has loaded', async () => {
+        server.use(
+            http.get(apiUrl('/inspectors/:inspectorId'), async () => {
+                await delay('infinite')
+
+                return HttpResponse.json({})
+            }),
+        )
+        const rendered = await renderRoute(paths.inspectors)
+        const form = await openEditForm(rendered, 'Marko Horvat')
+
+        await fillForm(rendered, form, { surname: 'Horvat-Kos' })
+
+        expect(pinField(form)).toBeDisabled()
+        expect(within(form).getByRole('button', { name: hr.forms.save })).toBeDisabled()
+    })
+
+    it('says when the PIN could not be loaded, and loads it again on retry', async () => {
+        server.use(
+            http.get(
+                apiUrl('/inspectors/:inspectorId'),
+                () => new HttpResponse(null, { status: 500 }),
+                { once: true },
+            ),
+        )
+        const rendered = await renderRoute(paths.inspectors)
+        const form = await openEditForm(rendered, 'Marko Horvat')
+
+        const alert = await within(form).findByRole('alert')
+        expect(
+            within(alert).getByRole('heading', { name: t.form.pinLoadError }),
+        ).toBeInTheDocument()
+        expect(pinField(form)).toBeDisabled()
+
+        await rendered.user.click(within(alert).getByRole('button', { name: hr.listStates.retry }))
+
+        await waitFor(() => {
+            expect(pinField(form)).toHaveValue('1234')
+        })
+        expect(within(form).queryByRole('alert')).not.toBeInTheDocument()
+    })
+
+    it('keeps a name typed before the PIN arrives', async () => {
+        server.use(
+            http.get(apiUrl('/inspectors/:inspectorId'), async () => {
+                await delay(200)
+
+                return HttpResponse.json({
+                    inspectorId: 1,
+                    name: 'Marko',
+                    surname: 'Horvat',
+                    oib: '12345678901',
+                    pin: '1234',
+                    isActive: true,
+                })
+            }),
+        )
+        const rendered = await renderRoute(paths.inspectors)
+        const form = await openEditForm(rendered, 'Marko Horvat')
+
+        await fillForm(rendered, form, { surname: 'Horvat-Kos' })
+
+        await waitFor(() => {
+            expect(pinField(form)).toHaveValue('1234')
+        })
+        expect(field(form, 'surname')).toHaveValue('Horvat-Kos')
     })
 
     it('sends a new PIN when one is typed into the edit form', async () => {
@@ -349,6 +430,9 @@ describe('Inspector form', () => {
     it('asks before discarding changes, and returns focus to the edit button on close', async () => {
         const rendered = await renderRoute(paths.inspectors)
         const form = await openEditForm(rendered, 'Petra Novak')
+        await waitFor(() => {
+            expect(pinField(form)).toHaveValue('2580')
+        })
         await rendered.user.type(field(form, 'name'), 'a')
 
         await rendered.user.click(within(form).getByRole('button', { name: hr.forms.close }))

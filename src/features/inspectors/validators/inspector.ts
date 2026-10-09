@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 import { fieldErrorsFrom, type ServerFieldError } from '@/shared/api'
 
-// The PIN is write-only: a response never carries it.
+// A list entry has no PIN; only one inspector's detail carries it.
 export const inspectorResponseSchema = z.object({
     inspectorId: z.number(),
     name: z.string(),
@@ -13,9 +13,13 @@ export const inspectorResponseSchema = z.object({
 
 export const inspectorListResponseSchema = z.array(inspectorResponseSchema)
 
+export const inspectorDetailResponseSchema = inspectorResponseSchema.extend({ pin: z.string() })
+
 type InspectorResponse = z.output<typeof inspectorResponseSchema>
 
-type InspectorRequest = Omit<InspectorResponse, 'inspectorId'> & NewPin
+type InspectorDetailResponse = z.output<typeof inspectorDetailResponseSchema>
+
+type InspectorRequest = Omit<InspectorDetailResponse, 'inspectorId'>
 
 export interface Inspector {
     id: number
@@ -25,14 +29,13 @@ export interface Inspector {
     isActive: boolean
 }
 
-/** Without a `pin`, an update keeps the inspector's current PIN. */
-interface NewPin {
-    pin?: string
+export interface InspectorDetail extends Inspector {
+    pin: string
 }
 
-export type InspectorInput = Omit<Inspector, 'id'> & NewPin
+export type InspectorInput = Omit<InspectorDetail, 'id'>
 
-export type InspectorField = keyof Required<InspectorInput>
+export type InspectorField = keyof InspectorInput
 
 export function toInspector(raw: InspectorResponse): Inspector {
     return {
@@ -44,13 +47,17 @@ export function toInspector(raw: InspectorResponse): Inspector {
     }
 }
 
+export function toInspectorDetail(raw: InspectorDetailResponse): InspectorDetail {
+    return { ...toInspector(raw), pin: raw.pin }
+}
+
 export function toInspectorRequest(input: InspectorInput): InspectorRequest {
     return {
         name: input.name,
         surname: input.surname,
         oib: input.oib,
+        pin: input.pin,
         isActive: input.isActive,
-        ...(input.pin !== undefined && { pin: input.pin }),
     }
 }
 
