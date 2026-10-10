@@ -1,4 +1,4 @@
-import { Box, Grid, Heading, Text } from '@chakra-ui/react'
+import { Box, Flex, Grid, Heading, Text } from '@chakra-ui/react'
 import { useId } from 'react'
 
 import { useStrings } from '@/shared/i18n/useStrings'
@@ -19,8 +19,9 @@ interface ReportPreviewPanelProps {
     preview: ReportPreview
 }
 
-// On a phone the actions follow the table; from md they sit beside the heading.
-const areas = { base: '"header" "paper" "actions"', md: '"header actions" "paper paper"' }
+// The actions come before the report at every width, as they do in reading order; from md
+// they sit beside the heading.
+const areas = { base: '"header" "actions" "paper"', md: '"header actions" "paper paper"' }
 
 export function ReportPreviewPanel({ params, reportName, preview }: ReportPreviewPanelProps) {
     const t = useStrings()
@@ -45,8 +46,11 @@ export function ReportPreviewPanel({ params, reportName, preview }: ReportPrevie
             layerStyle="panel"
             overflow="hidden"
             templateAreas={areas}
-            // minmax(0, …) keeps a wide report inside the panel, so only its table scrolls.
+            // minmax(0, …) keeps a long or wide report inside the panel, so only its table scrolls.
             templateColumns={{ base: 'minmax(0, 1fr)', md: 'minmax(0, 1fr) auto' }}
+            templateRows={{ md: 'auto minmax(0, 1fr)' }}
+            flex="0 1 auto"
+            minH="0"
         >
             <Box gridArea="header" p="4">
                 <Heading as="h2" id={headingId} textStyle="lg" color="spark.heading">
@@ -61,17 +65,23 @@ export function ReportPreviewPanel({ params, reportName, preview }: ReportPrevie
                 <ReportExportActions params={params} reportName={reportName} range={range} />
             </Box>
 
-            <Box
+            <Flex
                 gridArea="paper"
-                px={{ base: '4', md: '6' }}
-                py={{ md: '6' }}
+                direction="column"
+                minH="0"
+                px={{ base: '4', md: '4', lg: '6' }}
+                pt={{ md: '4', lg: '6' }}
+                pb={{ base: '4', lg: '6' }}
                 bg={{ md: 'bg.subtle' }}
                 borderTopWidth={{ md: '1px' }}
             >
-                <Box
+                <Flex
+                    direction="column"
+                    minH="0"
+                    w="full"
                     maxW="880px"
                     mx="auto"
-                    p={{ md: '8' }}
+                    p={{ md: '5', lg: '8' }}
                     bg="bg"
                     borderWidth={{ md: '1px' }}
                     borderRadius={{ md: 'md' }}
@@ -93,8 +103,8 @@ export function ReportPreviewPanel({ params, reportName, preview }: ReportPrevie
                             <ReportPreviewCards preview={preview} />
                         </>
                     )}
-                </Box>
-            </Box>
+                </Flex>
+            </Flex>
         </Grid>
     )
 }

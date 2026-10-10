@@ -1,11 +1,10 @@
-import { Box, Table } from '@chakra-ui/react'
+import { Flex, Table } from '@chakra-ui/react'
 
 import { useStrings } from '@/shared/i18n/useStrings'
 
 import { formatReportValue } from '../lib/formatReportValue'
 import type { ReportColumn, ReportPreview, ReportValue } from '../validators/report'
 
-// Numbers line up on the right; words and dates read from the left.
 function alignOf({ type }: ReportColumn) {
     return type === 'count' || type === 'amount' ? 'end' : 'start'
 }
@@ -21,16 +20,25 @@ export function ReportPreviewTable({ preview }: { preview: ReportPreview }) {
     const { columns, rows, totals } = preview
 
     return (
-        <Box hideBelow="md" mt="4">
-            {/* Focusable, so a keyboard can scroll it sideways when a report is wider than the page. */}
+        <Flex
+            hideBelow="md"
+            direction="column"
+            minH="0"
+            mt="4"
+            borderWidth="1px"
+            borderRadius="md"
+            overflow="hidden"
+        >
+            {/* Focusable, so a keyboard can scroll the rows it holds back. */}
             <Table.ScrollArea
                 tabIndex={0}
                 role="region"
                 aria-label={strings.scrollRegion}
-                borderWidth="1px"
-                borderRadius="md"
+                flex="1"
+                minH="0"
+                overflowY="auto"
             >
-                <Table.Root aria-label={strings.tableLabel} whiteSpace="nowrap">
+                <Table.Root aria-label={strings.tableLabel} whiteSpace="nowrap" stickyHeader>
                     <Table.Header>
                         <Table.Row>
                             {columns.map((column, index) => (
@@ -67,6 +75,6 @@ export function ReportPreviewTable({ preview }: { preview: ReportPreview }) {
                     </Table.Body>
                 </Table.Root>
             </Table.ScrollArea>
-        </Box>
+        </Flex>
     )
 }

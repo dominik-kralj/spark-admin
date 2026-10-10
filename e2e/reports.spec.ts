@@ -6,7 +6,12 @@ import { hr } from '../src/shared/i18n/hr'
 import { paths } from '../src/shared/paths'
 
 import { expectNoAxeViolations } from './axe'
-import { expectNoHorizontalScroll, expectTouchTargets, signIn } from './helpers'
+import {
+    expectNoHorizontalScroll,
+    expectOnlyTableScrolls,
+    expectTouchTargets,
+    signIn,
+} from './helpers'
 
 const t = hr.reports
 
@@ -43,6 +48,35 @@ test.describe('Izvještaji', () => {
         await expect(page.getByRole('button', { name: t.form.submit })).toBeDisabled()
         await expectNoHorizontalScroll(page)
         await expectNoAxeViolations(page)
+    })
+
+    test('scrolls a long report inside its table, not the page', async ({ page, isMobile }) => {
+        test.skip(isMobile, 'the table shows from 768 px')
+        await showPreview(page)
+
+        await page
+            .getByLabel(t.form.report, { exact: true })
+            .selectOption({ label: 'Naplata po danima' })
+        await page.getByRole('button', { name: t.form.submit }).click()
+        const table = page.getByRole('table', { name: t.preview.tableLabel })
+        await expect(table.getByRole('row', { name: /30\.09\.2026/ })).toBeAttached()
+
+        await expectOnlyTableScrolls(page, table)
+    })
+
+    test('moves a typed end before the start up to it, with no message left', async ({ page }) => {
+        await signIn(page)
+        await page.goto(paths.reports)
+        const to = page.getByLabel(t.form.to, { exact: true })
+
+        await to.fill('31.08.2026')
+        await to.press('Tab')
+
+        await expect(to).toHaveValue('01.09.2026')
+        await expect(to).not.toHaveAttribute('aria-invalid', 'true')
+        await expect(
+            page.locator('[data-part="error-text"]').filter({ hasText: /\S/ }),
+        ).toHaveCount(0)
     })
 
     test('fits a 320 px phone with the dates one under the other', async ({ page, isMobile }) => {

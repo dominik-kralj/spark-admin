@@ -3,14 +3,14 @@ import { z } from 'zod'
 
 import { compareCalendarDates } from '@/shared/lib/calendarDate'
 import { formatCalendarDate } from '@/shared/lib/format'
-import { dateField, messageKey } from '@/shared/lib/validation'
+import { dateField, messageKey, optionalIdField } from '@/shared/lib/validation'
 
 export const reportFormSchema = z
     .object({
         reportKey: z.string().min(1, messageKey('required')),
         from: dateField,
         to: dateField,
-        zoneId: z.string().transform((value) => (value === '' ? null : Number(value))),
+        zoneId: optionalIdField,
     })
     .refine(({ from, to }) => compareCalendarDates(from, to) <= 0, {
         path: ['to'],

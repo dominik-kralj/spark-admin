@@ -121,3 +121,8 @@ export const dateField = z.string().transform(toCalendarDate)
 export const optionalDateField = z
     .string()
     .transform((value, context) => (value.trim() === '' ? null : toCalendarDate(value, context)))
+
+/** A select of ids where '' means none, such as "Sve zone". */
+export const optionalIdField = z
+    .string()
+    .transform((value) => (value === '' ? null : Number(value)))

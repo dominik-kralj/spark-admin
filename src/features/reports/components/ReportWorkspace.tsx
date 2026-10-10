@@ -8,10 +8,10 @@ import { ReportPreviewArea } from './ReportPreviewArea'
 
 interface ReportWorkspaceProps {
     reports: ReportDefinition[]
-    firstReport: ReportDefinition
+    initialReportKey: string
 }
 
-export function ReportWorkspace({ reports, firstReport }: ReportWorkspaceProps) {
+export function ReportWorkspace({ reports, initialReportKey }: ReportWorkspaceProps) {
     // The parameters of the preview on screen; the form may already hold others.
     const [shownParams, setShownParams] = useState<ReportParams | null>(null)
     const shownReport = reports.find((report) => report.key === shownParams?.reportKey)
@@ -20,7 +20,7 @@ export function ReportWorkspace({ reports, firstReport }: ReportWorkspaceProps) 
         <>
             <ReportParametersForm
                 reports={reports}
-                initialReportKey={firstReport.key}
+                initialReportKey={initialReportKey}
                 hasPreview={shownParams !== null}
                 onSubmit={setShownParams}
             />

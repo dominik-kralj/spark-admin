@@ -1,8 +1,6 @@
-import { zagrebCalendarDate } from '@/shared/lib/calendarDate'
+import { lastFullMonth, zagrebCalendarDate } from '@/shared/lib/calendarDate'
 
 import { toReportFormValues, type ReportFormValues } from '../validators/reportForm'
-
-import { lastFullMonth } from './lastFullMonth'
 
 /** The first report, for last month in every zone: what a monthly report run usually needs. */
 export function initialReportFormValues(reportKey: string, now: Date): ReportFormValues {

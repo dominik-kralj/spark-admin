@@ -7,6 +7,7 @@ import { useStrings } from '@/shared/i18n/useStrings'
 import { fieldMessage } from '@/shared/lib/fieldMessage'
 import { useZoneOptions } from '@/shared/lib/useZoneOptions'
 import { LevelWithInputs } from '@/shared/ui/LevelWithInputs'
+import { ZoneOptions } from '@/shared/ui/ZoneOptions'
 
 import { initialReportFormValues } from '../lib/initialReportFormValues'
 import type { ReportDefinition } from '../validators/report'
@@ -23,10 +24,9 @@ interface ReportParametersFormProps {
     onSubmit: (params: ReportParams) => void
 }
 
-// Stacked below lg, one row from lg.
 const gridColumns = { base: 'minmax(0, 1fr)', lg: 'minmax(0, 2fr) 20.75rem minmax(0, 1fr) auto' }
 
-// Side by side while both fit a whole date (from a 375 px phone), one under the other below.
+// Side by side only while both show a whole date; on a 320 px phone two would clip it.
 const dateColumns = { base: 'repeat(auto-fit, minmax(9rem, 1fr))', lg: 'repeat(2, 10rem)' }
 
 export function ReportParametersForm({
@@ -87,12 +87,7 @@ export function ReportParametersForm({
 
                 <Box>
                     <ReportSelectField label={f.zone} registration={form.register('zoneId')}>
-                        <option value="">{f.allZones}</option>
-                        {zones.data?.map((zone) => (
-                            <option key={zone.id} value={String(zone.id)}>
-                                {zone.code}
-                            </option>
-                        ))}
+                        <ZoneOptions zones={zones.data} allZonesLabel={f.allZones} />
                     </ReportSelectField>
                 </Box>
 

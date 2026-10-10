@@ -42,6 +42,8 @@ export function useReportDefinitions() {
 export function useReportPreview(params: ReportParams | null) {
     return useQuery({
         queryKey: reportKeys.preview(params),
+        // A preview changes only when asked for, not on a window focus.
+        staleTime: Infinity,
         queryFn:
             params === null
                 ? skipToken

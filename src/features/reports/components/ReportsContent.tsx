@@ -41,5 +41,5 @@ export function ReportsContent() {
         )
     }
 
-    return <ReportWorkspace reports={reports.data} firstReport={firstReport} />
+    return <ReportWorkspace reports={reports.data} initialReportKey={firstReport.key} />
 }
