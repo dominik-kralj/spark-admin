@@ -60,19 +60,32 @@ const zagrebClock = new Intl.DateTimeFormat('en-US', {
     hourCycle: 'h23',
 })
 
-/** How far Zagreb's wall clock is ahead of UTC at `instant`, in milliseconds. */
-function zagrebOffset(instant: number): number {
+function zagrebClockParts(instant: number) {
     const parts = zagrebClock.formatToParts(instant)
     const valueOf = (type: Intl.DateTimeFormatPartTypes) =>
         Number(parts.find((part) => part.type === type)?.value)
-    const wallClock = Date.UTC(
-        valueOf('year'),
-        valueOf('month') - 1,
-        valueOf('day'),
-        valueOf('hour'),
-        valueOf('minute'),
-        valueOf('second'),
-    )
+
+    return {
+        year: valueOf('year'),
+        month: valueOf('month'),
+        day: valueOf('day'),
+        hour: valueOf('hour'),
+        minute: valueOf('minute'),
+        second: valueOf('second'),
+    }
+}
+
+/** The day it is in Zagreb at `instant`. */
+export function zagrebCalendarDate(instant: Date): CalendarDate {
+    const { year, month, day } = zagrebClockParts(instant.getTime())
+
+    return { year, month, day }
+}
+
+/** How far Zagreb's wall clock is ahead of UTC at `instant`, in milliseconds. */
+function zagrebOffset(instant: number): number {
+    const { year, month, day, hour, minute, second } = zagrebClockParts(instant)
+    const wallClock = Date.UTC(year, month - 1, day, hour, minute, second)
 
     return wallClock - Math.floor(instant / 1000) * 1000
 }

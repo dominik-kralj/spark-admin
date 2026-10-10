@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest'
 import {
     formatAmount,
     formatCalendarDate,
+    formatCount,
     formatDate,
     formatDateTime,
     formatDecimal,
@@ -129,5 +130,16 @@ describe('formatPercent', () => {
         expect(formatPercent(5.5)).toBe('5,5 %')
         expect(formatPercent(13.25)).toBe('13,25 %')
         expect(formatPercent(25.0)).toBe('25 %')
+    })
+})
+
+describe('formatCount', () => {
+    it('groups thousands with a dot', () => {
+        expect(formatCount(1234567)).toBe('1.234.567')
+    })
+
+    it('shows small counts as they are', () => {
+        expect(formatCount(0)).toBe('0')
+        expect(formatCount(42)).toBe('42')
     })
 })

@@ -1,4 +1,4 @@
-export { request } from './client'
+export { request, requestFile } from './client'
 export { deleteRequest } from './deleteRequest'
 export { ApiError, isApiError, type ApiErrorKind } from './errors'
 export { fieldErrorsFrom, type ServerFieldError } from './fieldErrors'

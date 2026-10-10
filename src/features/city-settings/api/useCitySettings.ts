@@ -34,7 +34,10 @@ export function useUpdateCitySettings() {
             ),
         onSuccess: async (saved) => {
             queryClient.setQueryData(tenantKeys.settings, saved)
-            await queryClient.invalidateQueries({ queryKey: tenantKeys.name })
+            await Promise.all([
+                queryClient.invalidateQueries({ queryKey: tenantKeys.name }),
+                queryClient.invalidateQueries({ queryKey: tenantKeys.reportRecipient }),
+            ])
         },
     })
 }

@@ -9,20 +9,67 @@ const basePath = '/api/v1/admin'
 
 type QueryValue = string | number | boolean | null | undefined
 
-interface RequestOptions<TSchema extends z.ZodType> {
+interface SendOptions {
     method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
     query?: Record<string, QueryValue>
     body?: unknown
+    signal?: AbortSignal | undefined
+}
+
+interface RequestOptions<TSchema extends z.ZodType> extends SendOptions {
     /** A 204 or empty body is parsed as undefined. */
     schema: TSchema
-    signal?: AbortSignal
+}
+
+interface FileRequestOptions extends Omit<SendOptions, 'body'> {
+    /** The file's media type, e.g. application/pdf. */
+    accept: string
 }
 
 export async function request<TSchema extends z.ZodType>(
     path: string,
-    { method = 'GET', query, body, schema, signal }: RequestOptions<TSchema>,
+    { schema, ...options }: RequestOptions<TSchema>,
 ): Promise<z.output<TSchema>> {
-    const headers = new Headers({ Accept: 'application/json', 'X-API-KEY': config.apiKey })
+    const response = await send(path, options, 'application/json')
+
+    let data: unknown
+    try {
+        const text = await response.text()
+        data = text === '' ? undefined : JSON.parse(text)
+    } catch (error) {
+        if (isAbort(error, options.signal)) throw error
+        throw new ApiError('invalidResponse', { status: response.status, cause: error })
+    }
+
+    const parsed = schema.safeParse(data)
+    if (!parsed.success) {
+        throw new ApiError('invalidResponse', { status: response.status, cause: parsed.error })
+    }
+
+    return parsed.data
+}
+
+/** A file download, such as a PDF: the body as a Blob, with errors mapped as `request` maps them. */
+export async function requestFile(
+    path: string,
+    { accept, ...options }: FileRequestOptions,
+): Promise<Blob> {
+    const response = await send(path, options, accept)
+
+    try {
+        return await response.blob()
+    } catch (error) {
+        if (isAbort(error, options.signal)) throw error
+        throw new ApiError('network', { cause: error })
+    }
+}
+
+async function send(
+    path: string,
+    { method = 'GET', query, body, signal }: SendOptions,
+    accept: string,
+): Promise<Response> {
+    const headers = new Headers({ Accept: accept, 'X-API-KEY': config.apiKey })
     const token = getAccessToken()
     if (token) headers.set('Authorization', `Bearer ${token}`)
     if (body !== undefined) headers.set('Content-Type', 'application/json')
@@ -52,21 +99,7 @@ export async function request<TSchema extends z.ZodType>(
         })
     }
 
-    let data: unknown
-    try {
-        const text = await response.text()
-        data = text === '' ? undefined : JSON.parse(text)
-    } catch (error) {
-        if (isAbort(error, signal)) throw error
-        throw new ApiError('invalidResponse', { status: response.status, cause: error })
-    }
-
-    const parsed = schema.safeParse(data)
-    if (!parsed.success) {
-        throw new ApiError('invalidResponse', { status: response.status, cause: parsed.error })
-    }
-
-    return parsed.data
+    return response
 }
 
 async function readErrorBody(response: Response): Promise<unknown> {

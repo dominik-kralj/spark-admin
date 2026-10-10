@@ -465,6 +465,67 @@ export const hr = {
             confirm: 'Deaktiviraj',
         },
     },
+    reports: {
+        form: {
+            label: 'Parametri izvještaja',
+            report: 'Izvještaj',
+            from: 'Datum od',
+            to: 'Datum do',
+            zone: 'Zona',
+            allZones: 'Sve zone',
+            submit: 'Prikaži pregled',
+        },
+        loading: 'Učitavanje izvještaja…',
+        errorTitle: 'Izvještaje nije moguće učitati',
+        empty: {
+            title: 'Nema dostupnih izvještaja',
+            description:
+                'Za vaš grad još nije postavljen nijedan izvještaj. Javite se administratoru sustava.',
+        },
+        noPreview: {
+            title: 'Još nema pregleda',
+            description:
+                'Odaberite izvještaj, razdoblje i zonu, a zatim Prikaži pregled. Izvoz i slanje dostupni su nakon pregleda.',
+        },
+        previewLoading: 'Priprema pregleda izvještaja…',
+        previewErrorTitle: 'Pregled izvještaja nije moguće pripremiti',
+        preview: {
+            title: 'Pregled izvještaja',
+            description: 'Provjerite podatke prije izvoza ili slanja.',
+            range: (from: string, to: string) => `${from} – ${to}`,
+            summary: (parts: string[]) => parts.join(' · '),
+            tableLabel: 'Pregled podataka izvještaja',
+            scrollRegion: 'Tablica izvještaja',
+            total: 'Ukupno',
+            noRows: 'Za odabrano razdoblje i zonu nema podataka.',
+        },
+        pdf: {
+            button: 'Izvezi PDF',
+            downloaded: 'PDF je preuzet',
+            downloadedDescription: (fileName: string) => `Datoteka: ${fileName}`,
+            failed: 'PDF nije preuzet',
+        },
+        email: {
+            button: 'Pošalji e-poštom',
+            recipient: (email: string) => `Šalje se na unaprijed postavljenu adresu: ${email}`,
+            noRecipient: 'Adresa za slanje izvještaja nije postavljena.',
+            recipientUnavailable: 'Adresu za slanje izvještaja nije moguće učitati.',
+            confirmTitle: 'Poslati izvještaj e-poštom?',
+            confirmDescription: (report: string, range: string, email: string) =>
+                `${report} za razdoblje ${range} poslat će se na ${email}.`,
+            confirm: 'Pošalji',
+            sent: 'Izvještaj je poslan',
+            sentDescription: (email: string) => `Poslan je na ${email}.`,
+            failed: 'Izvještaj nije poslan.',
+        },
+        errors: {
+            network: 'Poslužitelj nije odgovorio. Provjerite internetsku vezu i pokušajte ponovno.',
+            forbidden: 'Nemate ovlasti za izvoz izvještaja.',
+            notFound: 'Izvještaj više nije dostupan. Učitajte stranicu ponovno.',
+            conflict: 'Adresa za slanje izvještaja nije postavljena.',
+            server: 'Došlo je do pogreške na poslužitelju. Pokušajte ponovno za nekoliko minuta.',
+        },
+    },
     citySettings: {
         intro: 'Sva su polja obavezna. Podaci se ispisuju na računima i šalju pri fiskalizaciji.',
         sections: {

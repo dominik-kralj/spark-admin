@@ -8,6 +8,7 @@ import {
     readIsoDate,
     startOfZagrebDay,
     toIsoDate,
+    zagrebCalendarDate,
 } from './calendarDate'
 import { formatDate } from './format'
 
@@ -91,5 +92,23 @@ describe('ISO dates', () => {
 
     it.each(['', '2026-3-7', '2026-02-30', '07.03.2026', 'abc'])('reads %j as no date', (text) => {
         expect(readIsoDate(text)).toBeNull()
+    })
+})
+
+describe('zagrebCalendarDate', () => {
+    it('is the day on the wall clock in Zagreb', () => {
+        expect(zagrebCalendarDate(new Date('2026-10-10T12:00:00Z'))).toEqual({
+            year: 2026,
+            month: 10,
+            day: 10,
+        })
+    })
+
+    it('is already the next day in Zagreb when UTC is not', () => {
+        expect(zagrebCalendarDate(new Date('2026-12-31T23:30:00Z'))).toEqual({
+            year: 2027,
+            month: 1,
+            day: 1,
+        })
     })
 })
