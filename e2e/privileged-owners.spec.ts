@@ -5,6 +5,7 @@ import { paths } from '../src/shared/paths'
 
 import { expectNoAxeViolations } from './axe'
 import {
+    expectErrorMovesNothing,
     expectNoHorizontalScroll,
     expectOnlyTableScrolls,
     expectTouchTargets,
@@ -173,6 +174,31 @@ test.describe('Privileged owners on a phone', () => {
         const renewed = list.getByRole('listitem').filter({ hasText: 'ZG9087KL' })
         await expect(renewed).toContainText('30.06.2027')
         await expect(renewed).toContainText(t.status.valid)
+    })
+})
+
+test.describe('Privileged owner form errors', () => {
+    test('shows a message under its field without moving the form', async ({ page, isMobile }) => {
+        await openList(page)
+        // The phone header has an icon button with the longer name.
+        await page.getByRole('button', { name: isMobile ? t.addLong : t.add, exact: true }).click()
+        const form = page.getByRole('dialog', { name: t.addLong })
+        await waitForAnimations(form)
+        const field = (label: keyof typeof labels) =>
+            form.getByLabel(labels[label], { exact: true })
+
+        await expectErrorMovesNothing(page, {
+            field: field('plate'),
+            value: 'X1',
+            steady: [
+                field('validUntil'),
+                field('ownerName'),
+                form.getByRole('button', { name: hr.forms.save }),
+            ],
+        })
+
+        await expect(form).toContainText(hr.forms.validation.plateInvalid)
+        await expectNoAxeViolations(page)
     })
 })
 

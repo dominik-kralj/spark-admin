@@ -1,7 +1,7 @@
 import { Button, Input, SimpleGrid, Text } from '@chakra-ui/react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Trash2 } from 'lucide-react'
-import type { HTMLAttributes } from 'react'
+import type { ComponentProps } from 'react'
 import { useForm } from 'react-hook-form'
 
 import { useStrings } from '@/shared/i18n/useStrings'
@@ -23,14 +23,31 @@ import {
     type ValidZoneFormValues,
 } from '../validators/zoneForm'
 
-const fields: { name: ZoneField; inputMode: HTMLAttributes<HTMLInputElement>['inputMode'] }[] = [
-    { name: 'code', inputMode: 'text' },
-    { name: 'name', inputMode: 'text' },
-    { name: 'price', inputMode: 'decimal' },
-    { name: 'dailyTicketPrice', inputMode: 'decimal' },
-    { name: 'durationMinutes', inputMode: 'numeric' },
-    { name: 'maxExtensions', inputMode: 'numeric' },
-    { name: 'dpkIssueDelayMinutes', inputMode: 'numeric' },
+type InputProps = ComponentProps<typeof Input>
+
+// Amounts stay text: a number input would not take the decimal comma everywhere.
+const amount: InputProps = { inputMode: 'decimal' }
+
+function wholeNumber(min: number): InputProps {
+    return {
+        type: 'number',
+        min,
+        step: 1,
+        // A focused number input changes its value on the wheel; let the page scroll instead.
+        onWheel: (event) => {
+            event.currentTarget.blur()
+        },
+    }
+}
+
+const fields: { name: ZoneField; input?: InputProps }[] = [
+    { name: 'code' },
+    { name: 'name' },
+    { name: 'price', input: amount },
+    { name: 'dailyTicketPrice', input: amount },
+    { name: 'durationMinutes', input: wholeNumber(1) },
+    { name: 'maxExtensions', input: wholeNumber(0) },
+    { name: 'dpkIssueDelayMinutes', input: wholeNumber(0) },
 ]
 
 interface ZoneFormDrawerProps {
@@ -57,7 +74,7 @@ export function ZoneFormDrawer({
         register,
         handleSubmit,
         setError,
-        formState: { errors, isDirty, isSubmitting, submitCount },
+        formState: { errors, isDirty, isSubmitting },
     } = useForm({
         resolver: zodResolver(zoneFormSchema),
         defaultValues: isAdding ? emptyZoneForm : toZoneFormValues(zone),
@@ -66,7 +83,6 @@ export function ZoneFormDrawer({
 
     const saveError = saveMutation.error
     const hasFieldErrors = Object.keys(toZoneFieldErrors(saveError)).length > 0
-    const hasInvalidFields = submitCount > 0 && Object.keys(errors).length > 0
 
     async function save(values: ValidZoneFormValues) {
         const input = toZoneInput(values)
@@ -88,7 +104,6 @@ export function ZoneFormDrawer({
             title={isAdding ? t.zones.add : t.zones.editZone(zone.code)}
             isDirty={isDirty}
             isSaving={isSubmitting}
-            isSaveDisabled={!isAdding && !isDirty}
             destructiveAction={
                 !isAdding && (
                     <Button
@@ -117,22 +132,15 @@ export function ZoneFormDrawer({
                 />
             )}
 
-            {hasInvalidFields && <ErrorAlert message={t.zones.form.notSaved} />}
-
             <SimpleGrid columns={{ base: 1, md: 2 }} columnGap="4" rowGap="5">
-                {fields.map(({ name, inputMode }) => (
+                {fields.map(({ name, input }) => (
                     <FormField
                         key={name}
                         label={t.zones.form.labels[name]}
                         error={zoneFieldMessage({ field: name, error: errors[name], t })}
                     >
                         {(control) => (
-                            <Input
-                                {...register(name)}
-                                {...control}
-                                inputMode={inputMode}
-                                autoComplete="off"
-                            />
+                            <Input {...register(name)} {...control} autoComplete="off" {...input} />
                         )}
                     </FormField>
                 ))}

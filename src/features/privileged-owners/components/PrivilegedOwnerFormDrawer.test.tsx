@@ -259,17 +259,32 @@ describe('Privileged owner form', () => {
         ])
     })
 
-    it('shows a one-line notice and moves focus to the first invalid field on an empty save', async () => {
+    it('keeps Spremi off on a new entry until something is typed', async () => {
         const rendered = await renderRoute(paths.privilegedOwners)
         const form = await openAddForm(rendered)
+        const saveButton = within(form).getByRole('button', { name: hr.forms.save })
+        expect(saveButton).toBeDisabled()
+
+        await rendered.user.type(field(form, 'ownerName'), 'Ana')
+
+        expect(saveButton).toBeEnabled()
+    })
+
+    it('sends nothing on a save with invalid fields, marks each one and focuses the first', async () => {
+        const bodies = captureBodies('post', '/privileged-owners')
+        const rendered = await renderRoute(paths.privilegedOwners)
+        const form = await openAddForm(rendered)
+        await rendered.user.type(field(form, 'ownerName'), 'Ana Horvat')
 
         await save(rendered, form)
 
-        expect(await within(form).findByRole('alert')).toHaveTextContent(t.form.notSaved)
         await waitFor(() => {
             expect(field(form, 'plate')).toHaveFocus()
         })
         expect(field(form, 'city')).toHaveAccessibleDescription(validation.required)
+        expect(field(form, 'ownerName')).toBeValid()
+        expect(within(form).queryByRole('alert')).not.toBeInTheDocument()
+        expect(bodies).toEqual([])
     })
 
     it('puts a field error from the server on that field', async () => {
@@ -362,6 +377,7 @@ describe('Privileged owner form', () => {
     it('has no axe violations with the form open and showing errors', async () => {
         const rendered = await renderRoute(paths.privilegedOwners)
         const form = await openAddForm(rendered)
+        await rendered.user.type(field(form, 'ownerName'), 'Ana')
         await save(rendered, form)
         await waitFor(() => {
             expect(field(form, 'plate')).toBeInvalid()

@@ -14,6 +14,7 @@ import { useForm } from 'react-hook-form'
 
 import { useStrings } from '@/shared/i18n/useStrings'
 import { errorMessage } from '@/shared/lib/errorMessage'
+import { setServerFieldErrors } from '@/shared/lib/setServerFieldErrors'
 import { toaster } from '@/shared/lib/toaster'
 import { keepDigits } from '@/shared/lib/validation'
 import { useUnsavedChangesGuard } from '@/shared/lib/useUnsavedChangesGuard'
@@ -34,17 +35,12 @@ import {
     toCitySettingsFormValues,
 } from '../validators/citySettingsForm'
 
-import { ErrorSummary } from './ErrorSummary'
 import { FormSection } from './FormSection'
-
-const fieldOrder = citySettingsFormSchema.keyof().options
 
 const saveErrorToastId = 'city-settings-save-error'
 
 // resetOptions keep a person's edits when a refetch lands; a save or a discard drops them.
 const discardEdits = { keepDirtyValues: false }
-
-const fieldId = (field: CitySettingsField) => `city-settings-${field}`
 
 interface FieldOptions {
     helperText?: string
@@ -67,22 +63,16 @@ export function CitySettingsForm({ settings }: { settings: CitySettings }) {
         reset,
         setError,
         setValue,
-        formState: { errors, isDirty, isSubmitting, submitCount },
+        formState: { errors, isDirty, isSubmitting },
     } = useForm({
         resolver: zodResolver(citySettingsFormSchema),
         values: toCitySettingsFormValues(settings),
         resetOptions: { keepDirtyValues: true },
-        // Errors on blur would move the buttons under a pointer mid-click; the summary comes on submit.
-        mode: 'onSubmit',
-        // The summary lists what the last save found, so it does not change while the person types.
-        reValidateMode: 'onSubmit',
-        // The error summary takes focus instead.
-        shouldFocusError: false,
+        mode: 'onTouched',
     })
     const { guardLeave, dialog } = useUnsavedChangesGuard(isDirty)
 
     const submit = handleSubmit(save)
-    const invalidFields = fieldOrder.filter((field) => errors[field] !== undefined)
 
     async function save(values: CitySettings) {
         toaster.dismiss(saveErrorToastId)
@@ -94,12 +84,7 @@ export function CitySettingsForm({ settings }: { settings: CitySettings }) {
                 description: t.citySettings.savedDescription,
             })
         } catch (error) {
-            const fieldErrors = Object.entries(toCitySettingsFieldErrors(error))
-            // Without focus: the error summary takes it.
-            fieldErrors.forEach(([field, type]) => {
-                setError(field as CitySettingsField, { type })
-            })
-            if (fieldErrors.length > 0) return
+            if (setServerFieldErrors(setError, toCitySettingsFieldErrors(error))) return
 
             // It stays until closed or retried, so the retry cannot time out.
             toaster.error({
@@ -131,11 +116,9 @@ export function CitySettingsForm({ settings }: { settings: CitySettings }) {
         return (
             <GridItem colSpan={colSpan}>
                 <FormField
-                    id={fieldId(name)}
                     label={t.citySettings.labels[name]}
                     helperText={helperText}
                     error={fieldError(name)}
-                    isErrorTextHidden
                 >
                     {(fieldControl) => (
                         <Input {...registration} {...fieldControl} autoComplete="off" {...input} />
@@ -153,17 +136,6 @@ export function CitySettingsForm({ settings }: { settings: CitySettings }) {
             onSubmit={(event) => void submit(event)}
         >
             <Stack gap={{ base: '7', md: '8' }} p={{ base: '4', md: '6' }}>
-                {submitCount > 0 && invalidFields.length > 0 && (
-                    <ErrorSummary
-                        key={submitCount}
-                        title={t.citySettings.errorSummary(invalidFields.length)}
-                        items={invalidFields.map((field) => ({
-                            fieldId: fieldId(field),
-                            message: `${t.citySettings.labels[field]}: ${fieldError(field) ?? ''}`,
-                        }))}
-                    />
-                )}
-
                 <Text color="fg.muted" mb={{ base: '-1', md: '-3' }}>
                     {t.citySettings.intro}
                 </Text>

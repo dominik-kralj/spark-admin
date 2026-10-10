@@ -127,34 +127,41 @@ describe('CitySettingsPage', () => {
         expect(saveButton()).toBeDisabled()
     })
 
-    it('stops an invalid save with a focused error summary that links to each field', async () => {
+    it('shows the message under a field when you leave it, and clears it as you fix it', async () => {
         const rendered = await renderPage()
-        const bodies = capturePutBodies()
 
         await replaceValue(rendered, 'oib', '1234567890')
-        await replaceValue(rendered, 'iban', 'HR12100100518630')
-        await rendered.user.click(saveButton())
+        expect(field('oib')).toBeValid()
+        await rendered.user.tab()
 
-        const summary = await screen.findByRole('alert')
-        expect(within(summary).getByRole('heading', { level: 2 })).toHaveTextContent(
-            t.errorSummary(2),
-        )
-        await waitFor(() => {
-            expect(summary).toHaveFocus()
-        })
-        const links = within(summary).getAllByRole('link')
-        expect(links.map((link) => link.textContent)).toEqual([
-            `${labels.oib}: ${hr.forms.validation.oibInvalid}`,
-            `${labels.iban}: ${hr.forms.validation.ibanInvalid}`,
-        ])
+        expect(field('oib')).toBeInvalid()
         expect(field('oib')).toHaveAccessibleDescription(
             `${t.oibHelp} ${hr.forms.validation.oibInvalid}`,
         )
-        expect(field('iban')).toBeInvalid()
 
-        await rendered.user.click(within(summary).getByRole('link', { name: /IBAN/ }))
+        await rendered.user.type(field('oib'), '3')
 
-        expect(field('iban')).toHaveFocus()
+        expect(field('oib')).toBeValid()
+    })
+
+    it('sends nothing on a save with invalid fields, marks each one and focuses the first', async () => {
+        const rendered = await renderPage()
+        const bodies = capturePutBodies()
+
+        await replaceValue(rendered, 'iban', 'HR12100100518630')
+        await replaceValue(rendered, 'oib', '1234567890')
+        await rendered.user.click(saveButton())
+
+        await waitFor(() => {
+            expect(field('oib')).toHaveFocus()
+        })
+        expect(field('oib')).toHaveAccessibleDescription(
+            `${t.oibHelp} ${hr.forms.validation.oibInvalid}`,
+        )
+        expect(field('iban')).toHaveAccessibleDescription(
+            `${t.ibanHelp} ${hr.forms.validation.ibanInvalid}`,
+        )
+        expect(screen.queryByRole('alert')).not.toBeInTheDocument()
         expect(bodies).toEqual([])
     })
 
@@ -166,10 +173,9 @@ describe('CitySettingsPage', () => {
         await replaceValue(rendered, 'premisesCode', '')
         await rendered.user.click(saveButton())
 
-        const summary = await screen.findByRole('alert')
-        expect(within(summary).getByRole('heading', { level: 2 })).toHaveTextContent(
-            t.errorSummary(3),
-        )
+        await waitFor(() => {
+            expect(field('premisesCode')).toHaveFocus()
+        })
         expect(field('premisesCode')).toHaveAccessibleDescription(hr.forms.validation.required)
         expect(field('cashRegisterCode')).toHaveAccessibleDescription(
             t.validation.cashRegisterInvalid,
@@ -177,7 +183,7 @@ describe('CitySettingsPage', () => {
         expect(field('vatRate')).toHaveAccessibleDescription(t.validation.vatRateInvalid)
     })
 
-    it('puts fields the server rejects in the error summary', async () => {
+    it('puts a field the server rejects under that field, with focus on it', async () => {
         server.use(
             http.put(apiUrl('/tenant'), () =>
                 HttpResponse.json(
@@ -191,13 +197,13 @@ describe('CitySettingsPage', () => {
         await replaceValue(rendered, 'premisesCode', 'POSL 1')
         await rendered.user.click(saveButton())
 
-        const summary = await screen.findByRole('alert')
         await waitFor(() => {
-            expect(summary).toHaveFocus()
+            expect(field('premisesCode')).toHaveFocus()
         })
-        expect(within(summary).getByRole('link')).toHaveTextContent(
-            `${labels.premisesCode}: ${hr.forms.serverFieldErrors.invalid}`,
+        expect(field('premisesCode')).toHaveAccessibleDescription(
+            hr.forms.serverFieldErrors.invalid,
         )
+        expect(screen.queryByRole('alert')).not.toBeInTheDocument()
     })
 
     it('keeps the input after a failed save and retries from the toast', async () => {
@@ -288,11 +294,13 @@ describe('CitySettingsPage', () => {
         expect(await screen.findByRole('form', { name: hr.nav.citySettings })).toBeInTheDocument()
     })
 
-    it('has no axe violations with the error summary showing', async () => {
+    it('has no axe violations with field errors showing', async () => {
         const rendered = await renderPage()
         await replaceValue(rendered, 'oib', '123')
         await rendered.user.click(saveButton())
-        await screen.findByRole('alert')
+        await waitFor(() => {
+            expect(field('oib')).toBeInvalid()
+        })
 
         await expectNoAxeViolations(rendered.container)
     })

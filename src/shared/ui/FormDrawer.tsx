@@ -14,6 +14,7 @@ interface FormDrawerProps {
     /** After a successful save, close with onClose before navigating, or the guard still asks. */
     isDirty: boolean
     isSaving: boolean
+    /** Save is off until something changes; this turns it off for another reason too. */
     isSaveDisabled?: boolean
     destructiveAction?: ReactNode
     onClose: () => void
@@ -113,7 +114,7 @@ export function FormDrawer({
                                                     type="submit"
                                                     colorPalette="blue"
                                                     loading={isSaving}
-                                                    disabled={isSaveDisabled}
+                                                    disabled={!isDirty || isSaveDisabled}
                                                     loadingText={t.forms.save}
                                                 >
                                                     {t.forms.save}

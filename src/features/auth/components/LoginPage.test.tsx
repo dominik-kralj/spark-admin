@@ -92,16 +92,16 @@ describe('LoginPage', () => {
         expect(getForm().username).toHaveAccessibleDescription(hr.login.usernameRequired)
     })
 
-    it('shows no field error on blur, only on submit, and clears it as the user types', async () => {
+    it('shows the message when an empty field is left, and clears it as the user types', async () => {
         const { user } = await renderRoute(paths.login)
-        const { username, submit } = getForm()
+        const { username, password } = getForm()
 
         await user.click(username)
-        await user.tab()
         expect(username).not.toHaveAccessibleDescription()
+        await user.tab()
 
-        await user.click(submit)
         expect(username).toHaveAccessibleDescription(hr.login.usernameRequired)
+        expect(password).not.toHaveAccessibleDescription()
 
         await user.type(username, 'ana')
         expect(username).not.toHaveAccessibleDescription()

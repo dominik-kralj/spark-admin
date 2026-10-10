@@ -4,7 +4,13 @@ import { hr } from '../src/shared/i18n/hr'
 import { paths } from '../src/shared/paths'
 
 import { expectNoAxeViolations } from './axe'
-import { expectBelow, expectNoHorizontalScroll, expectTouchTargets, signIn } from './helpers'
+import {
+    expectBelow,
+    expectErrorMovesNothing,
+    expectNoHorizontalScroll,
+    expectTouchTargets,
+    signIn,
+} from './helpers'
 
 const t = hr.citySettings
 const { labels } = t
@@ -70,24 +76,6 @@ test.describe('City settings on wider screens', () => {
 
         await renameAndSave(page)
     })
-
-    test('focuses the error summary, whose links move focus to the field', async ({ page }) => {
-        await page.setViewportSize({ width: 768, height: 1000 })
-        await openSettings(page)
-
-        await page.getByLabel(labels.oib, { exact: true }).fill('1234567890')
-        await page.getByLabel(labels.iban, { exact: true }).fill('HR12100100518630')
-        await page.getByRole('button', { name: t.save }).click()
-
-        const summary = page.getByRole('alert')
-        await expect(summary).toBeFocused()
-        await expect(summary.getByRole('heading', { level: 2 })).toHaveText(t.errorSummary(2))
-        await expectNoAxeViolations(page)
-
-        await summary.getByRole('link', { name: new RegExp(`^${labels.iban}:`) }).click()
-
-        await expect(page.getByLabel(labels.iban, { exact: true })).toBeFocused()
-    })
 })
 
 test.describe('City settings on a phone', () => {
@@ -113,4 +101,36 @@ test.describe('City settings on a phone', () => {
             await expectNoHorizontalScroll(page)
         })
     }
+})
+
+test.describe('City settings errors', () => {
+    test('show a message under each field without moving the form', async ({ page }) => {
+        await openSettings(page)
+        const field = (label: keyof typeof labels) =>
+            page.getByLabel(labels[label], { exact: true })
+        const save = page.getByRole('button', { name: t.save })
+
+        await expectErrorMovesNothing(page, {
+            field: field('cashRegisterCode'),
+            value: '01',
+            steady: [field('vatRate'), save],
+        })
+        await expectErrorMovesNothing(page, {
+            field: field('vatRate'),
+            value: '120',
+            steady: [field('premisesCode'), save],
+        })
+        await expectErrorMovesNothing(page, {
+            field: field('iban'),
+            value: 'HR1',
+            steady: [field('premisesCode'), save],
+        })
+
+        await expect(page.getByText(hr.forms.validation.ibanInvalid)).toBeVisible()
+        await expectNoAxeViolations(page)
+
+        await save.click()
+
+        await expect(field('iban')).toBeFocused()
+    })
 })

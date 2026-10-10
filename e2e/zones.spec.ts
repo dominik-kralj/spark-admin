@@ -5,6 +5,7 @@ import { paths } from '../src/shared/paths'
 
 import { expectNoAxeViolations } from './axe'
 import {
+    expectErrorMovesNothing,
     expectBelow,
     expectNoHorizontalScroll,
     expectOnlyTableScrolls,
@@ -193,6 +194,31 @@ test.describe('Zone form on a phone', () => {
         await expect(list.getByRole('listitem').filter({ hasText: 'ZONA3' })).toContainText(
             'Treća zona B',
         )
+    })
+})
+
+test.describe('Zone form errors', () => {
+    test('shows a message under its field without moving the form', async ({ page }) => {
+        await signIn(page)
+        await page.goto(paths.zones)
+        await page.getByRole('button', { name: hr.zones.add }).click()
+        const form = page.getByRole('dialog', { name: hr.zones.add })
+        await waitForAnimations(form)
+        const field = (label: keyof typeof labels) =>
+            form.getByLabel(labels[label], { exact: true })
+
+        await expectErrorMovesNothing(page, {
+            field: field('price'),
+            value: 'abc',
+            steady: [
+                field('dailyTicketPrice'),
+                field('durationMinutes'),
+                form.getByRole('button', { name: hr.forms.save }),
+            ],
+        })
+
+        await expect(form).toContainText(hr.zones.form.errors.notAmount)
+        await expectNoAxeViolations(page)
     })
 })
 

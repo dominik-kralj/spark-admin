@@ -63,7 +63,7 @@ async function openEditForm({ user }: RenderedRoute, code: string) {
 }
 
 function field(form: HTMLElement, label: Label) {
-    return within(form).getByRole('textbox', { name: labels[label] })
+    return within(form).getByLabelText(labels[label])
 }
 
 async function fillForm(rendered: RenderedRoute, form: HTMLElement, values: Record<Label, string>) {
@@ -122,6 +122,22 @@ describe('Zone form', () => {
         expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument()
     })
 
+    it('takes the minutes and extensions as whole numbers, and the prices as text', async () => {
+        const rendered = await renderRoute(paths.zones)
+        const form = await openAddForm(rendered)
+
+        for (const label of ['durationMinutes', 'maxExtensions', 'dpkIssueDelayMinutes'] as const) {
+            const input = within(form).getByRole('spinbutton', { name: labels[label] })
+            expect(input).toHaveAttribute('step', '1')
+        }
+        expect(field(form, 'durationMinutes')).toHaveAttribute('min', '1')
+        expect(field(form, 'maxExtensions')).toHaveAttribute('min', '0')
+        expect(within(form).getByRole('textbox', { name: labels.price })).toHaveAttribute(
+            'inputmode',
+            'decimal',
+        )
+    })
+
     it('pre-fills the edit form with exactly the stored values', async () => {
         const rendered = await renderRoute(paths.zones)
 
@@ -137,7 +153,7 @@ describe('Zone form', () => {
             dpkIssueDelayMinutes: '15',
         }
         for (const [label, value] of Object.entries(stored) as [Label, string][]) {
-            expect(field(form, label)).toHaveValue(value)
+            expect(field(form, label)).toHaveDisplayValue(value)
         }
     })
 
@@ -178,7 +194,7 @@ describe('Zone form', () => {
         ['price', 'abc', errors.notAmount],
         ['price', '1,005', errors.tooManyDecimals],
         ['dailyTicketPrice', '100000000', errors.tooLarge],
-        ['durationMinutes', '1,5', errors.notWholeNumber],
+        ['durationMinutes', '1.5', errors.notWholeNumber],
         ['durationMinutes', '0', errors.notPositive],
         ['maxExtensions', '-1', errors.notWholeNumber],
         ['dpkIssueDelayMinutes', '2147483648', errors.tooLarge],
@@ -212,36 +228,40 @@ describe('Zone form', () => {
         expect(price).not.toHaveAccessibleDescription()
     })
 
-    it('shows a one-line notice and moves focus to the first invalid field on an empty save', async () => {
+    it('keeps Spremi off on a new zone until something is typed', async () => {
         const rendered = await renderRoute(paths.zones)
         const form = await openAddForm(rendered)
+        const saveButton = within(form).getByRole('button', { name: hr.forms.save })
+        expect(saveButton).toBeDisabled()
+
+        await rendered.user.type(field(form, 'name'), 'B')
+
+        expect(saveButton).toBeEnabled()
+    })
+
+    it('sends nothing on a save with invalid fields, marks each one and focuses the first', async () => {
+        const bodies = captureBodies('post', '/zones')
+        const rendered = await renderRoute(paths.zones)
+        const form = await openAddForm(rendered)
+        await rendered.user.type(field(form, 'name'), 'Treća zona')
 
         await save(rendered, form)
 
-        expect(await within(form).findByRole('alert')).toHaveTextContent(hr.zones.form.notSaved)
-        expect(within(form).queryByRole('link')).not.toBeInTheDocument()
         await waitFor(() => {
             expect(field(form, 'code')).toHaveFocus()
         })
+        expect(field(form, 'code')).toHaveAccessibleDescription(errors.required)
+        expect(field(form, 'name')).toBeValid()
         expect(field(form, 'dpkIssueDelayMinutes')).toHaveAccessibleDescription(errors.required)
-    })
-
-    it('drops the notice once every field is fixed', async () => {
-        const rendered = await renderRoute(paths.zones)
-        const form = await openAddForm(rendered)
-        await save(rendered, form)
-        await within(form).findByRole('alert')
-
-        await fillForm(rendered, form, newZone)
-
         expect(within(form).queryByRole('alert')).not.toBeInTheDocument()
+        expect(bodies).toEqual([])
     })
 
     it.each([
         ['code', { code: 'zona1' }, hr.zones.form.duplicate.code],
         ['name', { name: 'Prva zona' }, hr.zones.form.duplicate.name],
     ] as const)(
-        'puts a duplicate %s from the server on that field, with the notice',
+        'puts a duplicate %s from the server on that field',
         async (label, values, message) => {
             const rendered = await renderRoute(paths.zones)
             const form = await openAddForm(rendered)
@@ -253,7 +273,7 @@ describe('Zone form', () => {
                 expect(field(form, label)).toHaveFocus()
             })
             expect(field(form, label)).toHaveAccessibleDescription(message)
-            expect(within(form).getByRole('alert')).toHaveTextContent(hr.zones.form.notSaved)
+            expect(within(form).queryByRole('alert')).not.toBeInTheDocument()
         },
     )
 
@@ -337,6 +357,7 @@ describe('Zone form', () => {
     it('has no axe violations with the form open and showing errors', async () => {
         const rendered = await renderRoute(paths.zones)
         const form = await openAddForm(rendered)
+        await rendered.user.type(field(form, 'name'), 'B')
         await save(rendered, form)
         await waitFor(() => {
             expect(field(form, 'code')).toBeInvalid()

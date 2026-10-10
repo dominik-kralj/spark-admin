@@ -46,7 +46,7 @@ function TestForm({ save }: { save: Save }) {
     } = useForm({
         resolver: zodResolver(testFormSchema),
         defaultValues: emptyTestForm,
-        mode: 'onBlur',
+        mode: 'onTouched',
     })
 
     async function submit(values: TestFormValues) {
@@ -373,20 +373,32 @@ describe('FormDrawer', () => {
         expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument()
     })
 
-    it('moves focus to the first invalid field on submit', async () => {
-        const save = vi.fn<Save>()
-        const { user } = renderTestForm(save)
-        await user.click(screen.getByRole('button', { name: 'Dodaj zonu' }))
+    it('keeps Spremi off until something changes', async () => {
+        const rendered = renderTestForm()
+        await rendered.user.click(screen.getByRole('button', { name: 'Dodaj zonu' }))
         const drawer = await screen.findByRole('dialog', { name: 'Dodaj zonu' })
+        const saveButton = within(drawer).getByRole('button', { name: hr.forms.save })
+        expect(saveButton).toBeDisabled()
 
-        await user.click(within(drawer).getByRole('button', { name: hr.forms.save }))
+        await rendered.user.type(within(drawer).getByRole('textbox', { name: 'Šifra' }), 'Z')
+
+        expect(saveButton).toBeEnabled()
+    })
+
+    it('moves focus to the first invalid field on submit, and saves nothing', async () => {
+        const save = vi.fn<Save>()
+        const rendered = renderTestForm(save)
+        await rendered.user.click(screen.getByRole('button', { name: 'Dodaj zonu' }))
+        const drawer = await screen.findByRole('dialog', { name: 'Dodaj zonu' })
+        await rendered.user.type(within(drawer).getByRole('textbox', { name: 'Naziv' }), 'Zona')
+
+        await rendered.user.click(within(drawer).getByRole('button', { name: hr.forms.save }))
 
         const code = within(drawer).getByRole('textbox', { name: 'Šifra' })
         await waitFor(() => {
             expect(code).toHaveFocus()
         })
         expect(code).toHaveAccessibleDescription('Polje je obavezno.')
-        expect(within(drawer).getByRole('textbox', { name: 'Naziv' })).toBeInvalid()
         expect(save).not.toHaveBeenCalled()
     })
 

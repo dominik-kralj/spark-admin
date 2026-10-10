@@ -154,22 +154,32 @@ describe('Karte filters', () => {
         expect(bar().getByRole('textbox', { name: f.to })).toHaveValue('07.10.2026')
     })
 
-    it('lists an unreadable date in one alert above the bar, tied to its field', async () => {
+    it('shows an unreadable date under its field when you leave it', async () => {
+        const { user } = await openPage()
+        const to = bar().getByRole('textbox', { name: f.to })
+
+        await user.type(to, '31.02.2026')
+        expect(to).toBeValid()
+        await user.tab()
+
+        expect(to).toHaveAttribute('aria-invalid', 'true')
+        expect(to).toHaveAccessibleDescription(hr.forms.validation.dateInvalid)
+        expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+    })
+
+    it('searches nothing with an unreadable date, and focuses its field', async () => {
         const requests = listRequests()
         const { user, router } = await openPage()
         const sent = requests.length
-
         await user.type(bar().getByRole('textbox', { name: f.to }), '31.02.2026')
+
         await user.click(bar().getByRole('button', { name: f.search }))
 
         const to = bar().getByRole('textbox', { name: f.to })
         await waitFor(() => {
-            expect(to).toHaveAccessibleDescription(hr.forms.validation.dateInvalid)
+            expect(to).toHaveFocus()
         })
-        expect(to).toHaveAttribute('aria-invalid', 'true')
-        expect(
-            screen.getByText(`${f.to}: ${hr.forms.validation.dateInvalid}`, { exact: false }),
-        ).toBeInTheDocument()
+        expect(to).toHaveAccessibleDescription(hr.forms.validation.dateInvalid)
         expect(router.state.location.search).toBe('')
         expect(requests).toHaveLength(sent)
     })

@@ -1,4 +1,4 @@
-import { Alert, Box, Button, Field, Flex, Input, Stack } from '@chakra-ui/react'
+import { Alert, Box, Button, Flex, Input, Stack } from '@chakra-ui/react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CircleAlert, Info } from 'lucide-react'
 import { useId } from 'react'
@@ -7,6 +7,7 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router'
 
 import { useStrings } from '@/shared/i18n/useStrings'
 import { focusOnMount } from '@/shared/lib/focusOnMount'
+import { FormField } from '@/shared/ui/FormField'
 import { LanguageMenu } from '@/shared/ui/LanguageMenu'
 import { SecretInput } from '@/shared/ui/SecretInput'
 
@@ -24,9 +25,6 @@ export function LoginPage() {
     const [searchParams] = useSearchParams()
     const headingId = useId()
     const errorId = useId()
-    // Chakra links field errors only via aria-errormessage, so inputs add aria-describedby.
-    const usernameErrorId = useId()
-    const passwordErrorId = useId()
     const {
         register,
         handleSubmit,
@@ -34,8 +32,7 @@ export function LoginPage() {
     } = useForm({
         resolver: zodResolver(loginFormSchema),
         defaultValues: emptyLoginForm,
-        mode: 'onSubmit',
-        reValidateMode: 'onChange',
+        mode: 'onTouched',
     })
     const { signIn, isPending, failure } = useAuth({
         onSignIn: () => {
@@ -95,38 +92,28 @@ export function LoginPage() {
                         </Alert.Root>
                     )}
 
-                    <Field.Root
-                        invalid={errors.username !== undefined}
-                        ids={{ errorText: usernameErrorId }}
+                    <FormField
+                        label={t.login.username}
+                        error={errors.username && t.login.usernameRequired}
                     >
-                        <Field.Label>{t.login.username}</Field.Label>
-                        <Input
-                            {...register('username')}
-                            aria-describedby={errors.username ? usernameErrorId : undefined}
-                            autoComplete="username"
-                        />
-                        <Field.ErrorText fontSize="caption">
-                            <CircleAlert size="14" />
-                            {errors.username && t.login.usernameRequired}
-                        </Field.ErrorText>
-                    </Field.Root>
+                        {(control) => (
+                            <Input {...register('username')} {...control} autoComplete="username" />
+                        )}
+                    </FormField>
 
-                    <Field.Root
-                        invalid={errors.password !== undefined}
-                        ids={{ errorText: passwordErrorId }}
+                    <FormField
+                        label={t.login.password}
+                        error={errors.password && t.login.passwordRequired}
                     >
-                        <Field.Label>{t.login.password}</Field.Label>
-                        <SecretInput
-                            {...register('password')}
-                            showLabel={t.login.showPassword}
-                            aria-describedby={errors.password ? passwordErrorId : undefined}
-                            autoComplete="current-password"
-                        />
-                        <Field.ErrorText fontSize="caption">
-                            <CircleAlert size="14" />
-                            {errors.password && t.login.passwordRequired}
-                        </Field.ErrorText>
-                    </Field.Root>
+                        {(control) => (
+                            <SecretInput
+                                {...register('password')}
+                                {...control}
+                                showLabel={t.login.showPassword}
+                                autoComplete="current-password"
+                            />
+                        )}
+                    </FormField>
 
                     <Button
                         type="submit"

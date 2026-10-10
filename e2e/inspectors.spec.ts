@@ -5,6 +5,7 @@ import { paths } from '../src/shared/paths'
 
 import { expectNoAxeViolations } from './axe'
 import {
+    expectErrorMovesNothing,
     expectBelow,
     expectNoHorizontalScroll,
     expectTouchTargets,
@@ -167,5 +168,26 @@ test.describe('Inspector form on a phone', () => {
         await expect(list.getByRole('listitem').filter({ hasText: 'Marko Horvat' })).toContainText(
             t.status.inactive,
         )
+    })
+})
+
+test.describe('Inspector form errors', () => {
+    test('shows a message under its field without moving the form', async ({ page }) => {
+        await openList(page)
+        await page.getByRole('button', { name: t.add }).first().click()
+        const form = page.getByRole('dialog', { name: t.add })
+        await waitForAnimations(form)
+
+        await expectErrorMovesNothing(page, {
+            field: form.getByLabel(t.form.labels.oib, { exact: true }),
+            value: '123',
+            steady: [
+                form.getByLabel(t.form.labels.pin, { exact: true }),
+                form.getByRole('button', { name: hr.forms.save }),
+            ],
+        })
+
+        await expect(form).toContainText(hr.forms.validation.oibInvalid)
+        await expectNoAxeViolations(page)
     })
 })

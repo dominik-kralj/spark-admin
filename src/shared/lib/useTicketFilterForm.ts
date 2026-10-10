@@ -18,6 +18,7 @@ export function useTicketFilterForm(
     const form = useForm({
         resolver: zodResolver(ticketFilterFormSchema),
         values: toTicketFilterFormValues(values),
+        mode: 'onTouched',
     })
 
     return { form, submit: form.handleSubmit(onApply) }

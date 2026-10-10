@@ -5,6 +5,7 @@ import { paths } from '../src/shared/paths'
 
 import { expectNoAxeViolations } from './axe'
 import {
+    expectErrorMovesNothing,
     expectNoHorizontalScroll,
     expectOnlyTableScrolls,
     expectTouchTargets,
@@ -143,21 +144,25 @@ test.describe('Karte on a desktop', () => {
         await expectOnlyTableScrolls(page, table)
     })
 
-    test('lists an unreadable date above the bar without moving it', async ({ page }) => {
+    test('shows an unreadable date under its field without moving the bar', async ({ page }) => {
         await openList(page)
         const bar = page.getByRole('search', { name: t.filters.label })
+        const to = bar.getByRole('textbox', { name: f.to })
 
-        await bar.getByRole('textbox', { name: f.to }).fill('31.02.2026')
+        await expectErrorMovesNothing(page, {
+            field: to,
+            value: '31.02.2026',
+            steady: [
+                bar.getByRole('combobox', { name: f.zone }),
+                bar.getByRole('button', { name: f.search }),
+                page.getByRole('table', { name: t.listLabel }),
+            ],
+        })
+        await expect(bar.getByText(hr.forms.validation.dateInvalid)).toBeVisible()
+
         await bar.getByRole('button', { name: f.search }).click()
 
-        await expect(
-            page.getByText(`${f.to}: ${hr.forms.validation.dateInvalid}`, { exact: false }),
-        ).toBeVisible()
-        await expect(bar.getByRole('textbox', { name: f.to })).toBeFocused()
-        // The error grows only its own field: the other controls stay level with the inputs.
-        const plateTop = (await bar.getByRole('searchbox', { name: f.plate }).boundingBox())?.y
-        const searchTop = (await bar.getByRole('button', { name: f.search }).boundingBox())?.y
-        expect(Math.abs((plateTop ?? 0) - (searchTop ?? 0))).toBeLessThan(2)
+        await expect(to).toBeFocused()
         await expect(page).toHaveURL(paths.tickets)
     })
 })
@@ -283,5 +288,31 @@ test.describe('Karte on a phone', () => {
         await expect(drawer).toBeHidden()
         await expect(page).toHaveURL(paths.tickets)
         await expect(cardLink).toBeFocused()
+    })
+})
+
+test.describe('Karte filter drawer errors', () => {
+    test.skip(({ isMobile }) => !isMobile, 'the filter drawer runs in the phone project')
+
+    test('shows an unreadable date under its field without moving the drawer', async ({ page }) => {
+        await openList(page)
+        await page
+            .getByRole('search', { name: t.filters.label })
+            .getByRole('button', { name: f.open })
+            .click()
+        const drawer = page.getByRole('dialog', { name: f.drawerTitle })
+        await waitForAnimations(drawer)
+
+        await expectErrorMovesNothing(page, {
+            field: drawer.getByRole('textbox', { name: f.from }),
+            value: '31.02.2026',
+            steady: [
+                drawer.getByRole('combobox', { name: f.zone }),
+                drawer.getByRole('button', { name: f.apply }),
+            ],
+        })
+
+        await expect(drawer.getByText(hr.forms.validation.dateInvalid)).toBeVisible()
+        await expectNoAxeViolations(page)
     })
 })

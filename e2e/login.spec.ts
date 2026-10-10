@@ -5,7 +5,7 @@ import { hr } from '../src/shared/i18n/hr'
 import { paths } from '../src/shared/paths'
 
 import { expectNoAxeViolations } from './axe'
-import { expectNoHorizontalScroll, zoomText } from './helpers'
+import { expectErrorMovesNothing, expectNoHorizontalScroll, zoomText } from './helpers'
 
 test.beforeEach(async ({ page }) => {
     await page.goto(paths.login)
@@ -81,4 +81,18 @@ test('holds at 320 px with 200 % text zoom', async ({ page, isMobile }) => {
 
     await expectNoHorizontalScroll(page)
     await expect(page.getByRole('button', { name: hr.login.submit })).toBeInViewport()
+})
+
+test('shows a message under an empty field without moving the form', async ({ page }) => {
+    await expectErrorMovesNothing(page, {
+        field: page.getByLabel(hr.login.username),
+        value: '',
+        steady: [
+            page.getByLabel(hr.login.password, { exact: true }),
+            page.getByRole('button', { name: hr.login.submit }),
+        ],
+    })
+
+    await expect(page.getByText(hr.login.usernameRequired)).toBeVisible()
+    await expectNoAxeViolations(page)
 })

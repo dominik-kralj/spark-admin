@@ -65,11 +65,9 @@ export function PlateFilterField({ form, onClear }: PlateFilterFieldProps) {
 
 interface DateFilterFieldProps extends FilterFieldProps {
     name: DateFilterName
-    /** The bar lists its errors in one alert above it; the drawer shows each under its field. */
-    isErrorInAlert?: boolean
 }
 
-export function DateFilterField({ form, name, isErrorInAlert = false }: DateFilterFieldProps) {
+export function DateFilterField({ form, name }: DateFilterFieldProps) {
     const t = useStrings()
     const label = t.ticketFilters[name]
     const typedDate = useWatch({ control: form.control, name })
@@ -80,11 +78,7 @@ export function DateFilterField({ form, name, isErrorInAlert = false }: DateFilt
     const bound = 'date' in otherDate ? otherDate.date : undefined
 
     return (
-        <FormField
-            label={label}
-            error={dateFilterError(form, name, t)}
-            isErrorTextHidden={isErrorInAlert}
-        >
+        <FormField label={label} error={dateFilterError(form, name, t)}>
             {(control) => (
                 <DateInput
                     label={label}
@@ -94,7 +88,7 @@ export function DateFilterField({ form, name, isErrorInAlert = false }: DateFilt
                     onPick={(picked) => {
                         form.setValue(name, picked, {
                             shouldDirty: true,
-                            shouldValidate: form.formState.isSubmitted,
+                            shouldValidate: true,
                         })
                     }}
                 >
