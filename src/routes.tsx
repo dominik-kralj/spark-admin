@@ -19,6 +19,8 @@ const screens: Partial<Record<string, () => Promise<ComponentType>>> = {
             .PrivilegedOwnersPage,
     [paths.inspectors]: async () =>
         (await import('@/features/inspectors/components/InspectorsPage')).InspectorsPage,
+    [paths.citySettings]: async () =>
+        (await import('@/features/city-settings/components/CitySettingsPage')).CitySettingsPage,
 }
 
 // A section whose detail opens over its list, so a detail link works on its own.

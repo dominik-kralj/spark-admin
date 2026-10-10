@@ -1,4 +1,12 @@
-import { Toaster as ChakraToaster, Icon, IconButton, Portal, Stack, Toast } from '@chakra-ui/react'
+import {
+    Button,
+    Toaster as ChakraToaster,
+    Icon,
+    IconButton,
+    Portal,
+    Stack,
+    Toast,
+} from '@chakra-ui/react'
 import { CircleAlert, CircleCheck, X } from 'lucide-react'
 
 import { useStrings } from '@/shared/i18n/useStrings'
@@ -22,6 +30,13 @@ export function Toaster() {
                             {toast.title && <Toast.Title>{toast.title}</Toast.Title>}
                             {toast.description && (
                                 <Toast.Description>{toast.description}</Toast.Description>
+                            )}
+                            {toast.action && (
+                                <Toast.ActionTrigger asChild>
+                                    <Button variant="outline" size="sm" alignSelf="flex-start">
+                                        {toast.action.label}
+                                    </Button>
+                                </Toast.ActionTrigger>
                             )}
                         </Stack>
                         <Toast.CloseTrigger asChild position="static">

@@ -19,7 +19,7 @@ export function privilegedOwnerFieldMessage({
 }: PrivilegedOwnerFieldMessageArgs): string | undefined {
     const maxLengths: Partial<Record<PrivilegedOwnerField, number>> = textMaxLength
     const maxLength = maxLengths[field]
-    const tooLong = maxLength === undefined ? undefined : t.privilegedOwners.form.tooLong(maxLength)
+    const tooLong = maxLength === undefined ? undefined : t.forms.tooLong(maxLength)
 
     return fieldMessage({ error, ruleMessages: { ...t.forms.validation, tooLong }, t })
 }

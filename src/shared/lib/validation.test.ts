@@ -6,6 +6,7 @@ import type { z } from 'zod'
 import {
     dateField,
     filterPin,
+    keepDigits,
     normalisePlate,
     oibField,
     optionalDateField,
@@ -167,5 +168,11 @@ describe('optionalDateField', () => {
         ['31.02.2027', 'dateInvalid'],
     ])('rejects "%s" with %s', (typed, message) => {
         expect(messagesFor(optionalDateField, typed)).toEqual([message])
+    })
+})
+
+describe('keepDigits', () => {
+    it('drops everything but digits', () => {
+        expect(keepDigits(' 12 345-678a90 ')).toBe('1234567890')
     })
 })

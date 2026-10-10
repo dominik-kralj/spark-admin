@@ -19,7 +19,7 @@ export function inspectorFieldMessage({
 }: InspectorFieldMessageArgs): string | undefined {
     return fieldMessage({
         error,
-        ruleMessages: { ...t.forms.validation, tooLong: t.inspectors.form.tooLong(nameMaxLength) },
+        ruleMessages: { ...t.forms.validation, tooLong: t.forms.tooLong(nameMaxLength) },
         duplicateMessage: field === 'oib' ? t.inspectors.form.duplicateOib : undefined,
         t,
     })

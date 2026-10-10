@@ -394,7 +394,7 @@ interface ReportPreview {
   `202`. The report goes to the city's preset address (`reportEmail` in
   `GET /tenant`). `409 noReportEmail` when none is set.
 
-### ADM-8 City settings (Postavke grada)
+### ADM-8 City settings (Postavke grada) [built]
 
 ```ts
 interface Tenant {

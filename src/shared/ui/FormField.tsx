@@ -8,6 +8,8 @@ export interface FieldControlProps {
 
 interface FormFieldProps {
     label: string
+    /** The control's id, for a link that points at the field. */
+    id?: string
     helperText?: string | undefined
     error?: string | undefined
     /** For a form that shows its errors together elsewhere: the text stays for screen readers. */
@@ -17,6 +19,7 @@ interface FormFieldProps {
 
 export function FormField({
     label,
+    id,
     helperText,
     error,
     isErrorTextHidden = false,
@@ -29,6 +32,7 @@ export function FormField({
 
     return (
         <Field.Root
+            id={id}
             invalid={Boolean(error)}
             ids={{ helperText: helperTextId, errorText: errorTextId }}
         >

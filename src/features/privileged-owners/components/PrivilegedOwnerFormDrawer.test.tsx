@@ -224,11 +224,11 @@ describe('Privileged owner form', () => {
         ['validUntil', '31.02.2027', validation.dateInvalid],
         ['validUntil', '29.02.2027', validation.dateInvalid],
         ['ownerName', '', validation.required],
-        ['ownerName', 'N'.repeat(201), t.form.tooLong(200)],
-        ['street', 'S'.repeat(151), t.form.tooLong(150)],
-        ['houseNo', '1'.repeat(21), t.form.tooLong(20)],
-        ['zipCode', '1'.repeat(11), t.form.tooLong(10)],
-        ['city', 'C'.repeat(101), t.form.tooLong(100)],
+        ['ownerName', 'N'.repeat(201), hr.forms.tooLong(200)],
+        ['street', 'S'.repeat(151), hr.forms.tooLong(150)],
+        ['houseNo', '1'.repeat(21), hr.forms.tooLong(20)],
+        ['zipCode', '1'.repeat(11), hr.forms.tooLong(10)],
+        ['city', 'C'.repeat(101), hr.forms.tooLong(100)],
     ] as const)(
         'shows the error for %s "%s" on leaving the field',
         async (label, value, message) => {
