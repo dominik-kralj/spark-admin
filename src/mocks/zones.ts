@@ -2,7 +2,7 @@ import { http, HttpResponse } from 'msw'
 import { z } from 'zod'
 
 import { mockAdminUser } from './adminAccount'
-import { notFound, validationProblem } from './responses'
+import { duplicate, notFound, validationProblem } from './responses'
 import { apiUrl } from './url'
 
 interface ZoneRow {
@@ -119,9 +119,7 @@ async function readZoneBody(request: Request, ownId: number | null): Promise<Bod
 
     const field = duplicateField(parsed.data, ownId)
     if (field !== null) {
-        return {
-            response: HttpResponse.json({ status: 409, code: 'duplicate', field }, { status: 409 }),
-        }
+        return { response: duplicate(field) }
     }
 
     return { body: parsed.data }

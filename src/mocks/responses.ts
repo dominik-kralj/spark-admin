@@ -11,3 +11,7 @@ export function validationProblem(error: z.ZodError): Response {
 }
 
 export const notFound = () => new HttpResponse(null, { status: 404 })
+
+/** A unique field already taken, by another row in this city. */
+export const duplicate = (field: string) =>
+    HttpResponse.json({ status: 409, code: 'duplicate', field }, { status: 409 })

@@ -1,13 +1,13 @@
 import { Users } from 'lucide-react'
 
 import { useStrings } from '@/shared/i18n/useStrings'
+import { sortByText } from '@/shared/lib/sortByText'
 import { useSortSearchParams, type Sort } from '@/shared/lib/useSortSearchParams'
 import { EmptyState } from '@/shared/ui/EmptyState'
 import { ErrorState } from '@/shared/ui/ErrorState'
 import { LoadingState } from '@/shared/ui/LoadingState'
 
 import { useAdminUsers } from '../api/useAdminUsers'
-import { sortAdminUsersByUsername } from '../lib/sortAdminUsers'
 import type { AdminUser } from '../validators/adminUser'
 
 import { AddAdminUserButton } from './AddAdminUserButton'
@@ -59,7 +59,7 @@ export function AdminUserList({ signedInUserId, onAdd, onEdit, onDelete }: Admin
         )
     }
 
-    const sortedUsers = sortAdminUsersByUsername(users.data, sort.direction)
+    const sortedUsers = sortByText(users.data, (user) => [user.username], sort.direction)
 
     return (
         <>

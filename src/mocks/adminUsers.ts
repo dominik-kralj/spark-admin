@@ -2,7 +2,7 @@ import { http, HttpResponse } from 'msw'
 import { z } from 'zod'
 
 import { mockAdminCredentials, mockAdminUser } from './adminAccount'
-import { notFound, validationProblem } from './responses'
+import { duplicate, notFound, validationProblem } from './responses'
 import { apiUrl } from './url'
 
 interface AdminUserRow {
@@ -98,10 +98,7 @@ export const adminUserHandlers = [
         if (!parsed.success) return validationProblem(parsed.error)
 
         if (isUsernameTaken(parsed.data.username)) {
-            return HttpResponse.json(
-                { status: 409, code: 'duplicate', field: 'username' },
-                { status: 409 },
-            )
+            return duplicate('username')
         }
 
         const user = {

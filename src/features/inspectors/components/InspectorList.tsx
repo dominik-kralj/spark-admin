@@ -1,13 +1,13 @@
 import { UserCheck } from 'lucide-react'
 
 import { useStrings } from '@/shared/i18n/useStrings'
+import { sortByText } from '@/shared/lib/sortByText'
 import { useSortSearchParams, type Sort } from '@/shared/lib/useSortSearchParams'
 import { EmptyState } from '@/shared/ui/EmptyState'
 import { ErrorState } from '@/shared/ui/ErrorState'
 import { LoadingState } from '@/shared/ui/LoadingState'
 
 import { useInspectors } from '../api/useInspectors'
-import { sortInspectorsBySurname } from '../lib/sortInspectors'
 import type { Inspector } from '../validators/inspector'
 
 import { AddInspectorButton } from './AddInspectorButton'
@@ -58,7 +58,11 @@ export function InspectorList({ onAdd, onEdit, onDelete }: InspectorListProps) {
         )
     }
 
-    const sortedInspectors = sortInspectorsBySurname(inspectors.data, sort.direction)
+    const sortedInspectors = sortByText(
+        inspectors.data,
+        (inspector) => [inspector.surname, inspector.name],
+        sort.direction,
+    )
 
     return (
         <>
