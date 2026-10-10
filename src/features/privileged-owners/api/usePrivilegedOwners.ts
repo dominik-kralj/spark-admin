@@ -1,6 +1,7 @@
 import { queryOptions, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { deleteRequest, request } from '@/shared/api'
+import { startedByRouteLoader } from '@/shared/lib/queryClient'
 
 import {
     privilegedOwnerListResponseSchema,
@@ -15,8 +16,9 @@ const privilegedOwnerKeys = {
     list: ['privilegedOwners', 'list'] as const,
 }
 
-const privilegedOwnersQuery = queryOptions({
+export const privilegedOwnersQuery = queryOptions({
     queryKey: privilegedOwnerKeys.list,
+    ...startedByRouteLoader,
     queryFn: async ({ signal }) => {
         const owners = await request('/privileged-owners', {
             schema: privilegedOwnerListResponseSchema,

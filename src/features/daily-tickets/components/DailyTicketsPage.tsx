@@ -2,7 +2,6 @@ import { Stack } from '@chakra-ui/react'
 import { useParams } from 'react-router'
 
 import { useStrings } from '@/shared/i18n/useStrings'
-import { toTicketFilters } from '@/shared/lib/ticketFilterValues'
 import { useCloseDetail } from '@/shared/lib/useCloseDetail'
 import { useTicketFilters } from '@/shared/lib/useTicketFilters'
 import { paths } from '@/shared/paths'
@@ -31,10 +30,7 @@ export function DailyTicketsPage() {
                     onClear={filterValues.clear}
                 />
 
-                <DailyTicketList
-                    filters={toTicketFilters(filterValues.values)}
-                    onClearFilters={filterValues.clear}
-                />
+                <DailyTicketList onClearFilters={filterValues.clear} />
 
                 <DailyTicketDetailDrawer ticketId={ticketId} onClose={closeDetail} />
             </Stack>

@@ -1,7 +1,8 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { queryOptions, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { request } from '@/shared/api'
 import { tenantKeys } from '@/shared/lib/tenantKeys'
+import { startedByRouteLoader } from '@/shared/lib/queryClient'
 
 import {
     citySettingsResponseSchema,
@@ -10,14 +11,15 @@ import {
     type CitySettings,
 } from '../validators/citySettings'
 
+export const citySettingsQuery = queryOptions({
+    queryKey: tenantKeys.settings,
+    ...startedByRouteLoader,
+    queryFn: async ({ signal }) =>
+        toCitySettings(await request('/tenant', { schema: citySettingsResponseSchema, signal })),
+})
+
 export function useCitySettings() {
-    return useQuery({
-        queryKey: tenantKeys.settings,
-        queryFn: async ({ signal }) =>
-            toCitySettings(
-                await request('/tenant', { schema: citySettingsResponseSchema, signal }),
-            ),
-    })
+    return useQuery(citySettingsQuery)
 }
 
 export function useUpdateCitySettings() {

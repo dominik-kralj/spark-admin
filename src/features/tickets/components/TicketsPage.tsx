@@ -52,7 +52,6 @@ export function TicketsPage() {
             <NewTicketsBanner filters={filters} onShow={showNewTickets} />
 
             <TicketList
-                filters={filters}
                 onClearFilters={filterValues.clear}
                 focusFirstRowAfter={focusFirstRowAfter}
                 onFirstRowFocused={() => {

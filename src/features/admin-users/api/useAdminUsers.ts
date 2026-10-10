@@ -1,6 +1,7 @@
 import { queryOptions, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { deleteRequest, request } from '@/shared/api'
+import { startedByRouteLoader } from '@/shared/lib/queryClient'
 
 import {
     adminUserListResponseSchema,
@@ -16,8 +17,9 @@ const adminUserKeys = {
     list: ['adminUsers', 'list'] as const,
 }
 
-const adminUsersQuery = queryOptions({
+export const adminUsersQuery = queryOptions({
     queryKey: adminUserKeys.list,
+    ...startedByRouteLoader,
     queryFn: async ({ signal }) => {
         const users = await request('/users', { schema: adminUserListResponseSchema, signal })
 

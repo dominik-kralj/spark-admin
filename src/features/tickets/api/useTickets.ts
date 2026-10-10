@@ -8,6 +8,7 @@ import {
 
 import { request } from '@/shared/api'
 import type { TicketFilters } from '@/shared/lib/ticketFilterValues'
+import { startedByRouteLoader } from '@/shared/lib/queryClient'
 
 import {
     newTicketCountResponseSchema,
@@ -49,16 +50,17 @@ async function fetchTicketPage(params: TicketListParams, signal: AbortSignal) {
 }
 
 // Never stale: the rows stay as loaded until the user asks for new ones (useShowNewTickets).
-function ticketsQuery(params: TicketListParams) {
+export function ticketsQuery(params: TicketListParams) {
     return queryOptions({
         queryKey: ticketKeys.list(params),
+        ...startedByRouteLoader,
         queryFn: ({ signal }) => fetchTicketPage(params, signal),
         staleTime: Infinity,
     })
 }
 
 // What the list's rows are as new as; kept with the rows, so the two only move together.
-function newestTicketTimeQuery(filters: TicketFilters) {
+export function newestTicketTimeQuery(filters: TicketFilters) {
     return queryOptions({
         queryKey: ticketKeys.newestTime(filters),
         queryFn: async ({ signal }) => {

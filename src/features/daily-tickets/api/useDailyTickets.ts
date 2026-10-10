@@ -8,6 +8,7 @@ import {
 } from '@tanstack/react-query'
 
 import { request } from '@/shared/api'
+import { startedByRouteLoader } from '@/shared/lib/queryClient'
 
 import {
     dailyTicketDetailResponseSchema,
@@ -28,9 +29,10 @@ const dailyTicketKeys = {
     fiscalize: ['dailyTickets', 'fiscalize'] as const,
 }
 
-function dailyTicketsQuery(params: DailyTicketListParams) {
+export function dailyTicketsQuery(params: DailyTicketListParams) {
     return queryOptions({
         queryKey: dailyTicketKeys.list(params),
+        ...startedByRouteLoader,
         queryFn: async ({ signal }) =>
             toDailyTicketPage(
                 await request('/daily-tickets', {

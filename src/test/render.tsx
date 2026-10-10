@@ -10,14 +10,21 @@ import { createRoutes } from '@/routes'
 import { createQueryClient } from '@/shared/lib/queryClient'
 import { AppProviders } from '@/shared/providers'
 
-function createTestQueryClient(): QueryClient {
+/** The app's cache rules without retries, so an error shows at once. */
+export function createTestQueryClient(): QueryClient {
     return createQueryClient({ queries: { retry: false }, mutations: { retry: false } })
 }
 
-/** Renders inside the real providers, with a fresh non-retrying query client. */
-export function renderWithProviders(ui: ReactElement, options?: RenderOptions) {
-    const queryClient = createTestQueryClient()
+interface RenderWithProvidersOptions extends RenderOptions {
+    /** The client a router built for this render already uses; a fresh test client otherwise. */
+    queryClient?: QueryClient
+}
 
+/** Renders inside the real providers. */
+export function renderWithProviders(
+    ui: ReactElement,
+    { queryClient = createTestQueryClient(), ...options }: RenderWithProvidersOptions = {},
+) {
     return {
         user: userEvent.setup(),
         queryClient,
@@ -39,8 +46,9 @@ export type RenderedRoute = Awaited<ReturnType<typeof renderRoute>>
 
 /** Resolves once the first route, its loader and its lazy module have rendered. */
 export async function renderRoute(path: string) {
-    const router = createMemoryRouter(createRoutes(), { initialEntries: [path] })
-    const rendered = renderWithProviders(<RouterProvider router={router} />)
+    const queryClient = createTestQueryClient()
+    const router = createMemoryRouter(createRoutes(queryClient), { initialEntries: [path] })
+    const rendered = renderWithProviders(<RouterProvider router={router} />, { queryClient })
 
     // A cold lazy import can pass the default 1 s when the whole suite runs in parallel.
     await waitFor(

@@ -3,41 +3,41 @@ import { ClipboardList } from 'lucide-react'
 
 import { useStrings } from '@/shared/i18n/useStrings'
 import { pageRange } from '@/shared/lib/pageRange'
-import type { TicketFilters } from '@/shared/lib/ticketFilterValues'
 import { pageParam, usePageSearchParam } from '@/shared/lib/usePageSearchParam'
-import { useSortSearchParams, type Sort } from '@/shared/lib/useSortSearchParams'
+import { useSearchParams } from '@/shared/lib/useSearchParams'
+import { useSortSearchParams } from '@/shared/lib/useSortSearchParams'
 import { EmptyState } from '@/shared/ui/EmptyState'
 import { ErrorState } from '@/shared/ui/ErrorState'
 import { LoadingState } from '@/shared/ui/LoadingState'
 
 import { useDailyTickets } from '../api/useDailyTickets'
-import type { DailyTicketSortKey } from '../validators/dailyTicket'
+import {
+    dailyTicketSortKeys,
+    defaultDailyTicketSort,
+    readDailyTicketListParams,
+} from '../lib/dailyTicketListParams'
 
 import { DailyTicketCards } from './DailyTicketCards'
 import { DailyTicketTable } from './DailyTicketTable'
 
-const sortKeys = ['createdAt', 'plate', 'inspector'] as const
-
-const defaultSort: Sort<DailyTicketSortKey> = { key: 'createdAt', direction: 'desc' }
-
 // A new order starts again from the first page.
 const resetOnSort = [pageParam]
-
-const pageSize = 25
 
 const skeletonColumnWidths = [2, 2, 1, 3, 2, 1, 2, 2]
 
 interface DailyTicketListProps {
-    filters: TicketFilters
     onClearFilters: () => void
 }
 
-export function DailyTicketList({ filters, onClearFilters }: DailyTicketListProps) {
+export function DailyTicketList({ onClearFilters }: DailyTicketListProps) {
     const t = useStrings()
     const strings = t.dailyTickets
-    const { page, setPage } = usePageSearchParam()
-    const { sort, sortBy } = useSortSearchParams(sortKeys, defaultSort, resetOnSort)
-    const dailyTickets = useDailyTickets({ page, pageSize, sort, filters })
+    const { searchParams } = useSearchParams()
+    const params = readDailyTicketListParams(searchParams)
+    const { page, sort, filters } = params
+    const { setPage } = usePageSearchParam()
+    const { sortBy } = useSortSearchParams(dailyTicketSortKeys, defaultDailyTicketSort, resetOnSort)
+    const dailyTickets = useDailyTickets(params)
     const isFiltered = Object.keys(filters).length > 0
 
     if (dailyTickets.isPending) {

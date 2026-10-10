@@ -4,33 +4,26 @@ import { useEffect } from 'react'
 
 import { useStrings } from '@/shared/i18n/useStrings'
 import { pageRange } from '@/shared/lib/pageRange'
-import type { TicketFilters } from '@/shared/lib/ticketFilterValues'
 import { pageParam, usePageSearchParam } from '@/shared/lib/usePageSearchParam'
-import { useSortSearchParams, type Sort } from '@/shared/lib/useSortSearchParams'
+import { useSearchParams } from '@/shared/lib/useSearchParams'
+import { useSortSearchParams } from '@/shared/lib/useSortSearchParams'
 import { visibleRowLink } from '@/shared/lib/visibleRowLink'
 import { EmptyState } from '@/shared/ui/EmptyState'
 import { ErrorState } from '@/shared/ui/ErrorState'
 import { LoadingState } from '@/shared/ui/LoadingState'
 
 import { useTickets } from '../api/useTickets'
-import type { TicketSortKey } from '../validators/ticket'
+import { defaultTicketSort, readTicketListParams, ticketSortKeys } from '../lib/ticketListParams'
 
 import { TicketCards } from './TicketCards'
 import { TicketTable } from './TicketTable'
 
-const sortKeys = ['createdAt', 'plate', 'amount', 'validUntil'] as const
-
-const defaultSort: Sort<TicketSortKey> = { key: 'createdAt', direction: 'desc' }
-
 // A new order starts again from the first page.
 const resetOnSort = [pageParam]
-
-const pageSize = 25
 
 const skeletonColumnWidths = [2, 2, 1, 1, 1, 2, 2, 2]
 
 interface TicketListProps {
-    filters: TicketFilters
     onClearFilters: () => void
     /** Set when the user asked for new tickets: focus goes to the newest row once loaded after it. */
     focusFirstRowAfter: number | null
@@ -38,15 +31,17 @@ interface TicketListProps {
 }
 
 export function TicketList({
-    filters,
     onClearFilters,
     focusFirstRowAfter,
     onFirstRowFocused,
 }: TicketListProps) {
     const t = useStrings()
-    const { page, setPage } = usePageSearchParam()
-    const { sort, sortBy } = useSortSearchParams(sortKeys, defaultSort, resetOnSort)
-    const tickets = useTickets({ page, pageSize, sort, filters })
+    const { searchParams } = useSearchParams()
+    const params = readTicketListParams(searchParams)
+    const { page, sort, filters } = params
+    const { setPage } = usePageSearchParam()
+    const { sortBy } = useSortSearchParams(ticketSortKeys, defaultTicketSort, resetOnSort)
+    const tickets = useTickets(params)
     const isFiltered = Object.keys(filters).length > 0
 
     // The button that asked for them is gone with the banner, so focus moves to the rows.
