@@ -17,11 +17,14 @@ const { labels } = t.form
 
 type TextLabel = 'username' | 'name' | 'surname'
 
-const newUser: Record<TextLabel | 'password', string> = {
+type PasswordLabel = 'password' | 'confirmPassword' | 'newPassword' | 'confirmNewPassword'
+
+const newUser: Record<TextLabel | 'password' | 'confirmPassword', string> = {
     username: 'iva.maric',
     name: 'Iva',
     surname: 'Marić',
     password: 'lozinka123',
+    confirmPassword: 'lozinka123',
 }
 
 /** Records the JSON body of each matching request; the mock still answers it. */
@@ -67,7 +70,7 @@ function field(form: HTMLElement, label: TextLabel) {
 }
 
 // A password input has no role; its label still names it.
-function passwordField(form: HTMLElement, label: 'password' | 'newPassword' = 'password') {
+function passwordField(form: HTMLElement, label: PasswordLabel = 'password') {
     return within(form).getByLabelText(labels[label])
 }
 
@@ -76,8 +79,11 @@ async function fillForm(
     form: HTMLElement,
     values: Partial<typeof newUser>,
 ) {
-    for (const [label, value] of Object.entries(values) as [TextLabel | 'password', string][]) {
-        const input = label === 'password' ? passwordField(form) : field(form, label)
+    for (const [label, value] of Object.entries(values) as [keyof typeof newUser, string][]) {
+        const input =
+            label === 'password' || label === 'confirmPassword'
+                ? passwordField(form, label)
+                : field(form, label)
         await rendered.user.clear(input)
         // Pasting fires the same input events as typing, at a fraction of the cost.
         await rendered.user.paste(value)
@@ -123,6 +129,14 @@ describe('Admin user form', () => {
         const form = await openAddForm(rendered)
         const password = passwordField(form)
         const toggle = within(form).getByRole('button', { name: t.form.showPassword })
+        expect(passwordField(form, 'confirmPassword')).toHaveAttribute('type', 'password')
+        expect(passwordField(form, 'confirmPassword')).toHaveAttribute(
+            'autocomplete',
+            'new-password',
+        )
+        expect(
+            within(form).getByRole('button', { name: t.form.showConfirmPassword }),
+        ).toHaveAttribute('aria-pressed', 'false')
         expect(password).toHaveAttribute('type', 'password')
         expect(password).toHaveAttribute('autocomplete', 'new-password')
         expect(password).toHaveAccessibleDescription(t.form.passwordHelp)
@@ -192,6 +206,36 @@ describe('Admin user form', () => {
         expect(passwordField(form)).toHaveAccessibleDescription(
             `${t.form.passwordHelp} ${hr.forms.validation.required}`,
         )
+        expect(passwordField(form, 'confirmPassword')).toHaveAccessibleDescription(
+            hr.forms.validation.required,
+        )
+    })
+
+    it('says when the repeated password differs, as soon as it is left', async () => {
+        const bodies = captureBodies('post', '/users')
+        const rendered = await renderRoute(paths.adminUsers)
+        const form = await openAddForm(rendered)
+        const confirm = passwordField(form, 'confirmPassword')
+
+        await fillForm(rendered, form, { password: 'lozinka123', confirmPassword: 'lozinka124' })
+        await rendered.user.tab()
+
+        expect(confirm).toBeInvalid()
+        expect(confirm).toHaveAccessibleDescription(hr.forms.validation.passwordMismatch)
+
+        await fillForm(rendered, form, { ...newUser, confirmPassword: 'lozinka124' })
+        await save(rendered, form)
+
+        expect(bodies).toEqual([])
+        await waitFor(() => {
+            expect(confirm).toHaveFocus()
+        })
+
+        await fillForm(rendered, form, { password: 'lozinka124' })
+
+        await waitFor(() => {
+            expect(confirm).toBeValid()
+        })
     })
 
     it('puts a duplicate username from the server on the username field', async () => {
@@ -239,6 +283,7 @@ describe('Admin user form', () => {
         expect(password).toHaveValue('')
         expect(password).toHaveAttribute('autocomplete', 'new-password')
         expect(password).toHaveAccessibleDescription(t.form.newPasswordHelp)
+        expect(passwordField(form, 'confirmNewPassword')).toHaveValue('')
 
         await fillForm(rendered, form, { surname: 'Lončar-Horvat' })
         await save(rendered, form)
@@ -258,10 +303,28 @@ describe('Admin user form', () => {
         const form = await openEditForm(rendered, 'marin.loncar')
 
         await rendered.user.type(passwordField(form, 'newPassword'), 'nova-lozinka')
+        await rendered.user.type(passwordField(form, 'confirmNewPassword'), 'nova-lozinka')
         await save(rendered, form)
 
         await expectFormClosed()
         expect(bodies).toEqual([{ name: 'Marin', surname: 'Lončar', password: 'nova-lozinka' }])
+    })
+
+    it('sends nothing when a new password is not repeated', async () => {
+        const bodies = captureBodies('put', '/users/:adminUserId')
+        const rendered = await renderRoute(paths.adminUsers)
+        const form = await openEditForm(rendered, 'marin.loncar')
+
+        await rendered.user.type(passwordField(form, 'newPassword'), 'nova-lozinka')
+        await save(rendered, form)
+
+        expect(bodies).toEqual([])
+        await waitFor(() => {
+            expect(passwordField(form, 'confirmNewPassword')).toHaveFocus()
+        })
+        expect(passwordField(form, 'confirmNewPassword')).toHaveAccessibleDescription(
+            hr.forms.validation.passwordMismatch,
+        )
     })
 
     it('asks before discarding changes, and returns focus to the edit button on close', async () => {

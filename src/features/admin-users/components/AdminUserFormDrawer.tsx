@@ -1,5 +1,6 @@
-import { Input, SimpleGrid, Text } from '@chakra-ui/react'
+import { Button, Input, SimpleGrid, Text } from '@chakra-ui/react'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Trash2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 
 import { useStrings } from '@/shared/i18n/useStrings'
@@ -13,26 +14,35 @@ import { SecretInput } from '@/shared/ui/SecretInput'
 
 import { useCreateAdminUser, useUpdateAdminUser } from '../api/useAdminUsers'
 import { adminUserFieldMessage } from '../lib/adminUserFieldMessage'
-import {
-    toAdminUserFieldErrors,
-    type AdminUser,
-    type AdminUserField,
-} from '../validators/adminUser'
+import { toAdminUserFieldErrors, type AdminUser } from '../validators/adminUser'
 import {
     adminUserFormSchema,
     emptyAdminUserForm,
+    toAdminUserCreateInput,
     toAdminUserFormValues,
     toAdminUserUpdateInput,
+    type AdminUserFormField,
     type ValidAdminUserFormValues,
 } from '../validators/adminUserForm'
 
 interface AdminUserFormDrawerProps {
     isOpen: boolean
     user: AdminUser | null
+    /** False for the signed-in user, who cannot delete their own account. */
+    canDelete: boolean
     onClose: () => void
+    onDelete: (user: AdminUser) => void
+    finalFocusEl: () => HTMLElement | null
 }
 
-export function AdminUserFormDrawer({ isOpen, user, onClose }: AdminUserFormDrawerProps) {
+export function AdminUserFormDrawer({
+    isOpen,
+    user,
+    canDelete,
+    onClose,
+    onDelete,
+    finalFocusEl,
+}: AdminUserFormDrawerProps) {
     const t = useStrings()
     const { form: strings } = t.adminUsers
     const createAdminUser = useCreateAdminUser()
@@ -56,7 +66,7 @@ export function AdminUserFormDrawer({ isOpen, user, onClose }: AdminUserFormDraw
     async function save(values: ValidAdminUserFormValues) {
         try {
             const saved = isAdding
-                ? await createAdminUser.mutateAsync(values)
+                ? await createAdminUser.mutateAsync(toAdminUserCreateInput(values))
                 : await updateAdminUser.mutateAsync({
                       id: user.id,
                       ...toAdminUserUpdateInput(values),
@@ -68,7 +78,7 @@ export function AdminUserFormDrawer({ isOpen, user, onClose }: AdminUserFormDraw
         }
     }
 
-    function fieldError(name: AdminUserField) {
+    function fieldError(name: AdminUserFormField) {
         return adminUserFieldMessage({ field: name, error: errors[name], t })
     }
 
@@ -78,7 +88,23 @@ export function AdminUserFormDrawer({ isOpen, user, onClose }: AdminUserFormDraw
             title={isAdding ? t.adminUsers.add : t.adminUsers.editAdminUser(user.username)}
             isDirty={isDirty}
             isSaving={isSubmitting}
+            destructiveAction={
+                !isAdding &&
+                canDelete && (
+                    <Button
+                        variant="ghost"
+                        colorPalette="red"
+                        onClick={() => {
+                            onDelete(user)
+                        }}
+                    >
+                        <Trash2 aria-hidden="true" />
+                        {t.adminUsers.delete.formButton}
+                    </Button>
+                )
+            }
             onClose={onClose}
+            finalFocusEl={finalFocusEl}
             onSubmit={(event) => void handleSubmit(save)(event)}
         >
             <Text color="fg.muted">{isAdding ? strings.intro : strings.editIntro}</Text>
@@ -128,9 +154,25 @@ export function AdminUserFormDrawer({ isOpen, user, onClose }: AdminUserFormDraw
             >
                 {(fieldControl) => (
                     <SecretInput
-                        {...register('password')}
+                        {...register('password', { deps: 'confirmPassword' })}
                         {...fieldControl}
                         showLabel={strings.showPassword}
+                        autoComplete="new-password"
+                    />
+                )}
+            </FormField>
+
+            <FormField
+                label={
+                    isAdding ? strings.labels.confirmPassword : strings.labels.confirmNewPassword
+                }
+                error={fieldError('confirmPassword')}
+            >
+                {(fieldControl) => (
+                    <SecretInput
+                        {...register('confirmPassword')}
+                        {...fieldControl}
+                        showLabel={strings.showConfirmPassword}
                         autoComplete="new-password"
                     />
                 )}

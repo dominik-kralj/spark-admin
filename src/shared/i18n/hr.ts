@@ -525,13 +525,33 @@ export const hr = {
                 surname: 'Prezime',
                 password: 'Lozinka',
                 newPassword: 'Nova lozinka',
+                confirmPassword: 'Ponovite lozinku',
+                confirmNewPassword: 'Ponovite novu lozinku',
             },
             usernameFixed: 'Korisničko ime nije moguće promijeniti.',
             passwordHelp: 'Korisnik se njome prijavljuje u SPARK Admin.',
             newPasswordHelp: 'Ostavite prazno ako lozinku ne mijenjate.',
             showPassword: 'Prikaži lozinku',
+            showConfirmPassword: 'Prikaži ponovljenu lozinku',
             duplicateUsername: 'To korisničko ime je zauzeto.',
             saved: (username: string) => `Korisnik ${username} je spremljen`,
+        },
+        delete: {
+            deleteAdminUser: (username: string) => `Obriši korisnika ${username}`,
+            formButton: 'Obriši korisnika',
+            title: (username: string) => `Obrisati korisnika ${username}?`,
+            description: (username: string) =>
+                `${username} više se neće moći prijaviti u SPARK Admin. Ovu radnju nije moguće poništiti.`,
+            confirm: 'Obriši korisnika',
+            deleted: (username: string) => `Korisnik ${username} je obrisan`,
+            failed: 'Korisnik nije obrisan.',
+            errors: {
+                network:
+                    'Poslužitelj nije odgovorio. Provjerite internetsku vezu i pokušajte ponovno.',
+                forbidden: 'Nemate ovlasti za brisanje korisnika.',
+                conflict: 'Vlastiti korisnički račun nije moguće obrisati.',
+                server: 'Došlo je do pogreške na poslužitelju. Pokušajte ponovno za nekoliko minuta.',
+            },
         },
     },
     forms: {
@@ -567,6 +587,7 @@ export const hr = {
             dateFormat: 'Oblik: DD.MM.GGGG.',
             dateInvalid: 'Taj datum ne postoji.',
             dateRangeOrder: 'Prije datuma od.',
+            passwordMismatch: 'Lozinke se ne podudaraju.',
         },
         serverFieldErrors: {
             invalid: 'Poslužitelj je odbio vrijednost.',

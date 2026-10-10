@@ -82,6 +82,7 @@ async function addAndEdit(page: Page, editButton: (username: string) => Locator)
     const password = addForm.getByLabel(labels.password, { exact: true })
     await expect(password).toHaveAttribute('autocomplete', 'new-password')
     await password.fill('lozinka123')
+    await addForm.getByLabel(labels.confirmPassword, { exact: true }).fill('lozinka123')
     await addForm.getByRole('button', { name: hr.forms.save }).click()
 
     await expect(addForm).toBeHidden()
@@ -95,6 +96,7 @@ async function addAndEdit(page: Page, editButton: (username: string) => Locator)
     await expect(newPassword).toHaveValue('')
     await editForm.getByLabel(labels.surname, { exact: true }).fill('Lončar-Horvat')
     await newPassword.fill('nova-lozinka')
+    await editForm.getByLabel(labels.confirmNewPassword, { exact: true }).fill('nova-lozinka')
     await editForm.getByRole('button', { name: t.form.showPassword }).click()
     await expect(newPassword).toHaveAttribute('type', 'text')
     await expectNoAxeViolations(page)
@@ -186,6 +188,54 @@ test.describe('Admin user form on a phone', () => {
         await expect(list.getByRole('listitem').filter({ hasText: 'marin.loncar' })).toContainText(
             'Marin Lončar',
         )
+    })
+})
+
+test.describe('Admin user delete', () => {
+    test('deletes from the row on a desktop, never the signed-in user', async ({
+        page,
+        isMobile,
+    }) => {
+        test.skip(isMobile, 'the table layout runs in the desktop project')
+        await openList(page)
+        const table = page.getByRole('table', { name: t.listLabel })
+        await expect(table).toBeVisible()
+        await expect(table.getByRole('button', { name: /^Obriši korisnika / })).toHaveCount(2)
+
+        await table.getByRole('button', { name: t.delete.deleteAdminUser('marin.loncar') }).click()
+        const dialog = page.getByRole('alertdialog', { name: t.delete.title('marin.loncar') })
+        await expect(dialog.getByRole('button', { name: hr.forms.cancel })).toBeFocused()
+        await waitForAnimations(dialog)
+        await expectNoAxeViolations(page)
+        await dialog.getByRole('button', { name: t.delete.confirm }).click()
+
+        await expect(dialog).toBeHidden()
+        await expect(table.getByRole('row')).toHaveCount(3)
+        await expect(page.getByText(t.delete.deleted('marin.loncar'))).toBeVisible()
+        await expect(
+            page.getByRole('button', { name: t.add }).locator('visible=true'),
+        ).toBeFocused()
+    })
+
+    test('deletes from the edit form on a phone', async ({ page, isMobile }) => {
+        test.skip(!isMobile, 'touch layouts run in the phone project')
+        await openList(page)
+        const list = page.getByRole('list', { name: t.listLabel })
+        await list.getByRole('button', { name: t.editAdminUser('sanja.klaric') }).click()
+        const form = page.getByRole('dialog', { name: t.editAdminUser('sanja.klaric') })
+        await waitForAnimations(form)
+        await expectTouchTargets(form.getByRole('button', { name: t.delete.formButton }))
+
+        await form.getByRole('button', { name: t.delete.formButton }).click()
+        const dialog = page.getByRole('alertdialog', { name: t.delete.title('sanja.klaric') })
+        await waitForAnimations(dialog)
+        await dialog.getByRole('button', { name: t.delete.confirm }).click()
+
+        await expect(form).toBeHidden()
+        await expect(list.getByRole('listitem')).toHaveCount(2)
+        await expect(
+            page.getByRole('button', { name: t.add }).locator('visible=true'),
+        ).toBeFocused()
     })
 })
 

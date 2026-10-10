@@ -1,5 +1,5 @@
 import { HStack, IconButton, Table, Text } from '@chakra-ui/react'
-import { Pencil } from 'lucide-react'
+import { Pencil, Trash2 } from 'lucide-react'
 
 import { useStrings } from '@/shared/i18n/useStrings'
 import { fullName } from '@/shared/lib/fullName'
@@ -17,6 +17,7 @@ interface AdminUserTableProps {
     usernameSortDirection: SortDirection
     onSortByUsername: () => void
     onEdit: (user: AdminUser) => void
+    onDelete: (user: AdminUser) => void
 }
 
 export function AdminUserTable({
@@ -25,6 +26,7 @@ export function AdminUserTable({
     usernameSortDirection,
     onSortByUsername,
     onEdit,
+    onDelete,
 }: AdminUserTableProps) {
     const t = useStrings()
     const { columns } = t.adminUsers
@@ -53,17 +55,34 @@ export function AdminUserTable({
                             </HStack>
                         </Table.Cell>
                         <Table.Cell>{fullName(user)}</Table.Cell>
-                        <Table.Cell textAlign="end">
-                            <IconButton
-                                aria-label={t.adminUsers.editAdminUser(user.username)}
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                    onEdit(user)
-                                }}
-                            >
-                                <Pencil aria-hidden="true" />
-                            </IconButton>
+                        <Table.Cell>
+                            <HStack gap="2" justify="flex-end">
+                                <IconButton
+                                    aria-label={t.adminUsers.editAdminUser(user.username)}
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => {
+                                        onEdit(user)
+                                    }}
+                                >
+                                    <Pencil aria-hidden="true" />
+                                </IconButton>
+                                {user.id !== signedInUserId && (
+                                    <IconButton
+                                        aria-label={t.adminUsers.delete.deleteAdminUser(
+                                            user.username,
+                                        )}
+                                        variant="outline"
+                                        colorPalette="red"
+                                        size="sm"
+                                        onClick={() => {
+                                            onDelete(user)
+                                        }}
+                                    >
+                                        <Trash2 aria-hidden="true" />
+                                    </IconButton>
+                                )}
+                            </HStack>
                         </Table.Cell>
                     </Table.Row>
                 ))}

@@ -7,7 +7,12 @@ import { renderHookWithQueryClient } from '@/test/render'
 import { server } from '@/test/server'
 import { signInForTest } from '@/test/session'
 
-import { useAdminUsers, useCreateAdminUser, useUpdateAdminUser } from './useAdminUsers'
+import {
+    useAdminUsers,
+    useCreateAdminUser,
+    useDeleteAdminUser,
+    useUpdateAdminUser,
+} from './useAdminUsers'
 import { toAdminUserFieldErrors, type AdminUser } from '../validators/adminUser'
 
 const seedUsers: AdminUser[] = [
@@ -25,6 +30,7 @@ function renderAdminUserHooks() {
         users: useAdminUsers(),
         create: useCreateAdminUser(),
         update: useUpdateAdminUser(),
+        remove: useDeleteAdminUser(),
     }))
 }
 
@@ -200,6 +206,27 @@ describe('useAdminUsers', () => {
         await waitFor(() => {
             expect(queryClient.getMutationCache().getAll()).toEqual([])
         })
+    })
+
+    it('deletes a user, who then leaves the list', async () => {
+        const { result } = renderAdminUserHooks()
+        await loadedUsers(result)
+
+        await act(async () => {
+            await result.current.remove.mutateAsync(2)
+        })
+
+        await waitFor(() => {
+            expect(result.current.users.data?.map((user) => user.id)).toEqual([1, 3])
+        })
+    })
+
+    it('refuses to delete the signed-in user with a conflict', async () => {
+        const { result } = renderAdminUserHooks()
+
+        const error = await mutationError(() => result.current.remove.mutateAsync(1))
+
+        expect(error).toMatchObject({ kind: 'conflict', body: { code: 'cannotDeleteSelf' } })
     })
 
     it('rejects a list entry without a username', async () => {

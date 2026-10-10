@@ -1,4 +1,4 @@
-import { IconButton, Stack } from '@chakra-ui/react'
+import { IconButton, Stack, useMediaQuery } from '@chakra-ui/react'
 import { Plus } from 'lucide-react'
 
 import { useStrings } from '@/shared/i18n/useStrings'
@@ -8,6 +8,7 @@ import { PageHeader } from '@/shared/ui/PageHeader'
 import type { AdminUser } from '../validators/adminUser'
 
 import { AddAdminUserButton } from './AddAdminUserButton'
+import { AdminUserDeleteDialog } from './AdminUserDeleteDialog'
 import { AdminUserFormDrawer } from './AdminUserFormDrawer'
 import { AdminUserList } from './AdminUserList'
 
@@ -18,7 +19,19 @@ interface AdminUsersPageProps {
 
 export function AdminUsersPage({ signedInUserId }: AdminUsersPageProps) {
     const t = useStrings()
-    const { form, openForm, closeForm } = useEditAndDeleteOverlays<AdminUser>()
+    const {
+        form,
+        deleteDialog,
+        afterDeleteFocusRef,
+        openForm,
+        closeForm,
+        openDeleteDialog,
+        closeDeleteDialog,
+        finishDelete,
+        focusAfterDelete,
+    } = useEditAndDeleteOverlays<AdminUser>()
+    // Focus after a delete goes to the add button on screen: text from md, icon below.
+    const [isFromMd] = useMediaQuery(['(min-width: 768px)'], { ssr: false })
 
     function openAddForm() {
         openForm(null)
@@ -31,8 +44,12 @@ export function AdminUsersPage({ signedInUserId }: AdminUsersPageProps) {
                 description={t.adminUsers.description}
                 action={
                     <>
-                        <AddAdminUserButton onClick={openAddForm} />
+                        <AddAdminUserButton
+                            ref={isFromMd ? afterDeleteFocusRef : undefined}
+                            onClick={openAddForm}
+                        />
                         <IconButton
+                            ref={isFromMd ? undefined : afterDeleteFocusRef}
                             hideFrom="md"
                             aria-label={t.adminUsers.add}
                             colorPalette="blue"
@@ -44,13 +61,30 @@ export function AdminUsersPage({ signedInUserId }: AdminUsersPageProps) {
                 }
             />
 
-            <AdminUserList signedInUserId={signedInUserId} onAdd={openAddForm} onEdit={openForm} />
+            <AdminUserList
+                signedInUserId={signedInUserId}
+                onAdd={openAddForm}
+                onEdit={openForm}
+                onDelete={openDeleteDialog}
+            />
 
             <AdminUserFormDrawer
                 key={`form-${String(form.key)}`}
                 isOpen={form.isOpen}
                 user={form.item}
+                canDelete={form.item?.id !== signedInUserId}
                 onClose={closeForm}
+                onDelete={openDeleteDialog}
+                finalFocusEl={focusAfterDelete}
+            />
+
+            <AdminUserDeleteDialog
+                key={`delete-${String(deleteDialog.key)}`}
+                isOpen={deleteDialog.isOpen}
+                user={deleteDialog.item}
+                onCancel={closeDeleteDialog}
+                onDeleted={finishDelete}
+                finalFocusEl={focusAfterDelete}
             />
         </Stack>
     )

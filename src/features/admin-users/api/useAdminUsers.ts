@@ -1,6 +1,6 @@
 import { queryOptions, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
-import { request } from '@/shared/api'
+import { deleteRequest, request } from '@/shared/api'
 
 import {
     adminUserListResponseSchema,
@@ -67,5 +67,14 @@ export function useUpdateAdminUser() {
                 users?.map((user) => (user.id === saved.id ? saved : user)),
             )
         },
+    })
+}
+
+export function useDeleteAdminUser() {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: (id: number) => deleteRequest(`/users/${String(id)}`),
+        onSuccess: () => queryClient.invalidateQueries({ queryKey: adminUsersQuery.queryKey }),
     })
 }

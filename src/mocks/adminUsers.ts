@@ -127,4 +127,16 @@ export const adminUserHandlers = [
 
         return HttpResponse.json(toResponse(existing))
     }),
+
+    http.delete(apiUrl('/users/:adminUserId'), ({ params }) => {
+        const existing = findAdminUser(Number(params.adminUserId))
+        if (existing === undefined) return notFound()
+        if (existing.adminUserId === mockAdminUser.adminUserId) {
+            return HttpResponse.json({ status: 409, code: 'cannotDeleteSelf' }, { status: 409 })
+        }
+
+        adminUsers = adminUsers.filter((user) => user !== existing)
+
+        return new HttpResponse(null, { status: 204 })
+    }),
 ]

@@ -3,11 +3,10 @@ import type { FieldError } from 'react-hook-form'
 import type { Dictionary } from '@/shared/i18n/dictionary'
 import { fieldMessage } from '@/shared/lib/fieldMessage'
 
-import type { AdminUserField } from '../validators/adminUser'
-import { textMaxLength } from '../validators/adminUserForm'
+import { textMaxLength, type AdminUserFormField } from '../validators/adminUserForm'
 
 interface AdminUserFieldMessageArgs {
-    field: AdminUserField
+    field: AdminUserFormField
     error: FieldError | undefined
     t: Dictionary
 }

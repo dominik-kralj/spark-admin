@@ -278,11 +278,12 @@ fields without `tenantId`. Mapping to the domain `AdminUser` (`id`, `username`,
 { "adminUserId": 2, "username": "marin.loncar", "name": "Marin", "surname": "Lončar" }
 ```
 
-| Call                       | Body                                                     | Success           | Errors                                            |
-| -------------------------- | -------------------------------------------------------- | ----------------- | ------------------------------------------------- |
-| `GET /users`               |                                                          | `200 AdminUser[]` |                                                   |
-| `POST /users`              | `username`, `name`, `surname`, `password`                | `201 AdminUser`   | `400` field errors; `409 duplicate` on `username` |
-| `PUT /users/{adminUserId}` | `name`, `surname`, and `password` only when one is typed | `200 AdminUser`   | `400` field errors; `404`                         |
+| Call                          | Body                                                     | Success           | Errors                                                                 |
+| ----------------------------- | -------------------------------------------------------- | ----------------- | ---------------------------------------------------------------------- |
+| `GET /users`                  |                                                          | `200 AdminUser[]` |                                                                        |
+| `POST /users`                 | `username`, `name`, `surname`, `password`                | `201 AdminUser`   | `400` field errors; `409 duplicate` on `username`                      |
+| `PUT /users/{adminUserId}`    | `name`, `surname`, and `password` only when one is typed | `200 AdminUser`   | `400` field errors; `404`                                              |
+| `DELETE /users/{adminUserId}` |                                                          | `204`             | `409 cannotDeleteSelf` for the signed-in user; `404` counts as deleted |
 
 | Item           | Assumption                                                                                                                                                                                                                                                                     | Source                       |
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------- |
@@ -294,7 +295,8 @@ fields without `tenantId`. Mapping to the domain `AdminUser` (`id`, `username`,
 | Limits         | `username`, `name`, `surname` 1–100 characters, trimmed (as INSPECTORS names)                                                                                                                                                                                                  | assumed                      |
 | "Vi"           | the row whose `adminUserId` equals the signed-in user's from login                                                                                                                                                                                                             | `api-contract.md` ADM-9      |
 | Update         | the list cache takes the returned user without a refetch                                                                                                                                                                                                                       | `api-contract.md` Writes     |
-| Delete         | not built yet (#85): `DELETE /users/{adminUserId}`, `409 cannotDeleteSelf`                                                                                                                                                                                                     | `api-contract.md` ADM-9      |
+| Delete         | any user but the signed-in one, who has no Obriši; the server still answers `409 cannotDeleteSelf`, and the dialog says so                                                                                                                                                     | `api-contract.md` ADM-9      |
+| Repeat field   | Ponovite lozinku is checked in the browser only and never sent                                                                                                                                                                                                                 | user decision                |
 
 The mock's login still checks only the seed admin (`src/mocks/adminAccount.ts`),
 so a user added on Korisnici cannot sign in to the mock.

@@ -24,9 +24,10 @@ interface AdminUserListProps {
     signedInUserId: number | null
     onAdd: () => void
     onEdit: (user: AdminUser) => void
+    onDelete: (user: AdminUser) => void
 }
 
-export function AdminUserList({ signedInUserId, onAdd, onEdit }: AdminUserListProps) {
+export function AdminUserList({ signedInUserId, onAdd, onEdit, onDelete }: AdminUserListProps) {
     const t = useStrings()
     const users = useAdminUsers()
     const { sort, sortBy } = useSortSearchParams(sortKeys, defaultSort)
@@ -70,7 +71,9 @@ export function AdminUserList({ signedInUserId, onAdd, onEdit }: AdminUserListPr
                     sortBy('username')
                 }}
                 onEdit={onEdit}
+                onDelete={onDelete}
             />
+            {/* The phone design deletes from the form only. */}
             <AdminUserCards users={sortedUsers} signedInUserId={signedInUserId} onEdit={onEdit} />
         </>
     )

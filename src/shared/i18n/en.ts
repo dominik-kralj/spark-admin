@@ -516,13 +516,33 @@ export const en: Dictionary = {
                 surname: 'Surname',
                 password: 'Password',
                 newPassword: 'New password',
+                confirmPassword: 'Repeat password',
+                confirmNewPassword: 'Repeat new password',
             },
             usernameFixed: 'The username cannot be changed.',
             passwordHelp: 'The user signs in to SPARK Admin with it.',
             newPasswordHelp: 'Leave empty to keep the current password.',
             showPassword: 'Show password',
+            showConfirmPassword: 'Show repeated password',
             duplicateUsername: 'That username is taken.',
             saved: (username: string) => `User ${username} saved`,
+        },
+        delete: {
+            deleteAdminUser: (username: string) => `Delete user ${username}`,
+            formButton: 'Delete user',
+            title: (username: string) => `Delete user ${username}?`,
+            description: (username: string) =>
+                `${username} will no longer be able to sign in to SPARK Admin. This cannot be undone.`,
+            confirm: 'Delete user',
+            deleted: (username: string) => `User ${username} deleted`,
+            failed: 'The user was not deleted.',
+            errors: {
+                network:
+                    'The server did not respond. Check your internet connection and try again.',
+                forbidden: 'You are not allowed to delete users.',
+                conflict: 'You cannot delete your own account.',
+                server: 'Something went wrong on the server. Try again in a few minutes.',
+            },
         },
     },
     forms: {
@@ -554,6 +574,7 @@ export const en: Dictionary = {
             dateFormat: 'Format: DD.MM.YYYY.',
             dateInvalid: 'No such date.',
             dateRangeOrder: 'Before Date from.',
+            passwordMismatch: 'The passwords do not match.',
         },
         serverFieldErrors: {
             invalid: 'The server rejected this value.',
