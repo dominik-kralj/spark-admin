@@ -2,8 +2,8 @@ import { Button, Flex, HStack, Stack, Text } from '@chakra-ui/react'
 import { Pencil } from 'lucide-react'
 
 import { useStrings } from '@/shared/i18n/useStrings'
+import { fullName } from '@/shared/lib/fullName'
 
-import { fullName } from '../lib/fullName'
 import type { AdminUser } from '../validators/adminUser'
 
 import { YouChip } from './YouChip'

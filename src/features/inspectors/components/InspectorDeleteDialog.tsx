@@ -1,8 +1,8 @@
 import { useStrings } from '@/shared/i18n/useStrings'
+import { fullName } from '@/shared/lib/fullName'
 import { DeleteDialog } from '@/shared/ui/DeleteDialog'
 
 import { useDeleteInspector } from '../api/useInspectors'
-import { fullName } from '../lib/fullName'
 import type { Inspector } from '../validators/inspector'
 
 interface InspectorDeleteDialogProps {

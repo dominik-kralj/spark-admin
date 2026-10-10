@@ -14,16 +14,9 @@ export const adminUserListResponseSchema = z.array(adminUserResponseSchema)
 
 type AdminUserResponse = z.output<typeof adminUserResponseSchema>
 
-interface AdminUserCreateRequest {
-    username: string
-    name: string
-    surname: string
-    password: string
-}
+type AdminUserCreateRequest = Omit<AdminUserResponse, 'adminUserId'> & { password: string }
 
-interface AdminUserUpdateRequest {
-    name: string
-    surname: string
+type AdminUserUpdateRequest = Pick<AdminUserCreateRequest, 'name' | 'surname'> & {
     password?: string
 }
 
@@ -34,16 +27,9 @@ export interface AdminUser {
     surname: string
 }
 
-export interface AdminUserCreateInput {
-    username: string
-    name: string
-    surname: string
-    password: string
-}
+export type AdminUserCreateInput = Omit<AdminUser, 'id'> & { password: string }
 
-export interface AdminUserUpdateInput {
-    name: string
-    surname: string
+export type AdminUserUpdateInput = Pick<AdminUser, 'name' | 'surname'> & {
     /** Null keeps the current password. */
     password: string | null
 }

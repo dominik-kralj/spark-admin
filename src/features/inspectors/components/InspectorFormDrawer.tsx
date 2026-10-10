@@ -5,6 +5,7 @@ import { useForm, useWatch } from 'react-hook-form'
 
 import { useStrings } from '@/shared/i18n/useStrings'
 import { errorMessage } from '@/shared/lib/errorMessage'
+import { fullName } from '@/shared/lib/fullName'
 import { setServerFieldErrors } from '@/shared/lib/setServerFieldErrors'
 import { toaster } from '@/shared/lib/toaster'
 import { filterPin } from '@/shared/lib/validation'
@@ -16,7 +17,6 @@ import { FormField } from '@/shared/ui/FormField'
 import { SecretInput } from '@/shared/ui/SecretInput'
 
 import { useCreateInspector, useInspector, useUpdateInspector } from '../api/useInspectors'
-import { fullName } from '../lib/fullName'
 import { inspectorFieldMessage } from '../lib/inspectorFieldMessage'
 import {
     toInspectorFieldErrors,
