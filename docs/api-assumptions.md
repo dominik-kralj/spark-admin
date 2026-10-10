@@ -399,3 +399,28 @@ The detail adds `jir`, `zki`, `fiscalizedAt`, `fiscalLastError` and
 | Not in the API    | ticket number, vehicle brand and first observation time: the design does not show them (open question 39)                                                                                                                                                                                                    | `api-contract.md` ADM-5                      |
 | Tenant            | from the JWT; another city's DPK answers `404`                                                                                                                                                                                                                                                               | `api-contract.md` Transport                  |
 | Mock              | 60 DPKs for the city, seeded deterministically: the design's eight rows (05.10.2026 13:47 to 06.10.2026 09:05) and older ones. Photos are inline SVGs. ZG6140TR fails again when retried, KA4410CD has no photos, ST8032PV has one broken photo                                                              | `src/mocks/dailyTickets.ts`                  |
+
+### Reports (`src/features/reports/api/useReports.ts`)
+
+The shape is `api-contract.md` ADM-7; the list of reports is not defined (D14,
+open question #3), so the screen reads whatever `GET /reports` offers and shows
+the report and column names as the server sends them. Mapping is in
+`src/features/reports/validators/report.ts`. The mock serves three sample
+reports (revenue by zone, takings per day, DPK by zone) with stable seeded numbers.
+
+| Call                               | Query or body                       | Success                           | Errors                                |
+| ---------------------------------- | ----------------------------------- | --------------------------------- | ------------------------------------- |
+| `GET /reports`                     |                                     | `200 ReportDefinition[]`          |                                       |
+| `GET /reports/{reportKey}/preview` | `dateFrom`, `dateTo`, `zoneId?`     | `200 ReportPreview`               | `400` bad range, `404` unknown report |
+| `GET /reports/{reportKey}/pdf`     | the same, `Accept: application/pdf` | `200` the PDF                     | as preview                            |
+| `POST /reports/{reportKey}/email`  | `{ dateFrom, dateTo, zoneId? }`     | `202`, no body                    | `409 noReportEmail`, as preview       |
+| `GET /tenant`                      |                                     | reads `tenantName`, `reportEmail` |                                       |
+
+| Item           | Assumption                                                                                                                                                                                                                     | Source                         |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------ |
+| Range          | whole days in Zagreb: `dateFrom` is 00:00 of the first day, `dateTo` 00:00 on the day after the last (exclusive, so the last day is included: 01.09.–30.09. sends `dateTo` = 1 October 00:00 Zagreb), as for the Karte filters | `api-contract.md` conventions  |
+| Default range  | the last full calendar month, every zone, the first report in the list                                                                                                                                                         | design sample (01.09.–30.09.)  |
+| Column types   | `text`, `date` (YYYY-MM-DD), `count`, `amount`, where the contract had `align`, so dates and amounts go through the format helpers                                                                                             | handoff: formats               |
+| Totals         | the first column of the total row is the label "Ukupno" from the strings, never a value                                                                                                                                        | design                         |
+| File name      | built by the frontend: `izvjestaj-{reportKey}-{YYYY-MM-DD}-{YYYY-MM-DD}.pdf`; `Content-Disposition` is not read                                                                                                                | issue #38                      |
+| E-mail address | `reportEmail` from `GET /tenant`, read-only; null or blank means none, and Pošalji e-poštom is disabled with a message                                                                                                         | `api-contract.md` ADM-7, ADM-8 |

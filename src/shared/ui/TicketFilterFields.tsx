@@ -5,11 +5,12 @@ import { Controller, useWatch } from 'react-hook-form'
 
 import { useStrings } from '@/shared/i18n/useStrings'
 import { processingStatuses } from '@/shared/lib/processingStatus'
-import { normalisePlate, readDateText } from '@/shared/lib/validation'
-import { DateInput } from '@/shared/ui/DateInput'
+import { normalisePlate } from '@/shared/lib/validation'
 import { FormField, type FieldControlProps } from '@/shared/ui/FormField'
-
 import { useZoneOptions } from '@/shared/lib/useZoneOptions'
+import { RangeDateField } from '@/shared/ui/RangeDateField'
+import { ZoneOptions } from '@/shared/ui/ZoneOptions'
+
 import { dateFilterError, type DateFilterName } from '@/shared/lib/dateFilterError'
 import type { TicketFilterForm } from '@/shared/lib/useTicketFilterForm'
 
@@ -69,39 +70,21 @@ interface DateFilterFieldProps extends FilterFieldProps {
 
 export function DateFilterField({ form, name }: DateFilterFieldProps) {
     const t = useStrings()
-    const label = t.ticketFilters[name]
-    const typedDate = useWatch({ control: form.control, name })
-    const otherDate = readDateText(
-        useWatch({ control: form.control, name: name === 'from' ? 'to' : 'from' }),
-    )
-    // The calendar offers only days that keep the range in order.
-    const bound = 'date' in otherDate ? otherDate.date : undefined
+    const [from, to] = useWatch({ control: form.control, name: ['from', 'to'] })
 
     return (
-        <FormField label={label} error={dateFilterError(form, name, t)}>
-            {(control) => (
-                <DateInput
-                    label={label}
-                    value={typedDate}
-                    min={name === 'to' ? bound : undefined}
-                    max={name === 'from' ? bound : undefined}
-                    onPick={(picked) => {
-                        form.setValue(name, picked, {
-                            shouldDirty: true,
-                            shouldValidate: true,
-                        })
-                    }}
-                >
-                    <Input
-                        // The range rule sits on "to", so a new start checks it again.
-                        {...form.register(name, { deps: name === 'from' ? ['to'] : [] })}
-                        {...control}
-                        inputMode="numeric"
-                        autoComplete="off"
-                    />
-                </DateInput>
-            )}
-        </FormField>
+        <RangeDateField
+            label={t.ticketFilters[name]}
+            end={name}
+            value={name === 'from' ? from : to}
+            otherValue={name === 'from' ? to : from}
+            error={dateFilterError(form, name, t)}
+            // The range rule sits on "to", so a new start checks it again.
+            registration={form.register(name, { deps: name === 'from' ? ['to'] : [] })}
+            onPick={(picked) => {
+                form.setValue(name, picked, { shouldDirty: true, shouldValidate: true })
+            }}
+        />
     )
 }
 
@@ -136,15 +119,9 @@ function SelectFilterField({ form, name, label, children }: SelectFilterFieldPro
 export function ZoneFilterField({ form }: FilterFieldProps) {
     const t = useStrings()
     const zones = useZoneOptions()
-
     return (
         <SelectFilterField form={form} name="zoneId" label={t.ticketFilters.zone}>
-            <option value="">{t.ticketFilters.allZones}</option>
-            {zones.data?.map((zone) => (
-                <option key={zone.id} value={String(zone.id)}>
-                    {zone.code}
-                </option>
-            ))}
+            <ZoneOptions zones={zones.data} allZonesLabel={t.ticketFilters.allZones} />
         </SelectFilterField>
     )
 }

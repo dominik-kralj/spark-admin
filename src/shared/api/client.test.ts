@@ -6,7 +6,7 @@ import { config } from '@/shared/config'
 import { server } from '@/test/server'
 import { testUser as user } from '@/test/session'
 
-import { request } from './client'
+import { request, requestFile } from './client'
 import { ApiError, type ApiErrorKind } from './errors'
 import { getAccessToken, onSessionEnd, startSession } from './session'
 
@@ -272,5 +272,63 @@ describe('request', () => {
         await pending
 
         expect(getAccessToken()).toBe('jwt-new')
+    })
+})
+
+describe('requestFile', () => {
+    it('asks for the file type with the key and token, and returns the file', async () => {
+        let headers = new Headers()
+        let search = ''
+        server.use(
+            http.get(`${base}/reports/revenue/pdf`, ({ request }) => {
+                headers = request.headers
+                search = new URL(request.url).search
+
+                return new HttpResponse('%PDF-1.4', {
+                    headers: { 'Content-Type': 'application/pdf' },
+                })
+            }),
+        )
+        startSession('jwt-123', user)
+
+        const file = await requestFile('/reports/revenue/pdf', {
+            accept: 'application/pdf',
+            query: { dateFrom: '2026-08-31T22:00:00.000Z', zoneId: undefined },
+        })
+
+        expect(headers.get('Accept')).toBe('application/pdf')
+        expect(headers.get('X-API-KEY')).toBe(config.apiKey)
+        expect(headers.get('Authorization')).toBe('Bearer jwt-123')
+        expect(search).toBe('?dateFrom=2026-08-31T22%3A00%3A00.000Z')
+        expect(file.type).toBe('application/pdf')
+        await expect(file.text()).resolves.toBe('%PDF-1.4')
+    })
+
+    it('maps a failure by its status, as request does', async () => {
+        server.use(
+            http.get(`${base}/reports/revenue/pdf`, () => new HttpResponse(null, { status: 500 })),
+        )
+
+        const error = await captureError(
+            requestFile('/reports/revenue/pdf', { accept: 'application/pdf' }),
+        )
+
+        expect(error).toBeInstanceOf(ApiError)
+        expect((error as ApiError).kind).toBe('server')
+    })
+
+    it('ends the session as expired on a 401', async () => {
+        server.use(
+            http.get(`${base}/reports/revenue/pdf`, () => new HttpResponse(null, { status: 401 })),
+        )
+        const listener = vi.fn()
+        const unsubscribe = onSessionEnd(listener)
+        startSession('jwt-123', user)
+
+        await captureError(requestFile('/reports/revenue/pdf', { accept: 'application/pdf' }))
+
+        expect(getAccessToken()).toBeNull()
+        expect(listener).toHaveBeenCalledWith('expired')
+        unsubscribe()
     })
 })

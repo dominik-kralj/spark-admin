@@ -5,6 +5,7 @@ import { authHandlers } from './auth'
 import { dailyTicketHandlers } from './dailyTickets'
 import { inspectorHandlers } from './inspectors'
 import { privilegedOwnerHandlers } from './privilegedOwners'
+import { reportHandlers } from './reports'
 import { ticketHandlers } from './tickets'
 import { tenantHandlers } from './tenant'
 import { zoneHandlers } from './zones'
@@ -19,4 +20,5 @@ export const handlers: HttpHandler[] = [
     ...privilegedOwnerHandlers,
     ...inspectorHandlers,
     ...adminUserHandlers,
+    ...reportHandlers,
 ]

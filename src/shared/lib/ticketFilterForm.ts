@@ -3,14 +3,19 @@ import { z } from 'zod'
 import { compareCalendarDates } from '@/shared/lib/calendarDate'
 import { formatCalendarDate } from '@/shared/lib/format'
 import { processingStatuses } from '@/shared/lib/processingStatus'
-import { messageKey, normalisePlate, optionalDateField } from '@/shared/lib/validation'
+import {
+    messageKey,
+    normalisePlate,
+    optionalDateField,
+    optionalIdField,
+} from '@/shared/lib/validation'
 
 export const ticketFilterFormSchema = z
     .object({
         plate: z.string().transform(normalisePlate),
         from: optionalDateField,
         to: optionalDateField,
-        zoneId: z.string().transform((value) => (value === '' ? null : Number(value))),
+        zoneId: optionalIdField,
         fiscalStatus: z
             .enum(['', ...processingStatuses])
             .transform((value) => (value === '' ? null : value)),

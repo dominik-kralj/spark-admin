@@ -457,6 +457,67 @@ export const en: Dictionary = {
             confirm: 'Deactivate',
         },
     },
+    reports: {
+        form: {
+            label: 'Report parameters',
+            report: 'Report',
+            from: 'Date from',
+            to: 'Date to',
+            zone: 'Zone',
+            allZones: 'All zones',
+            submit: 'Show preview',
+        },
+        loading: 'Loading reports…',
+        errorTitle: 'Reports could not be loaded',
+        empty: {
+            title: 'No reports available',
+            description:
+                'No report has been set up for your city yet. Contact your system administrator.',
+        },
+        noPreview: {
+            title: 'No preview yet',
+            description:
+                'Choose a report, a period and a zone, then Show preview. Export and sending are available after the preview.',
+        },
+        previewLoading: 'Preparing the report preview…',
+        previewErrorTitle: 'The report preview could not be prepared',
+        preview: {
+            title: 'Report preview',
+            description: 'Check the data before exporting or sending.',
+            range: (from: string, to: string) => `${from} – ${to}`,
+            summary: (parts: string[]) => parts.join(' · '),
+            tableLabel: 'Report data preview',
+            scrollRegion: 'Report table',
+            total: 'Total',
+            noRows: 'There is no data for the chosen period and zone.',
+        },
+        pdf: {
+            button: 'Export PDF',
+            downloaded: 'PDF downloaded',
+            downloadedDescription: (fileName: string) => `File: ${fileName}`,
+            failed: 'PDF not downloaded',
+        },
+        email: {
+            button: 'Send by e-mail',
+            recipient: (email: string) => `Sent to the preset address: ${email}`,
+            noRecipient: 'No address for sending reports has been set.',
+            recipientUnavailable: 'The address for sending reports could not be loaded.',
+            confirmTitle: 'Send the report by e-mail?',
+            confirmDescription: (report: string, range: string, email: string) =>
+                `${report} for ${range} will be sent to ${email}.`,
+            confirm: 'Send',
+            sent: 'Report sent',
+            sentDescription: (email: string) => `It was sent to ${email}.`,
+            failed: 'The report was not sent.',
+        },
+        errors: {
+            network: 'The server did not respond. Check your internet connection and try again.',
+            forbidden: 'You do not have permission to export reports.',
+            notFound: 'This report is no longer available. Reload the page.',
+            conflict: 'No address for sending reports has been set.',
+            server: 'Something went wrong on the server. Try again in a few minutes.',
+        },
+    },
     citySettings: {
         intro: 'All fields are required. They are printed on receipts and sent for fiscalization.',
         sections: {

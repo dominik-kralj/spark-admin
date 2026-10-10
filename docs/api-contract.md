@@ -360,7 +360,7 @@ deleted, because tickets keep pointing at them. Only one with nothing pointing
 at them (no tickets, no `PARKING_OBSERVATIONS`) can be deleted; otherwise the
 server answers `409 { "code": "inUse" }`. [proposed]
 
-### ADM-7 Reports (Izvještaji), provisional
+### ADM-7 Reports (Izvještaji), provisional [built]
 
 The report list, columns and parameters are not defined anywhere (D14). This
 shape lets the screen work with any set of reports the backend offers.
@@ -381,15 +381,18 @@ interface ReportParams {
 
 // GET /reports/{reportKey}/preview?dateFrom=…&dateTo=…&zoneId=… -> 200
 interface ReportPreview {
-  columns: { key: string; label: string; align: 'left' | 'right' }[]
-  rows: Record<string, string | number>[]
-  totals: Record<string, string | number> | null // the "Ukupno" row
+  // How the frontend formats a value: 'date' is a YYYY-MM-DD day, 'count' a whole
+  // number, 'amount' EUR. Numbers align right. An unknown type shows as text.
+  columns: { key: string; label: string; type: 'text' | 'date' | 'count' | 'amount' }[]
+  rows: Record<string, string | number>[] // a missing key shows as an empty cell
+  totals: Record<string, string | number> | null // the "Ukupno" row; its first column is the label
 }
 ```
 
-- `GET /reports/{reportKey}/pdf` with the same query answers `200`
-  `application/pdf` with a `Content-Disposition` file name. The frontend
-  downloads it.
+- `GET /reports/{reportKey}/pdf` with the same query (and `Accept:
+application/pdf`) answers `200 application/pdf`. The frontend names the file
+  itself, `izvjestaj-{reportKey}-{from}-{to}.pdf` with ISO days, so it needs no
+  `Content-Disposition` (which a cross-origin response would also have to expose).
 - `POST /reports/{reportKey}/email` with `ReportParams` as the body answers
   `202`. The report goes to the city's preset address (`reportEmail` in
   `GET /tenant`). `409 noReportEmail` when none is set.

@@ -81,6 +81,11 @@ export function formatMinutes(minutes: number): string {
     return `${integerFormat.format(minutes)} ${minutesUnit}`
 }
 
+/** A number of things, such as tickets: whole, with thousands grouped. */
+export function formatCount(count: number): string {
+    return integerFormat.format(count)
+}
+
 /** A rate such as VAT, given in percent (25 for 25 %). */
 export function formatPercent(rate: number): string {
     return `${rateFormat.format(rate)} ${percentSign}`
