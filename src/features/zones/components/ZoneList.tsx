@@ -63,7 +63,9 @@ export function ZoneList({ onAdd, onEdit, onDelete }: ZoneListProps) {
         )
     }
 
-    const sortedZones = sortByText(zones.data, (zone) => [zone.code], sort.direction, {
+    const sortedZones = sortByText(zones.data, {
+        keysOf: (zone) => [zone.code],
+        direction: sort.direction,
         numeric: true,
     })
 

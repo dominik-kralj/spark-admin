@@ -5,20 +5,24 @@ const textCollator = new Intl.Collator('hr', { sensitivity: 'base' })
 // Numeric, so ZONA2 comes before ZONA10.
 const numericCollator = new Intl.Collator('hr', { numeric: true, sensitivity: 'base' })
 
-/** A sorted copy, by the texts `textsOf` gives each item; each text breaks a tie in the one before. */
+interface SortByTextOptions<T> {
+    /** The texts to sort by, in order: each one breaks a tie in the one before. */
+    keysOf: (item: T) => readonly string[]
+    direction: SortDirection
+    numeric?: boolean
+}
+
+/** A sorted copy of `items`, in Croatian text order. */
 export function sortByText<T>(
     items: readonly T[],
-    textsOf: (item: T) => readonly string[],
-    direction: SortDirection,
-    { numeric = false }: { numeric?: boolean } = {},
+    { keysOf, direction, numeric = false }: SortByTextOptions<T>,
 ): T[] {
     const collator = numeric ? numericCollator : textCollator
     const sorted = items.toSorted((a, b) => {
-        const left = textsOf(a)
-        const right = textsOf(b)
+        const right = keysOf(b)
 
-        return left.reduce(
-            (order, text, index) => order || collator.compare(text, right[index] ?? ''),
+        return keysOf(a).reduce(
+            (order, key, index) => order || collator.compare(key, right[index] ?? ''),
             0,
         )
     })

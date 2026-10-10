@@ -58,11 +58,10 @@ export function InspectorList({ onAdd, onEdit, onDelete }: InspectorListProps) {
         )
     }
 
-    const sortedInspectors = sortByText(
-        inspectors.data,
-        (inspector) => [inspector.surname, inspector.name],
-        sort.direction,
-    )
+    const sortedInspectors = sortByText(inspectors.data, {
+        keysOf: (inspector) => [inspector.surname, inspector.name],
+        direction: sort.direction,
+    })
 
     return (
         <>

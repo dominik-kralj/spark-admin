@@ -6,17 +6,20 @@ const byItself = (text: string) => [text]
 
 describe('sortByText', () => {
     it('sorts in Croatian order, ignoring case', () => {
-        expect(sortByText(['Šimić', 'cvitan', 'Čop', 'Sabo', 'Cvitan'], byItself, 'asc')).toEqual([
-            'cvitan',
-            'Cvitan',
-            'Čop',
-            'Sabo',
-            'Šimić',
-        ])
+        expect(
+            sortByText(['Šimić', 'cvitan', 'Čop', 'Sabo', 'Cvitan'], {
+                keysOf: byItself,
+                direction: 'asc',
+            }),
+        ).toEqual(['cvitan', 'Cvitan', 'Čop', 'Sabo', 'Šimić'])
     })
 
     it('reverses the order for desc', () => {
-        expect(sortByText(['B', 'A', 'C'], byItself, 'desc')).toEqual(['C', 'B', 'A'])
+        expect(sortByText(['B', 'A', 'C'], { keysOf: byItself, direction: 'desc' })).toEqual([
+            'C',
+            'B',
+            'A',
+        ])
     })
 
     it('breaks a tie with the next text', () => {
@@ -27,23 +30,30 @@ describe('sortByText', () => {
         ]
 
         expect(
-            sortByText(people, ({ surname, name }) => [surname, name], 'asc').map(
-                ({ name }) => name,
-            ),
+            sortByText(people, {
+                keysOf: ({ surname, name }) => [surname, name],
+                direction: 'asc',
+            }).map(({ name }) => name),
         ).toEqual(['Ivan', 'Ana', 'Marko'])
     })
 
     it('orders numbers in the text by value only when asked', () => {
         const codes = ['ZONA10', 'ZONA2']
 
-        expect(sortByText(codes, byItself, 'asc')).toEqual(['ZONA10', 'ZONA2'])
-        expect(sortByText(codes, byItself, 'asc', { numeric: true })).toEqual(['ZONA2', 'ZONA10'])
+        expect(sortByText(codes, { keysOf: byItself, direction: 'asc' })).toEqual([
+            'ZONA10',
+            'ZONA2',
+        ])
+        expect(sortByText(codes, { keysOf: byItself, direction: 'asc', numeric: true })).toEqual([
+            'ZONA2',
+            'ZONA10',
+        ])
     })
 
     it('leaves the list it was given as it was', () => {
         const codes = ['B', 'A']
 
-        sortByText(codes, byItself, 'asc')
+        sortByText(codes, { keysOf: byItself, direction: 'asc' })
 
         expect(codes).toEqual(['B', 'A'])
     })

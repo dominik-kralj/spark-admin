@@ -59,7 +59,10 @@ export function AdminUserList({ signedInUserId, onAdd, onEdit, onDelete }: Admin
         )
     }
 
-    const sortedUsers = sortByText(users.data, (user) => [user.username], sort.direction)
+    const sortedUsers = sortByText(users.data, {
+        keysOf: (user) => [user.username],
+        direction: sort.direction,
+    })
 
     return (
         <>
