@@ -103,8 +103,9 @@ describe('Karte filters', () => {
             expect(requests.at(-1)?.get('createdFrom')).toBe('2026-10-05T22:00:00.000Z')
         })
         expect(requests.at(-1)?.get('createdTo')).toBe('2026-10-06T22:00:00.000Z')
+        // The loader asks for the rows as the URL changes, before the page shows the new filters.
         expect(
-            screen.getByRole('button', {
+            await screen.findByRole('button', {
                 name: f.remove(f.tags.range('06.10.2026', '06.10.2026')),
             }),
         ).toBeInTheDocument()
@@ -189,7 +190,9 @@ describe('Karte filters', () => {
             expect(requests.at(-1)?.get('zoneId')).toBe('1')
         })
         expect(requests.at(-1)?.get('fiscalStatus')).toBe('FAIL')
-        expect(screen.getByRole('button', { name: f.remove(f.tags.zone('ZONA1')) })).toBeVisible()
+        expect(
+            await screen.findByRole('button', { name: f.remove(f.tags.zone('ZONA1')) }),
+        ).toBeVisible()
         expect(
             screen.getByRole('button', {
                 name: f.remove(f.tags.fiscal(hr.processingStatus.fiscal.failed)),
@@ -260,6 +263,8 @@ describe('Karte filters', () => {
         const clear = filterBar().getByRole('button', { name: f.clear })
         expect(search).toBeDisabled()
         expect(clear).toBeDisabled()
+        // The rows come with the route, so they can arrive before the zone choices.
+        await filterBar().findByRole('option', { name: 'ZONA1' })
 
         await user.selectOptions(filterBar().getByRole('combobox', { name: f.zone }), 'ZONA1')
 

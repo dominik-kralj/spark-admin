@@ -16,7 +16,7 @@ const adminUserKeys = {
     list: ['adminUsers', 'list'] as const,
 }
 
-const adminUsersQuery = queryOptions({
+export const adminUsersQuery = queryOptions({
     queryKey: adminUserKeys.list,
     queryFn: async ({ signal }) => {
         const users = await request('/users', { schema: adminUserListResponseSchema, signal })

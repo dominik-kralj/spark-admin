@@ -15,7 +15,7 @@ const zoneKeys = {
     list: ['zones', 'list'] as const,
 }
 
-const zonesQuery = queryOptions({
+export const zonesQuery = queryOptions({
     queryKey: zoneKeys.list,
     queryFn: async ({ signal }) => {
         const zones = await request('/zones', { schema: zoneListResponseSchema, signal })

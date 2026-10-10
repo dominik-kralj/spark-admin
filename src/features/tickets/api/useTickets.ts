@@ -49,7 +49,7 @@ async function fetchTicketPage(params: TicketListParams, signal: AbortSignal) {
 }
 
 // Never stale: the rows stay as loaded until the user asks for new ones (useShowNewTickets).
-function ticketsQuery(params: TicketListParams) {
+export function ticketsQuery(params: TicketListParams) {
     return queryOptions({
         queryKey: ticketKeys.list(params),
         queryFn: ({ signal }) => fetchTicketPage(params, signal),
@@ -58,7 +58,7 @@ function ticketsQuery(params: TicketListParams) {
 }
 
 // What the list's rows are as new as; kept with the rows, so the two only move together.
-function newestTicketTimeQuery(filters: TicketFilters) {
+export function newestTicketTimeQuery(filters: TicketFilters) {
     return queryOptions({
         queryKey: ticketKeys.newestTime(filters),
         queryFn: async ({ signal }) => {

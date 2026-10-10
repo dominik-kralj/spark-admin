@@ -15,7 +15,7 @@ const privilegedOwnerKeys = {
     list: ['privilegedOwners', 'list'] as const,
 }
 
-const privilegedOwnersQuery = queryOptions({
+export const privilegedOwnersQuery = queryOptions({
     queryKey: privilegedOwnerKeys.list,
     queryFn: async ({ signal }) => {
         const owners = await request('/privileged-owners', {

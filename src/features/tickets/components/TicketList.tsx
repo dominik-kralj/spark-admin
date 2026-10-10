@@ -6,26 +6,20 @@ import { useStrings } from '@/shared/i18n/useStrings'
 import { pageRange } from '@/shared/lib/pageRange'
 import type { TicketFilters } from '@/shared/lib/ticketFilterValues'
 import { pageParam, usePageSearchParam } from '@/shared/lib/usePageSearchParam'
-import { useSortSearchParams, type Sort } from '@/shared/lib/useSortSearchParams'
+import { useSortSearchParams } from '@/shared/lib/useSortSearchParams'
 import { visibleRowLink } from '@/shared/lib/visibleRowLink'
 import { EmptyState } from '@/shared/ui/EmptyState'
 import { ErrorState } from '@/shared/ui/ErrorState'
 import { LoadingState } from '@/shared/ui/LoadingState'
 
 import { useTickets } from '../api/useTickets'
-import type { TicketSortKey } from '../validators/ticket'
+import { defaultTicketSort, ticketPageSize, ticketSortKeys } from '../lib/ticketListParams'
 
 import { TicketCards } from './TicketCards'
 import { TicketTable } from './TicketTable'
 
-const sortKeys = ['createdAt', 'plate', 'amount', 'validUntil'] as const
-
-const defaultSort: Sort<TicketSortKey> = { key: 'createdAt', direction: 'desc' }
-
 // A new order starts again from the first page.
 const resetOnSort = [pageParam]
-
-const pageSize = 25
 
 const skeletonColumnWidths = [2, 2, 1, 1, 1, 2, 2, 2]
 
@@ -45,8 +39,8 @@ export function TicketList({
 }: TicketListProps) {
     const t = useStrings()
     const { page, setPage } = usePageSearchParam()
-    const { sort, sortBy } = useSortSearchParams(sortKeys, defaultSort, resetOnSort)
-    const tickets = useTickets({ page, pageSize, sort, filters })
+    const { sort, sortBy } = useSortSearchParams(ticketSortKeys, defaultTicketSort, resetOnSort)
+    const tickets = useTickets({ page, pageSize: ticketPageSize, sort, filters })
     const isFiltered = Object.keys(filters).length > 0
 
     // The button that asked for them is gone with the banner, so focus moves to the rows.

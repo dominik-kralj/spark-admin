@@ -23,7 +23,7 @@ const inspectorKeys = {
     detail: (id: number | null) => ['inspectors', 'detail', id] as const,
 }
 
-const inspectorsQuery = queryOptions({
+export const inspectorsQuery = queryOptions({
     queryKey: inspectorKeys.list,
     queryFn: async ({ signal }) => {
         const inspectors = await request('/inspectors', {

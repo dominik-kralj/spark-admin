@@ -11,6 +11,7 @@ import { createRoot } from 'react-dom/client'
 import { App } from '@/App'
 import { config } from '@/shared/config'
 import { getLanguage } from '@/shared/i18n/language'
+import { createQueryClient } from '@/shared/lib/queryClient'
 import { AppProviders } from '@/shared/providers'
 
 async function enableMockApi() {
@@ -28,11 +29,13 @@ const root = document.getElementById('root')
 
 if (!root) throw new Error('Missing #root element')
 
+const queryClient = createQueryClient()
+
 void enableMockApi().then(() => {
     createRoot(root).render(
         <StrictMode>
-            <AppProviders>
-                <App />
+            <AppProviders queryClient={queryClient}>
+                <App queryClient={queryClient} />
             </AppProviders>
         </StrictMode>,
     )

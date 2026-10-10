@@ -24,7 +24,7 @@ function reportPath(params: ReportParams, action: 'preview' | 'pdf' | 'email') {
     return `/reports/${encodeURIComponent(params.reportKey)}/${action}`
 }
 
-const reportsQuery = queryOptions({
+export const reportsQuery = queryOptions({
     queryKey: reportKeys.list,
     // The list changes only with a backend release.
     staleTime: Infinity,

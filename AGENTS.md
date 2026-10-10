@@ -61,6 +61,12 @@ The list pattern (`features/zones/components/`):
   which from `md` is the window's height. The form drawer and delete dialog
   come from `useEditAndDeleteOverlays` (`shared/lib`); the dialog is `DeleteDialog`
   (`shared/ui`).
+- The route: the section's entry in `pageQueries` (`src/routes.tsx`) starts its
+  list query (`zonesQuery`, exported from `api/`) in the route loader without
+  awaiting it, so the request runs alongside the page's lazy download and the
+  page still shows its loading state. A list keyed by the URL (page, sort,
+  filters) reads it with one `read…ListParams` in the feature's `lib/`, used by
+  both the list and the loader, so they share one query key.
 - `ZoneList`: early returns for `LoadingState`, `ErrorState` (retry is
   `refetch`), `EmptyState` with the one fixing action, then the data.
   `LoadingState` announces its label through the shell's `LiveRegion`, a
@@ -74,7 +80,8 @@ The list pattern (`features/zones/components/`):
   total as a footer. Below `md`, `ZoneCards`: a labelled `ul` of `panel` cards
   with a `dl` of 3 to 4 fields. Both render; CSS shows one.
 - Tests: `ZonesPage.test.tsx` through the route and the mock (columns and
-  formatting, cards, sort and URL, loading, empty, error and retry, axe), and
+  formatting, cards, sort and URL, loading, empty, error and retry, axe), a row
+  in `src/routes.test.tsx` (the request starts before the page module loads), and
   `e2e/zones.spec.ts` (table at 1440 px, cards at 320 and 375 px).
 
 The form pattern (`ZoneFormDrawer`) follows one validation rule for every form,

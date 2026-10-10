@@ -2,8 +2,9 @@ import { useSearchParams } from './useSearchParams'
 
 export const pageParam = 'page'
 
-function parsePage(value: string | null): number {
-    const page = Number(value)
+/** The page in the URL; anything but a whole number from 1 up reads as page 1. */
+export function readPage(searchParams: URLSearchParams): number {
+    const page = Number(searchParams.get(pageParam))
 
     return Number.isInteger(page) && page >= 1 ? page : 1
 }
@@ -16,5 +17,5 @@ export function usePageSearchParam() {
         updateSearchParams({ [pageParam]: page === 1 ? null : String(page) })
     }
 
-    return { page: parsePage(searchParams.get(pageParam)), setPage }
+    return { page: readPage(searchParams), setPage }
 }

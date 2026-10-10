@@ -28,7 +28,7 @@ const dailyTicketKeys = {
     fiscalize: ['dailyTickets', 'fiscalize'] as const,
 }
 
-function dailyTicketsQuery(params: DailyTicketListParams) {
+export function dailyTicketsQuery(params: DailyTicketListParams) {
     return queryOptions({
         queryKey: dailyTicketKeys.list(params),
         queryFn: async ({ signal }) =>
