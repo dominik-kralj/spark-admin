@@ -3,6 +3,5 @@
 The open issues, grouped into one PR per feature, in build order. Each PR
 closes every issue in its row. Remove a row once its PR is merged.
 
-| Group      | Issues   | Notes |
-| ---------- | -------- | ----- |
-| Izvještaji | #37, #38 |       |
+| Group | Issues | Notes |
+| ----- | ------ | ----- |
