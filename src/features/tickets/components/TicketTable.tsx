@@ -5,10 +5,10 @@ import { formatAmount, formatDateTime, formatMinutes } from '@/shared/lib/format
 import type { PageRange } from '@/shared/lib/pageRange'
 import type { Sort } from '@/shared/lib/useSortSearchParams'
 import { paths } from '@/shared/paths'
-import { TablePageFooter } from '@/shared/ui/PageFooters'
 import { ProcessingStatusChip } from '@/shared/ui/ProcessingStatusChip'
 import { SortableColumnHeader } from '@/shared/ui/SortableColumnHeader'
 import { RowLink } from '@/shared/ui/RowLink'
+import { TablePageFooter } from '@/shared/ui/TablePageFooter'
 import { TablePanel } from '@/shared/ui/TablePanel'
 
 import type { Ticket, TicketSortKey } from '../validators/ticket'

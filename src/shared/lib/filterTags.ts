@@ -1,9 +1,8 @@
 import type { Dictionary } from '@/shared/i18n/dictionary'
 import { formatCalendarDate } from '@/shared/lib/format'
 
-import type { ZoneOption } from './useZoneOptions'
-
 import type { TicketFilterValues } from './ticketFilterForm'
+import type { ZoneOption } from './useZoneOptions'
 
 export interface FilterTag {
     id: 'range' | 'zone' | 'fiscal'

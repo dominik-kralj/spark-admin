@@ -7,15 +7,16 @@ import type { Sort } from '@/shared/lib/useSortSearchParams'
 import { visibleRowLink } from '@/shared/lib/visibleRowLink'
 import { paths } from '@/shared/paths'
 import { MissingValue } from '@/shared/ui/MissingValue'
-import { TablePageFooter } from '@/shared/ui/PageFooters'
 import { RowLink } from '@/shared/ui/RowLink'
 import { SortableColumnHeader } from '@/shared/ui/SortableColumnHeader'
+import { TablePageFooter } from '@/shared/ui/TablePageFooter'
 import { TablePanel } from '@/shared/ui/TablePanel'
 
+import { canFiscalizeAgain } from '../lib/fiscalizeRequest'
 import type { DailyTicket, DailyTicketSortKey } from '../validators/dailyTicket'
 
 import { DailyTicketFiscalChip } from './DailyTicketFiscalChip'
-import { FiscalizeAgainButton } from './FiscalizeAgain'
+import { FiscalizeAgainButton } from './FiscalizeAgainButton'
 
 interface DailyTicketTableProps {
     dailyTickets: DailyTicket[]
@@ -109,7 +110,7 @@ export function DailyTicketTable({
                             />
                         </Table.Cell>
                         <Table.Cell>
-                            {dailyTicket.fiscal.status === 'failed' && (
+                            {canFiscalizeAgain(dailyTicket) && (
                                 <FiscalizeAgainButton
                                     ticket={dailyTicket}
                                     fallbackFocus={() => visibleRowLink(dailyTicket.id)}

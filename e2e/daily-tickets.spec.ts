@@ -132,6 +132,8 @@ test.describe('DPK on a phone', () => {
         await plate.fill('zg 90')
         await plate.press('Enter')
         await expect(page).toHaveURL(`${paths.dailyTickets}?plate=ZG90`)
+        // As a user would: the results first, then the drawer.
+        await expect(list.getByRole('listitem').first()).toContainText('ZG90')
 
         await bar.getByRole('button', { name: f.open }).click()
         const drawer = page.getByRole('dialog', { name: f.drawerTitle })

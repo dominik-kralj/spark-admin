@@ -7,14 +7,15 @@ import { visibleRowLink } from '@/shared/lib/visibleRowLink'
 import { paths } from '@/shared/paths'
 import { CardDetailLink } from '@/shared/ui/CardDetailLink'
 import { CardFields } from '@/shared/ui/CardFields'
+import { CardsPageFooter } from '@/shared/ui/CardsPageFooter'
 import type { DetailField } from '@/shared/ui/DetailFields'
 import { MissingValue } from '@/shared/ui/MissingValue'
-import { CardsPageFooter } from '@/shared/ui/PageFooters'
 
+import { canFiscalizeAgain } from '../lib/fiscalizeRequest'
 import type { DailyTicket } from '../validators/dailyTicket'
 
 import { DailyTicketFiscalChip } from './DailyTicketFiscalChip'
-import { FiscalizeAgainButton } from './FiscalizeAgain'
+import { FiscalizeAgainButton } from './FiscalizeAgainButton'
 
 function cardFields(
     dailyTicket: DailyTicket,
@@ -66,7 +67,7 @@ export function DailyTicketCards({
                         />
                         <CardFields fields={cardFields(dailyTicket, t.dailyTickets.columns)} />
 
-                        {dailyTicket.fiscal.status === 'failed' && (
+                        {canFiscalizeAgain(dailyTicket) && (
                             <FiscalizeAgainButton
                                 ticket={dailyTicket}
                                 fallbackFocus={() => visibleRowLink(dailyTicket.id)}

@@ -113,6 +113,7 @@ describe('DPK detail', () => {
             photos.alt('ZG9087KL', 2, 3),
             photos.alt('ZG9087KL', 3, 3),
         ])
+        expect(buttons[0]).toHaveAccessibleDescription(photos.alt('ZG9087KL', 1, 3))
         for (const image of images) {
             expect(image).toHaveAttribute('loading', 'lazy')
             expect(image).toHaveAttribute('width', '800')

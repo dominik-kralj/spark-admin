@@ -8,10 +8,11 @@ import { formatAmount, formatDateTime } from '@/shared/lib/format'
 import { DetailFields, type DetailField } from '@/shared/ui/DetailFields'
 import { MissingValue } from '@/shared/ui/MissingValue'
 
+import { canFiscalizeAgain } from '../lib/fiscalizeRequest'
 import type { DailyTicketDetail } from '../validators/dailyTicket'
 
 import { DailyTicketFiscalChip } from './DailyTicketFiscalChip'
-import { FiscalizeAgainButton } from './FiscalizeAgain'
+import { FiscalizeAgainButton } from './FiscalizeAgainButton'
 import { VehiclePhotos } from './VehiclePhotos'
 
 type Strings = Dictionary['dailyTickets']['detail']
@@ -109,7 +110,7 @@ export function DailyTicketDetailContent({ dailyTicket, titleRef }: DailyTicketD
 
     return (
         <Stack gap="6">
-            {dailyTicket.fiscal.status === 'failed' && (
+            {canFiscalizeAgain(dailyTicket) && (
                 <FailureNotice dailyTicket={dailyTicket} titleRef={titleRef} />
             )}
 

@@ -11,7 +11,7 @@ import { TicketFilters } from '@/shared/ui/TicketFilters'
 
 import { DailyTicketDetailDrawer } from './DailyTicketDetailDrawer'
 import { DailyTicketList } from './DailyTicketList'
-import { FiscalizeAgainProvider } from './FiscalizeAgain'
+import { FiscalizeAgainProvider } from './FiscalizeAgainProvider'
 
 export function DailyTicketsPage() {
     const t = useStrings()

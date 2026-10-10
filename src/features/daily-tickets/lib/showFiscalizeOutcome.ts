@@ -3,7 +3,7 @@ import { toaster } from '@/shared/lib/toaster'
 
 import type { DailyTicketDetail } from '../validators/dailyTicket'
 
-/** The toast for what the tax authority answered; a queued attempt is still in progress (D8). */
+/** The toast for what the tax authority answered; a queued attempt is still in progress. */
 export function showFiscalizeOutcome(
     { plate, fiscal }: DailyTicketDetail,
     strings: Dictionary['dailyTickets']['fiscalize'],

@@ -64,7 +64,7 @@ export function useDailyTicket(id: string) {
     return useQuery(dailyTicketQuery(id))
 }
 
-function withRow(page: DailyTicketPage | undefined, detail: DailyTicketDetail) {
+function replaceRow(page: DailyTicketPage | undefined, detail: DailyTicketDetail) {
     if (page === undefined) return undefined
 
     return {
@@ -73,10 +73,7 @@ function withRow(page: DailyTicketPage | undefined, detail: DailyTicketDetail) {
     }
 }
 
-/**
- * "Fiskaliziraj ponovno": the server answers with the ticket's new state, which goes into the
- * detail and every loaded list page, so the list and the detail agree without a refetch.
- */
+// The answer goes into the detail and every loaded list page, so both agree without a refetch.
 export function useFiscalizeDailyTicket() {
     const queryClient = useQueryClient()
 
@@ -93,7 +90,7 @@ export function useFiscalizeDailyTicket() {
             queryClient.setQueryData(dailyTicketKeys.detail(detail.id), detail)
             queryClient.setQueriesData<DailyTicketPage>(
                 { queryKey: dailyTicketKeys.lists },
-                (page) => withRow(page, detail),
+                (page) => replaceRow(page, detail),
             )
         },
         // A refusal means the ticket moved on elsewhere; reading it again shows where it is.

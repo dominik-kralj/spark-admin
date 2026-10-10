@@ -11,7 +11,7 @@ import {
     VStack,
 } from '@chakra-ui/react'
 import { ImageOff } from 'lucide-react'
-import { useState } from 'react'
+import { useId, useState } from 'react'
 
 import { useStrings } from '@/shared/i18n/useStrings'
 
@@ -31,6 +31,7 @@ interface PhotoTileProps {
 function PhotoTile({ photo, alt, enlargeLabel, onEnlarge }: PhotoTileProps) {
     const t = useStrings()
     const [isBroken, setIsBroken] = useState(false)
+    const imageId = useId()
 
     if (isBroken) {
         return (
@@ -56,6 +57,8 @@ function PhotoTile({ photo, alt, enlargeLabel, onEnlarge }: PhotoTileProps) {
         <chakra.button
             type="button"
             aria-label={enlargeLabel}
+            // The label replaces the image's alt as the name; this keeps the alt as its description.
+            aria-describedby={imageId}
             onClick={onEnlarge}
             // A button only shrinks to fit, even as a block; the 4:3 frame sizes from this width.
             display="block"
@@ -69,6 +72,7 @@ function PhotoTile({ photo, alt, enlargeLabel, onEnlarge }: PhotoTileProps) {
             <AspectRatio ratio={4 / 3}>
                 <Image asChild objectFit="cover">
                     <img
+                        id={imageId}
                         src={photo.url}
                         alt={alt}
                         width={photoWidth}
@@ -149,7 +153,6 @@ export function VehiclePhotos({ plate, photos }: VehiclePhotosProps) {
 
     if (total === 0) return <Text color="fg.muted">{strings.none}</Text>
 
-    // Shown numbers start from 1.
     const shownIndex = (openIndex ?? 0) + 1
 
     return (

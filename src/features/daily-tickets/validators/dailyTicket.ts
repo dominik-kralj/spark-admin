@@ -52,9 +52,7 @@ export interface DailyTicket {
     createdAt: Date
     plate: string
     zone: { id: number; code: string }
-    /** Where the inspector found the vehicle; the spec does not store it yet. */
     address: string | null
-    /** "Marko Horvat": the name as the list and detail show it. */
     inspector: { id: number; name: string }
     /** EUR at the API's full precision; rounded only when shown. */
     amount: number
