@@ -52,6 +52,11 @@ export const oibField = z
     .min(1, message('required'))
     .regex(/^(\d{11})?$/, message('oibInvalid'))
 
+/** Digits and a decimal comma or point: an amount or a percent as it is typed. */
+export function keepDecimal(value: string): string {
+    return value.replace(/[^\d.,]/g, '')
+}
+
 export function keepDigits(value: string): string {
     return value.replace(/\D/g, '')
 }

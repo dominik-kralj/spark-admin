@@ -1,13 +1,14 @@
-import { Button, Input, SimpleGrid, Text } from '@chakra-ui/react'
+import { Button, Input, SimpleGrid, Text, type InputProps } from '@chakra-ui/react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Trash2 } from 'lucide-react'
-import type { HTMLAttributes } from 'react'
 import { useForm } from 'react-hook-form'
 
 import { useStrings } from '@/shared/i18n/useStrings'
 import { errorMessage } from '@/shared/lib/errorMessage'
 import { setServerFieldErrors } from '@/shared/lib/setServerFieldErrors'
 import { toaster } from '@/shared/lib/toaster'
+import { keepDecimal } from '@/shared/lib/validation'
+import { wholeNumberInput } from '@/shared/lib/wholeNumberInput'
 import { ErrorAlert } from '@/shared/ui/ErrorAlert'
 import { FormDrawer } from '@/shared/ui/FormDrawer'
 import { FormField } from '@/shared/ui/FormField'
@@ -23,14 +24,24 @@ import {
     type ValidZoneFormValues,
 } from '../validators/zoneForm'
 
-const fields: { name: ZoneField; inputMode: HTMLAttributes<HTMLInputElement>['inputMode'] }[] = [
-    { name: 'code', inputMode: 'text' },
-    { name: 'name', inputMode: 'text' },
-    { name: 'price', inputMode: 'decimal' },
-    { name: 'dailyTicketPrice', inputMode: 'decimal' },
-    { name: 'durationMinutes', inputMode: 'numeric' },
-    { name: 'maxExtensions', inputMode: 'numeric' },
-    { name: 'dpkIssueDelayMinutes', inputMode: 'numeric' },
+// Amounts stay text: a number input would not take the decimal comma everywhere.
+const amount: InputProps = { inputMode: 'decimal' }
+
+interface FieldConfig {
+    name: ZoneField
+    input?: InputProps
+    /** Drops what the field can never hold as it is typed. */
+    filter?: (value: string) => string
+}
+
+const fields: FieldConfig[] = [
+    { name: 'code' },
+    { name: 'name' },
+    { name: 'price', input: amount, filter: keepDecimal },
+    { name: 'dailyTicketPrice', input: amount, filter: keepDecimal },
+    { name: 'durationMinutes', input: wholeNumberInput(1) },
+    { name: 'maxExtensions', input: wholeNumberInput(0) },
+    { name: 'dpkIssueDelayMinutes', input: wholeNumberInput(0) },
 ]
 
 interface ZoneFormDrawerProps {
@@ -57,7 +68,8 @@ export function ZoneFormDrawer({
         register,
         handleSubmit,
         setError,
-        formState: { errors, isDirty, isSubmitting, submitCount },
+        setValue,
+        formState: { errors, isDirty, isSubmitting },
     } = useForm({
         resolver: zodResolver(zoneFormSchema),
         defaultValues: isAdding ? emptyZoneForm : toZoneFormValues(zone),
@@ -66,7 +78,6 @@ export function ZoneFormDrawer({
 
     const saveError = saveMutation.error
     const hasFieldErrors = Object.keys(toZoneFieldErrors(saveError)).length > 0
-    const hasInvalidFields = submitCount > 0 && Object.keys(errors).length > 0
 
     async function save(values: ValidZoneFormValues) {
         const input = toZoneInput(values)
@@ -88,7 +99,6 @@ export function ZoneFormDrawer({
             title={isAdding ? t.zones.add : t.zones.editZone(zone.code)}
             isDirty={isDirty}
             isSaving={isSubmitting}
-            isSaveDisabled={!isAdding && !isDirty}
             destructiveAction={
                 !isAdding && (
                     <Button
@@ -117,10 +127,8 @@ export function ZoneFormDrawer({
                 />
             )}
 
-            {hasInvalidFields && <ErrorAlert message={t.zones.form.notSaved} />}
-
             <SimpleGrid columns={{ base: 1, md: 2 }} columnGap="4" rowGap="5">
-                {fields.map(({ name, inputMode }) => (
+                {fields.map(({ name, input, filter }) => (
                     <FormField
                         key={name}
                         label={t.zones.form.labels[name]}
@@ -128,10 +136,18 @@ export function ZoneFormDrawer({
                     >
                         {(control) => (
                             <Input
-                                {...register(name)}
+                                {...register(name, {
+                                    ...(filter && {
+                                        onChange: (event: { target: { value: string } }) => {
+                                            setValue(name, filter(event.target.value), {
+                                                shouldDirty: true,
+                                            })
+                                        },
+                                    }),
+                                })}
                                 {...control}
-                                inputMode={inputMode}
                                 autoComplete="off"
+                                {...input}
                             />
                         )}
                     </FormField>

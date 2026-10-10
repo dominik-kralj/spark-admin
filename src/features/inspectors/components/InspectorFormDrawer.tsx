@@ -62,7 +62,7 @@ export function InspectorFormDrawer({
         setError,
         setValue,
         control,
-        formState: { errors, isDirty, isSubmitting, submitCount },
+        formState: { errors, isDirty, isSubmitting },
     } = useForm({
         resolver: zodResolver(inspectorFormSchema),
         // The list has every field but the PIN, so an edit can start before the detail loads.
@@ -78,7 +78,6 @@ export function InspectorFormDrawer({
 
     const saveError = saveMutation.error
     const hasFieldErrors = Object.keys(toInspectorFieldErrors(saveError)).length > 0
-    const hasInvalidFields = submitCount > 0 && Object.keys(errors).length > 0
     const isPinMissing = !isAdding && detail.data === undefined
 
     async function save(values: ValidInspectorFormValues) {
@@ -113,7 +112,7 @@ export function InspectorFormDrawer({
             title={isAdding ? t.inspectors.add : t.inspectors.editInspector(savedName)}
             isDirty={isDirty}
             isSaving={isSubmitting}
-            isSaveDisabled={!isAdding && (!isDirty || isPinMissing)}
+            isSaveBlocked={isPinMissing}
             destructiveAction={
                 !isAdding && (
                     <InspectorDeleteButton
@@ -145,8 +144,6 @@ export function InspectorFormDrawer({
                     takesFocus
                 />
             )}
-
-            {hasInvalidFields && <ErrorAlert message={t.inspectors.form.notSaved} />}
 
             <SimpleGrid columns={{ base: 1, md: 2 }} columnGap="4" rowGap="5">
                 <FormField label={t.inspectors.form.labels.name} error={fieldError('name')}>

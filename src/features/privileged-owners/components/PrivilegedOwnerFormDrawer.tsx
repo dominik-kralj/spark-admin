@@ -81,7 +81,7 @@ export function PrivilegedOwnerFormDrawer({
         setError,
         setValue,
         control: formControl,
-        formState: { errors, isDirty, isSubmitting, submitCount },
+        formState: { errors, isDirty, isSubmitting },
     } = useForm({
         resolver: zodResolver(privilegedOwnerFormSchema),
         defaultValues: isAdding ? emptyPrivilegedOwnerForm : toPrivilegedOwnerFormValues(owner),
@@ -92,7 +92,6 @@ export function PrivilegedOwnerFormDrawer({
 
     const saveError = saveMutation.error
     const hasFieldErrors = Object.keys(toPrivilegedOwnerFieldErrors(saveError)).length > 0
-    const hasInvalidFields = submitCount > 0 && Object.keys(errors).length > 0
     const isExpired = !isAdding && validityOf(owner, new Date(dataUpdatedAt)) === 'expired'
     const helperTexts: Partial<Record<PrivilegedOwnerField, string>> = {
         plate: t.privilegedOwners.form.plateHelp,
@@ -134,7 +133,6 @@ export function PrivilegedOwnerFormDrawer({
             }
             isDirty={isDirty}
             isSaving={isSubmitting}
-            isSaveDisabled={!isAdding && !isDirty}
             destructiveAction={
                 !isAdding && (
                     <Button
@@ -164,8 +162,6 @@ export function PrivilegedOwnerFormDrawer({
                     takesFocus
                 />
             )}
-
-            {hasInvalidFields && <ErrorAlert message={t.privilegedOwners.form.notSaved} />}
 
             {fieldRows.map((row) => (
                 <SimpleGrid

@@ -152,6 +152,29 @@ pieces from `shared/lib/validation.ts`. Edit forms load their draft with
 RHF's `values` or `reset`, not an effect that copies query data. New form
 abstractions only when asked.
 
+Every form validates and shows errors the same way:
+
+- **When:** `mode: 'onTouched'`. A field is checked when it is left, then again
+  as it is typed in once it has an error.
+- **Where:** under its field, through `FormField`, which keeps one line free for
+  the message, so an error never moves a field or a button. No error summary,
+  no "fix the marked fields" alert. A message fits that line in the narrowest
+  field it can appear in (about 210 px; the filter bar's date fields are
+  160 px): say what to enter, and put format detail in the helper text.
+- **Save:** disabled only while nothing has changed (`FormDrawer` does this from
+  `isDirty`). Pressed with invalid fields, it sends nothing; RHF marks every
+  invalid field and focuses the first.
+- **Server errors:** a `400`/`409` on a field goes under that field through
+  `setServerFieldErrors`, which focuses it. Anything else keeps the form's own
+  pattern: a focused alert in a drawer, a toast with a retry on a page form.
+- **Digit fields:** a quantity (minutes, a count) is `type="number"` with `min`
+  and `step` (the input recipe hides the spin buttons). A code made of digits
+  (OIB, PIN, postcode, cash register) stays text with `inputMode="numeric"` and
+  filters what it can't hold as it is typed (`keepDigits`, the PIN filter): a
+  number input would change it on the wheel or arrow keys and read a bad entry
+  as empty. Amounts and percents stay text with `inputMode="decimal"`, for the decimal comma,
+  and filter to digits and one separator (`keepDecimal`).
+
 ## Tables
 
 Follow the Zone list. Keep column definitions readable; a cell renderer that

@@ -101,3 +101,33 @@ export async function expectOnlyTableScrolls(page: Page, table: Locator): Promis
 
     expect(await headerTop()).toBeCloseTo(areaTop ?? Number.NaN, 0)
 }
+
+/** Every field message keeps to its one reserved line (textStyle xs: 1rem). */
+export async function expectOneLineErrors(page: Page): Promise<void> {
+    for (const message of await page.locator('[data-part="error-text"]').all()) {
+        const height = (await message.boundingBox())?.height
+        expect(height, await message.innerText()).toBeLessThanOrEqual(16)
+    }
+}
+
+interface ErrorMovesNothingArgs {
+    field: Locator
+    value: string
+    /** What must stay put: the next field, the Save button. */
+    steady: Locator[]
+}
+
+/** Fills `field` and leaves it, so its message shows, without moving anything around it. */
+export async function expectErrorMovesNothing(
+    page: Page,
+    { field, value, steady }: ErrorMovesNothingArgs,
+): Promise<void> {
+    await field.fill(value)
+    const before = await Promise.all(steady.map((control) => control.boundingBox()))
+
+    await field.blur()
+
+    await expect(field).toHaveAttribute('aria-invalid', 'true')
+    expect(await Promise.all(steady.map((control) => control.boundingBox()))).toEqual(before)
+    await expectOneLineErrors(page)
+}

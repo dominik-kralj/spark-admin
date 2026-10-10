@@ -199,13 +199,27 @@ describe('Inspector form', () => {
         expect(oib).toBeValid()
     })
 
-    it('shows a one-line notice and moves focus to the first invalid field on an empty save', async () => {
+    it('keeps Spremi off on a new inspector until something is typed', async () => {
         const rendered = await renderRoute(paths.inspectors)
         const form = await openAddForm(rendered)
+        const saveButton = within(form).getByRole('button', { name: hr.forms.save })
+        expect(saveButton).toBeDisabled()
+
+        await rendered.user.type(field(form, 'surname'), 'Horvat')
+
+        expect(saveButton).toBeEnabled()
+    })
+
+    it('sends nothing on a save with invalid fields, marks each one and focuses the first', async () => {
+        const bodies = captureBodies('post', '/inspectors')
+        const rendered = await renderRoute(paths.inspectors)
+        const form = await openAddForm(rendered)
+        await rendered.user.type(field(form, 'surname'), 'Horvat')
 
         await save(rendered, form)
 
-        expect(await within(form).findByRole('alert')).toHaveTextContent(t.form.notSaved)
+        expect(within(form).queryByRole('alert')).not.toBeInTheDocument()
+        expect(bodies).toEqual([])
         await waitFor(() => {
             expect(field(form, 'name')).toHaveFocus()
         })
@@ -469,6 +483,7 @@ describe('Inspector form', () => {
     it('has no axe violations with the form open and showing errors', async () => {
         const rendered = await renderRoute(paths.inspectors)
         const form = await openAddForm(rendered)
+        await rendered.user.type(field(form, 'surname'), 'Horvat')
         await save(rendered, form)
         await waitFor(() => {
             expect(field(form, 'name')).toBeInvalid()

@@ -77,6 +77,11 @@ The list pattern (`features/zones/components/`):
   formatting, cards, sort and URL, loading, empty, error and retry, axe), and
   `e2e/zones.spec.ts` (table at 1440 px, cards at 320 and 375 px).
 
+The form pattern (`ZoneFormDrawer`) follows one validation rule for every form,
+written out under "Forms" in `CODING_STANDARDS.md`: check on leaving a field,
+the message under it in a line kept free, Save off until something changes, and
+an invalid save that sends nothing and focuses the first invalid field.
+
 ## Gate
 
 Before you report anything as done, run `pnpm check` (typecheck, lint, format
@@ -211,7 +216,11 @@ deduplicates); read `next/dynamic` as `React.lazy`.
 
 - Test through the UI with Testing Library queries by role and label, against
   MSW. Avoid mocking fetch or hooks.
-- Every form: validation messages, successful submit, server error.
+- Every form: validation messages (shown on leaving the field), successful
+  submit, server error, Save disabled until something changes, and an invalid
+  save that sends nothing and focuses the first invalid field. In Playwright,
+  `expectErrorMovesNothing` checks that a message moves neither the next field
+  nor Save, at both widths.
 - Every data screen: loading, empty, error, and one axe check
   (`expectNoAxeViolations` from `src/test/axe.ts`).
 - Render with `renderWithProviders` from `src/test/render.tsx`, which uses the
