@@ -28,10 +28,6 @@ const cashRegisterCodeField = textField('cashRegisterCode').regex(
 
 const maxVatRate = 100
 
-export function filterVatRate(value: string): string {
-    return value.replace(/[^\d.,]/g, '')
-}
-
 // A percent with up to two decimals (decimal(18,2)), written with a comma or a dot.
 const vatRateField = z
     .string()

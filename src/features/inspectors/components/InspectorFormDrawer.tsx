@@ -112,7 +112,7 @@ export function InspectorFormDrawer({
             title={isAdding ? t.inspectors.add : t.inspectors.editInspector(savedName)}
             isDirty={isDirty}
             isSaving={isSubmitting}
-            isSaveDisabled={isPinMissing}
+            isSaveBlocked={isPinMissing}
             destructiveAction={
                 !isAdding && (
                     <InspectorDeleteButton

@@ -16,7 +16,7 @@ import { useStrings } from '@/shared/i18n/useStrings'
 import { errorMessage } from '@/shared/lib/errorMessage'
 import { setServerFieldErrors } from '@/shared/lib/setServerFieldErrors'
 import { toaster } from '@/shared/lib/toaster'
-import { keepDigits } from '@/shared/lib/validation'
+import { keepDecimal, keepDigits } from '@/shared/lib/validation'
 import { useUnsavedChangesGuard } from '@/shared/lib/useUnsavedChangesGuard'
 import { DiscardChangesDialog } from '@/shared/ui/DiscardChangesDialog'
 import { FormField } from '@/shared/ui/FormField'
@@ -29,11 +29,7 @@ import {
     type CitySettings,
     type CitySettingsField,
 } from '../validators/citySettings'
-import {
-    citySettingsFormSchema,
-    filterVatRate,
-    toCitySettingsFormValues,
-} from '../validators/citySettingsForm'
+import { citySettingsFormSchema, toCitySettingsFormValues } from '../validators/citySettingsForm'
 
 import { FormSection } from './FormSection'
 
@@ -173,7 +169,7 @@ export function CitySettingsForm({ settings }: { settings: CitySettings }) {
                         })}
                         {settingsField('vatRate', {
                             input: { inputMode: 'decimal', maxW: { base: '120px', md: '160px' } },
-                            filter: filterVatRate,
+                            filter: keepDecimal,
                         })}
                     </SimpleGrid>
                 </FormSection>

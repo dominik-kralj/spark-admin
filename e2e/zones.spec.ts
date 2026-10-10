@@ -209,7 +209,7 @@ test.describe('Zone form errors', () => {
 
         await expectErrorMovesNothing(page, {
             field: field('price'),
-            value: 'abc',
+            value: '1,2,3',
             steady: [
                 field('dailyTicketPrice'),
                 field('durationMinutes'),

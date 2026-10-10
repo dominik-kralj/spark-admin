@@ -1,4 +1,4 @@
-import { Badge, Box, Button, Field, Flex, HStack, IconButton } from '@chakra-ui/react'
+import { Badge, Box, Button, Flex, HStack, IconButton } from '@chakra-ui/react'
 import { FilterX, SlidersHorizontal } from 'lucide-react'
 import type { Ref } from 'react'
 
@@ -8,6 +8,7 @@ import { activeDrawerFilterCount, noFilterValues } from '@/shared/lib/ticketFilt
 import { useTicketFilterForm } from '@/shared/lib/useTicketFilterForm'
 import { toTicketFilterFormValues, type TicketFilterValues } from '@/shared/lib/ticketFilterForm'
 
+import { LevelWithInputs } from './LevelWithInputs'
 import {
     DateFilterField,
     FiscalFilterField,
@@ -82,11 +83,7 @@ export function TicketFilterBar({
                     <FiscalFilterField form={form} />
                 </Box>
 
-                {/* An empty label above the buttons puts them level with the inputs. */}
-                <Field.Root hideBelow="xl" w="auto">
-                    <Field.Label aria-hidden="true" visibility="hidden">
-                        {f.search}
-                    </Field.Label>
+                <LevelWithInputs hideBelow="xl" label={f.search}>
                     <HStack gap="1">
                         <Button type="submit" colorPalette="blue" disabled={!isDirty}>
                             {f.search}
@@ -105,12 +102,9 @@ export function TicketFilterBar({
                             <FilterX aria-hidden="true" />
                         </IconButton>
                     </HStack>
-                </Field.Root>
+                </LevelWithInputs>
 
-                <Field.Root hideFrom="xl" w={{ md: 'auto' }}>
-                    <Field.Label hideBelow="md" aria-hidden="true" visibility="hidden">
-                        {f.open}
-                    </Field.Label>
+                <LevelWithInputs hideFrom="xl" label={f.open}>
                     <Button
                         ref={drawerTriggerRef}
                         variant="outline"
@@ -126,7 +120,7 @@ export function TicketFilterBar({
                             </Badge>
                         )}
                     </Button>
-                </Field.Root>
+                </LevelWithInputs>
             </form>
         </Flex>
     )

@@ -138,6 +138,17 @@ describe('Zone form', () => {
         )
     })
 
+    it('takes only digits and a decimal separator in the prices', async () => {
+        const rendered = await renderRoute(paths.zones)
+        const form = await openAddForm(rendered)
+
+        await rendered.user.type(field(form, 'price'), 'abc0,7x0 €')
+        await rendered.user.type(field(form, 'dailyTicketPrice'), '15.5 EUR')
+
+        expect(field(form, 'price')).toHaveValue('0,70')
+        expect(field(form, 'dailyTicketPrice')).toHaveValue('15.5')
+    })
+
     it('pre-fills the edit form with exactly the stored values', async () => {
         const rendered = await renderRoute(paths.zones)
 
@@ -191,7 +202,7 @@ describe('Zone form', () => {
         ['price', '', errors.required],
         ['dailyTicketPrice', '15,505', errors.tooManyDecimals],
         ['maxExtensions', '2147483648', errors.tooLarge],
-        ['price', 'abc', errors.notAmount],
+        ['price', '1,2,3', errors.notAmount],
         ['price', '1,005', errors.tooManyDecimals],
         ['dailyTicketPrice', '100000000', errors.tooLarge],
         ['durationMinutes', '1.5', errors.notWholeNumber],

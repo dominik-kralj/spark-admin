@@ -3,7 +3,6 @@ import { describe, expect, it } from 'vitest'
 import type { CitySettings } from './citySettings'
 import {
     citySettingsFormSchema,
-    filterVatRate,
     toCitySettingsFormValues,
     type CitySettingsFormValues,
 } from './citySettingsForm'
@@ -28,13 +27,6 @@ function errorFor(field: keyof CitySettingsFormValues, value: string) {
 
     return result.error?.issues.find((issue) => issue.path[0] === field)?.message
 }
-
-describe('filterVatRate', () => {
-    it('keeps digits and the decimal separators', () => {
-        expect(filterVatRate(' 13,5 %')).toBe('13,5')
-        expect(filterVatRate('5.25')).toBe('5.25')
-    })
-})
 
 describe('citySettingsFormSchema', () => {
     it('round-trips: domain to form values to domain', () => {

@@ -47,8 +47,8 @@ export function LoginPage() {
             justify="center"
             p="6"
             // Anchored to the top so an error pushes only what is below it; on a phone the
-            // offset puts the form (about 20rem tall) in the middle of the screen.
-            pt={{ base: 'max(1.5rem, calc(50dvh - 10rem))', md: '28vh' }}
+            // offset puts the form (about 21rem tall) in the middle of the screen.
+            pt={{ base: 'max(1.5rem, calc(50dvh - 10.75rem))', md: '28vh' }}
             bg="bg"
             position="relative"
         >

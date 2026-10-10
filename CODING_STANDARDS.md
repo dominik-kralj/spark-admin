@@ -172,7 +172,8 @@ Every form validates and shows errors the same way:
   (OIB, PIN, postcode, cash register) stays text with `inputMode="numeric"` and
   filters what it can't hold as it is typed (`keepDigits`, the PIN filter): a
   number input would change it on the wheel or arrow keys and read a bad entry
-  as empty. Amounts stay text with `inputMode="decimal"` for the decimal comma.
+  as empty. Amounts and percents stay text with `inputMode="decimal"`, for the decimal comma,
+  and filter to digits and one separator (`keepDecimal`).
 
 ## Tables
 
