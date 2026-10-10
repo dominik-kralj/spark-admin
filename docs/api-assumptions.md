@@ -106,23 +106,48 @@ the `X-API-KEY` like every call.
 | Expiry        | not read; a `401` on any signed-in request ends the session (JWT lasts 10 h)          | feature docs: Inspector JWT; #5              |
 | Logout        | local only: no endpoint is called, the token is dropped                               | assumed; the spec has no logout call         |
 
-### City name (`src/features/shell/api/useCityName.ts`)
+### City settings (`src/features/city-settings/api/useCitySettings.ts`)
 
-The shell header shows the city's name. Postavke grada (#32) will own the full
-tenant shape; until then the shell reads only `tenantName` and ignores the
-rest. The proposed full shape is in `api-contract.md` (ADM-8).
-
-`GET /tenant`, `200`:
+The shape is `api-contract.md` ADM-8: the CITY_TENANTS columns the city may
+edit, in camelCase, plus `iban` and a read-only `reportEmail`, which are not
+columns yet (D12). Mapping to the domain `CitySettings` (`name`, `oib`,
+`street`, `houseNo`, `zipCode`, `city`, `iban`, `premisesCode`,
+`cashRegisterCode`, `vatRate`) is in
+`src/features/city-settings/validators/citySettings.ts`. The shell header reads
+only `tenantName` from the same call (`src/features/shell/api/useCityName.ts`).
 
 ```json
-{ "tenantName": "Grad Samobor", "…": "other CITY_TENANTS fields" }
+{
+  "tenantName": "Grad Samobor",
+  "vatID": "12345678903",
+  "address": "Trg kralja Tomislava",
+  "houseNo": "5",
+  "zipCode": "10430",
+  "city": "Samobor",
+  "iban": "HR1210010051863000160",
+  "premisesCode": "SAMOBOR1",
+  "cashRegisterCode": "1",
+  "stopaPDV": 25,
+  "reportEmail": "promet@samobor.hr"
+}
 ```
 
-| Item    | Assumption                                                                           | Source                          |
-| ------- | ------------------------------------------------------------------------------------ | ------------------------------- |
-| Path    | `/tenant`, no id: the city comes from the JWT's `TenantId` claim                     | `api-contract.md` [proposed]    |
-| Field   | `tenantName`, the display name shown as-is ("Grad Samobor")                          | spec: `CITY_TENANTS.TenantName` |
-| Caching | read once per session; a failed call leaves the name out and the shell keeps working | assumed                         |
+| Call          | Body                          | Success      | Errors             |
+| ------------- | ----------------------------- | ------------ | ------------------ |
+| `GET /tenant` |                               | `200 Tenant` |                    |
+| `PUT /tenant` | every field but `reportEmail` | `200 Tenant` | `400` field errors |
+
+| Item          | Assumption                                                                                                                                                             | Source                                                  |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| Path          | `/tenant`, no id: the city comes from the JWT's `TenantId` claim                                                                                                       | `api-contract.md` [proposed]                            |
+| Address       | four fields (`address`, `houseNo`, `zipCode`, `city`) as the table has them, where the design shows one "Adresa" field                                                 | spec: CITY_TENANTS columns; `api-contract.md` D12       |
+| Limits        | all required and trimmed: `tenantName` ≤ 100, `address` ≤ 150, `houseNo` ≤ 20, `zipCode` ≤ 10, `city` ≤ 100, `premisesCode` ≤ 25 characters; `vatID` exactly 11 digits | spec: CITY_TENANTS columns, all `NOT NULL`              |
+| IBAN          | `HR` and 19 digits, sent without spaces and uppercased; no mod-97 check (open question #45)                                                                            | `api-contract.md` ADM-8; design help text               |
+| Cash register | digits only, not starting with 0, up to 15                                                                                                                             | spec: `CK_CITY_TENANTS_CashRegisterCode`, `VARCHAR(15)` |
+| VAT rate      | `stopaPDV` a number from 0 to 100 with at most two decimals; the form accepts a comma or a dot                                                                         | spec: `StopaPDV decimal(18,2)`, default 25              |
+| Not exposed   | `tenantCode`, `countryCode`, `isActive`, `createdAt`, `updatedAt`: managed by Softlab                                                                                  | `api-contract.md` ADM-8                                 |
+| Update        | `PUT` replaces every editable field; the cache takes the returned settings, and the header's city name is fetched again                                                | `api-contract.md` Writes                                |
+| City name     | the shell reads it once per session; a failed call leaves the name out and the shell keeps working                                                                     | assumed                                                 |
 
 ### Zones (`src/features/zones/api/useZones.ts`)
 

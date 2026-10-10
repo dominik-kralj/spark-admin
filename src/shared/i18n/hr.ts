@@ -374,7 +374,6 @@ export const hr = {
             expired: (date: string) => `Isteklo ${date}.`,
             expiredNote:
                 'Vozilo se trenutačno naplaćuje kao i svako drugo. Upišite novi datum da ponovno vrijedi.',
-            tooLong: (maxLength: number) => `Upišite najviše ${String(maxLength)} znakova.`,
             notSaved: 'Korisnik nije spremljen. Ispravite označena polja.',
             saved: (plate: string) => `Korisnik ${plate} je spremljen`,
         },
@@ -437,7 +436,6 @@ export const hr = {
             activeHelp: 'Aktivan kontrolor može se prijaviti i izdavati dnevne karte.',
             yes: 'Da',
             no: 'Ne',
-            tooLong: (maxLength: number) => `Upišite najviše ${String(maxLength)} znakova.`,
             duplicateOib: 'Kontrolor s ovim OIB-om već postoji. Provjerite upisani OIB.',
             notSaved: 'Kontrolor nije spremljen. Ispravite označena polja.',
             saved: (name: string) => `Kontrolor ${name} je spremljen`,
@@ -470,6 +468,39 @@ export const hr = {
             confirm: 'Deaktiviraj',
         },
     },
+    citySettings: {
+        intro: 'Sva su polja obavezna. Podaci se ispisuju na računima i šalju pri fiskalizaciji.',
+        sections: {
+            city: 'Podaci o gradu',
+            fiscalization: 'Fiskalizacija',
+        },
+        labels: {
+            name: 'Naziv',
+            oib: 'OIB',
+            street: 'Adresa',
+            houseNo: 'Kućni broj',
+            zipCode: 'Poštanski broj',
+            city: 'Mjesto',
+            iban: 'IBAN',
+            premisesCode: 'Oznaka poslovnog prostora',
+            cashRegisterCode: 'Oznaka naplatnog uređaja',
+            vatRate: 'Stopa PDV-a (%)',
+        },
+        oibHelp: '11 znamenki',
+        ibanHelp: 'Počinje s HR i ima 21 znak. Razmaci se uklanjaju pri spremanju.',
+        validation: {
+            cashRegisterInvalid: 'Upišite samo znamenke, bez nule na početku.',
+            vatRateInvalid: 'Upišite postotak od 0 do 100, s najviše dvije decimale.',
+        },
+        save: 'Spremi promjene',
+        saved: 'Postavke grada su spremljene',
+        savedDescription: 'Promjene vrijede za sve nove račune.',
+        notSaved: 'Postavke nisu spremljene',
+        errorSummary: (count: number) =>
+            `Postavke nisu spremljene. Ispravite ${String(count)} ${plural(count, { one: 'polje', few: 'polja', other: 'polja' })}:`,
+        loading: 'Učitavanje postavki grada…',
+        errorTitle: 'Postavke grada nije moguće učitati',
+    },
     forms: {
         close: 'Zatvori obrazac',
         cancel: 'Odustani',
@@ -500,6 +531,7 @@ export const hr = {
                 'Upišite registraciju u obliku ZG 1234-AB: dva slova, tri ili četiri znamenke te jedno ili dva slova (bez Q, W, X i Y).',
             oibInvalid: 'OIB mora imati točno 11 znamenki.',
             pinInvalid: 'PIN može imati najviše 4 znamenke.',
+            ibanInvalid: 'IBAN mora početi s HR i imati 21 znak.',
             dateFormat: 'Upišite datum u obliku DD.MM.GGGG, npr. 31.12.2026.',
             dateInvalid: 'Taj datum ne postoji. Provjerite dan i mjesec.',
             dateRangeOrder: 'Datum do ne može biti prije datuma od.',
@@ -508,6 +540,7 @@ export const hr = {
             invalid: 'Poslužitelj nije prihvatio ovu vrijednost. Provjerite unos.',
             duplicate: 'Ova vrijednost već postoji. Upišite drugu.',
         },
+        tooLong: (maxLength: number) => `Upišite najviše ${String(maxLength)} znakova.`,
         saveFailed: 'Promjene nisu spremljene.',
         errors: {
             network:

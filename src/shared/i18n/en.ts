@@ -366,7 +366,6 @@ export const en: Dictionary = {
             expired: (date: string) => `Expired ${date}.`,
             expiredNote:
                 'The vehicle is currently charged like any other. Enter a new date to make it valid again.',
-            tooLong: (maxLength: number) => `Enter at most ${String(maxLength)} characters.`,
             notSaved: 'The user was not saved. Correct the marked fields.',
             saved: (plate: string) => `User ${plate} saved`,
         },
@@ -429,7 +428,6 @@ export const en: Dictionary = {
             activeHelp: 'An active inspector can sign in and issue daily tickets.',
             yes: 'Yes',
             no: 'No',
-            tooLong: (maxLength: number) => `Enter at most ${String(maxLength)} characters.`,
             duplicateOib: 'An inspector with this OIB already exists. Check the OIB.',
             notSaved: 'The inspector was not saved. Correct the marked fields.',
             saved: (name: string) => `Inspector ${name} saved`,
@@ -462,6 +460,39 @@ export const en: Dictionary = {
             confirm: 'Deactivate',
         },
     },
+    citySettings: {
+        intro: 'All fields are required. They are printed on receipts and sent for fiscalization.',
+        sections: {
+            city: 'City details',
+            fiscalization: 'Fiscalization',
+        },
+        labels: {
+            name: 'Name',
+            oib: 'OIB',
+            street: 'Street',
+            houseNo: 'House number',
+            zipCode: 'Postcode',
+            city: 'Town',
+            iban: 'IBAN',
+            premisesCode: 'Business premises code',
+            cashRegisterCode: 'Cash register code',
+            vatRate: 'VAT rate (%)',
+        },
+        oibHelp: '11 digits',
+        ibanHelp: 'Starts with HR and has 21 characters. Spaces are removed when you save.',
+        validation: {
+            cashRegisterInvalid: 'Enter digits only, not starting with 0.',
+            vatRateInvalid: 'Enter a percentage from 0 to 100, with at most two decimals.',
+        },
+        save: 'Save changes',
+        saved: 'City settings saved',
+        savedDescription: 'The changes apply to all new receipts.',
+        notSaved: 'Settings not saved',
+        errorSummary: (count: number) =>
+            `Settings not saved. Fix ${String(count)} ${count === 1 ? 'field' : 'fields'}:`,
+        loading: 'Loading city settings…',
+        errorTitle: 'City settings could not be loaded',
+    },
     forms: {
         close: 'Close form',
         cancel: 'Cancel',
@@ -488,6 +519,7 @@ export const en: Dictionary = {
                 'Enter the plate as ZG 1234-AB: two letters, three or four digits, then one or two letters (no Q, W, X or Y).',
             oibInvalid: 'An OIB must have exactly 11 digits.',
             pinInvalid: 'A PIN can have at most 4 digits.',
+            ibanInvalid: 'An IBAN must start with HR and have 21 characters.',
             dateFormat: 'Enter the date as DD.MM.YYYY, e.g. 31.12.2026.',
             dateInvalid: 'That date does not exist. Check the day and month.',
             dateRangeOrder: 'Date to cannot be before date from.',
@@ -496,6 +528,7 @@ export const en: Dictionary = {
             invalid: 'The server did not accept this value. Check what you entered.',
             duplicate: 'This value already exists. Enter a different one.',
         },
+        tooLong: (maxLength: number) => `Enter at most ${String(maxLength)} characters.`,
         saveFailed: 'Your changes were not saved.',
         errors: {
             network:

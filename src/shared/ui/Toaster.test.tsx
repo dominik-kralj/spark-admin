@@ -40,6 +40,27 @@ describe('Toaster', () => {
         })
     })
 
+    it("shows a toast's action as a button that runs it", async () => {
+        const { user } = renderWithProviders(<main>Stranica</main>)
+        let retries = 0
+        act(() => {
+            toaster.error({
+                title: 'Postavke nisu spremljene',
+                action: {
+                    label: hr.listStates.retry,
+                    onClick: () => {
+                        retries += 1
+                    },
+                },
+            })
+        })
+        await screen.findByText('Postavke nisu spremljene')
+
+        await user.click(screen.getByRole('button', { name: hr.listStates.retry }))
+
+        expect(retries).toBe(1)
+    })
+
     it('has no axe violations', async () => {
         renderWithProviders(<main>Stranica</main>)
         showSuccess()

@@ -6,6 +6,7 @@ import { resetLoginRateLimit } from '@/mocks/auth'
 import { resetDailyTickets } from '@/mocks/dailyTickets'
 import { resetInspectors } from '@/mocks/inspectors'
 import { resetPrivilegedOwners } from '@/mocks/privilegedOwners'
+import { resetTenant } from '@/mocks/tenant'
 import { resetTickets } from '@/mocks/tickets'
 import { resetZones } from '@/mocks/zones'
 import { toaster } from '@/shared/lib/toaster'
@@ -45,6 +46,7 @@ afterEach(() => {
     resetInspectors()
     resetTickets()
     resetDailyTickets()
+    resetTenant()
     // The toaster is one store for the whole run; a toast left over would show in the next test.
     toaster.remove()
     // Absent in files that opt into the node environment.

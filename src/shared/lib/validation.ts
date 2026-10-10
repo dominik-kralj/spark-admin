@@ -8,6 +8,7 @@ export type ValidationMessage =
     | 'plateInvalid'
     | 'oibInvalid'
     | 'pinInvalid'
+    | 'ibanInvalid'
     | 'dateFormat'
     | 'dateInvalid'
     | 'dateRangeOrder'
@@ -51,6 +52,10 @@ export const oibField = z
     .min(1, message('required'))
     .regex(/^(\d{11})?$/, message('oibInvalid'))
 
+export function keepDigits(value: string): string {
+    return value.replace(/\D/g, '')
+}
+
 const pinMaxLength = 4
 
 export function filterPin(value: string): string {
@@ -61,6 +66,21 @@ export const pinField = z
     .string()
     .min(1, message('required'))
     .regex(/^\d{0,4}$/, message('pinInvalid'))
+
+export function normaliseIban(value: string): string {
+    return value.replace(/\s/g, '').toUpperCase()
+}
+
+// Croatian IBANs only, format without the mod-97 check (open-questions.md #45).
+export const ibanField = z
+    .string()
+    .transform(normaliseIban)
+    .pipe(
+        z
+            .string()
+            .min(1, message('required'))
+            .regex(/^(HR\d{19})?$/, message('ibanInvalid')),
+    )
 
 // DD.MM.GGGG; the trailing dot of the Croatian spelling (31.12.2026.) is allowed.
 const datePattern = /^(\d{1,2})\.(\d{1,2})\.(\d{4})\.?$/
