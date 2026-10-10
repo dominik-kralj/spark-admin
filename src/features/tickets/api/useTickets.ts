@@ -8,6 +8,7 @@ import {
 
 import { request } from '@/shared/api'
 import type { TicketFilters } from '@/shared/lib/ticketFilterValues'
+import { startedByRouteLoader } from '@/shared/lib/queryClient'
 
 import {
     newTicketCountResponseSchema,
@@ -52,6 +53,7 @@ async function fetchTicketPage(params: TicketListParams, signal: AbortSignal) {
 export function ticketsQuery(params: TicketListParams) {
     return queryOptions({
         queryKey: ticketKeys.list(params),
+        ...startedByRouteLoader,
         queryFn: ({ signal }) => fetchTicketPage(params, signal),
         staleTime: Infinity,
     })

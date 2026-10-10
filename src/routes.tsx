@@ -40,48 +40,47 @@ const screens: Partial<Record<string, () => Promise<ComponentType>>> = {
 
 type StartQueries = (queryClient: QueryClient, searchParams: URLSearchParams) => void
 
-/**
- * Starts a query unless it is cached: a cached page shows at once and its own query refreshes it,
- * and a navigation inside the section (a detail, a filter) never refetches what is on screen.
- */
-function startQuery<TData, TKey extends QueryKey>(
+// A component's query retries this often by default; query() would not retry at all.
+const componentQueryRetries = 3
+
+// Uncached only, so opening a detail or changing a filter never refetches the rows on screen.
+function startUncachedQuery<TData, TKey extends QueryKey>(
     queryClient: QueryClient,
     query: QueryExecuteOptions<TData, Error, TData, TData, TKey>,
 ): void {
-    // The page shows how this request went: a failure is its error state with Retry, not a
-    // second, silent attempt when the page mounts.
-    queryClient.setQueryDefaults(query.queryKey, { retryOnMount: false })
-    queryClient.query({ ...query, staleTime: Infinity }).catch(() => undefined)
+    const retry =
+        query.retry ?? queryClient.getDefaultOptions().queries?.retry ?? componentQueryRetries
+    queryClient.query({ ...query, staleTime: Infinity, retry }).catch(() => undefined)
 }
 
-// What each section's page asks for first, started by its loader alongside the page's download.
+// Each section's first queries, started by its loader alongside the page's download.
 const pageQueries: Partial<Record<string, StartQueries>> = {
     [paths.tickets]: (queryClient, searchParams) => {
         const params = readTicketListParams(searchParams)
-        startQuery(queryClient, ticketsQuery(params))
+        startUncachedQuery(queryClient, ticketsQuery(params))
         // The rows and how new they are only move together.
-        startQuery(queryClient, newestTicketTimeQuery(params.filters))
+        startUncachedQuery(queryClient, newestTicketTimeQuery(params.filters))
     },
     [paths.dailyTickets]: (queryClient, searchParams) => {
-        startQuery(queryClient, dailyTicketsQuery(readDailyTicketListParams(searchParams)))
+        startUncachedQuery(queryClient, dailyTicketsQuery(readDailyTicketListParams(searchParams)))
     },
     [paths.zones]: (queryClient) => {
-        startQuery(queryClient, zonesQuery)
+        startUncachedQuery(queryClient, zonesQuery)
     },
     [paths.privilegedOwners]: (queryClient) => {
-        startQuery(queryClient, privilegedOwnersQuery)
+        startUncachedQuery(queryClient, privilegedOwnersQuery)
     },
     [paths.inspectors]: (queryClient) => {
-        startQuery(queryClient, inspectorsQuery)
+        startUncachedQuery(queryClient, inspectorsQuery)
     },
     [paths.reports]: (queryClient) => {
-        startQuery(queryClient, reportsQuery)
+        startUncachedQuery(queryClient, reportsQuery)
     },
     [paths.citySettings]: (queryClient) => {
-        startQuery(queryClient, citySettingsQuery)
+        startUncachedQuery(queryClient, citySettingsQuery)
     },
     [paths.adminUsers]: (queryClient) => {
-        startQuery(queryClient, adminUsersQuery)
+        startUncachedQuery(queryClient, adminUsersQuery)
     },
 }
 

@@ -1,6 +1,7 @@
 import { queryOptions, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { deleteRequest, request } from '@/shared/api'
+import { startedByRouteLoader } from '@/shared/lib/queryClient'
 
 import {
     toZone,
@@ -17,6 +18,7 @@ const zoneKeys = {
 
 export const zonesQuery = queryOptions({
     queryKey: zoneKeys.list,
+    ...startedByRouteLoader,
     queryFn: async ({ signal }) => {
         const zones = await request('/zones', { schema: zoneListResponseSchema, signal })
 

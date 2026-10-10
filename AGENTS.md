@@ -62,9 +62,10 @@ The list pattern (`features/zones/components/`):
   come from `useEditAndDeleteOverlays` (`shared/lib`); the dialog is `DeleteDialog`
   (`shared/ui`).
 - The route: the section's entry in `pageQueries` (`src/routes.tsx`) starts its
-  list query (`zonesQuery`, exported from `api/`) in the route loader without
-  awaiting it, so the request runs alongside the page's lazy download and the
-  page still shows its loading state. A list keyed by the URL (page, sort,
+  list query (`zonesQuery`, exported from `api/`, with `startedByRouteLoader` so a
+  failed load shows as the error state) in the route loader without awaiting
+  it, so the request runs alongside the page's lazy download and the page still
+  shows its loading state. A list keyed by the URL (page, sort,
   filters) reads it with one `read…ListParams` in the feature's `lib/`, used by
   both the list and the loader, so they share one query key.
 - `ZoneList`: early returns for `LoadingState`, `ErrorState` (retry is

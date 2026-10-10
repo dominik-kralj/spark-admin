@@ -11,7 +11,7 @@ export const defaultDailyTicketSort: Sort<DailyTicketSortKey> = {
     direction: 'desc',
 }
 
-export const dailyTicketPageSize = 25
+const dailyTicketPageSize = 25
 
 /** The page, order and filters in the URL: what the list asks for, and what its loader starts. */
 export function readDailyTicketListParams(searchParams: URLSearchParams): DailyTicketListParams {

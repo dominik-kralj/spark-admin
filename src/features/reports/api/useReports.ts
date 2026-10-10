@@ -3,6 +3,7 @@ import { z } from 'zod'
 
 import { request, requestFile } from '@/shared/api'
 import { tenantKeys } from '@/shared/lib/tenantKeys'
+import { startedByRouteLoader } from '@/shared/lib/queryClient'
 
 import {
     reportListResponseSchema,
@@ -26,6 +27,7 @@ function reportPath(params: ReportParams, action: 'preview' | 'pdf' | 'email') {
 
 export const reportsQuery = queryOptions({
     queryKey: reportKeys.list,
+    ...startedByRouteLoader,
     // The list changes only with a backend release.
     staleTime: Infinity,
     queryFn: async ({ signal }) =>

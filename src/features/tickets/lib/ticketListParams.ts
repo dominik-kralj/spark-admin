@@ -8,7 +8,7 @@ export const ticketSortKeys = ['createdAt', 'plate', 'amount', 'validUntil'] as 
 
 export const defaultTicketSort: Sort<TicketSortKey> = { key: 'createdAt', direction: 'desc' }
 
-export const ticketPageSize = 25
+const ticketPageSize = 25
 
 /** The page, order and filters in the URL: what the list asks for, and what its loader starts. */
 export function readTicketListParams(searchParams: URLSearchParams): TicketListParams {

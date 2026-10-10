@@ -2,6 +2,7 @@ import { queryOptions, useMutation, useQuery, useQueryClient } from '@tanstack/r
 
 import { request } from '@/shared/api'
 import { tenantKeys } from '@/shared/lib/tenantKeys'
+import { startedByRouteLoader } from '@/shared/lib/queryClient'
 
 import {
     citySettingsResponseSchema,
@@ -12,6 +13,7 @@ import {
 
 export const citySettingsQuery = queryOptions({
     queryKey: tenantKeys.settings,
+    ...startedByRouteLoader,
     queryFn: async ({ signal }) =>
         toCitySettings(await request('/tenant', { schema: citySettingsResponseSchema, signal })),
 })

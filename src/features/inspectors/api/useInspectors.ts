@@ -7,6 +7,7 @@ import {
 } from '@tanstack/react-query'
 
 import { deleteRequest, request } from '@/shared/api'
+import { startedByRouteLoader } from '@/shared/lib/queryClient'
 
 import {
     inspectorDetailResponseSchema,
@@ -25,6 +26,7 @@ const inspectorKeys = {
 
 export const inspectorsQuery = queryOptions({
     queryKey: inspectorKeys.list,
+    ...startedByRouteLoader,
     queryFn: async ({ signal }) => {
         const inspectors = await request('/inspectors', {
             schema: inspectorListResponseSchema,

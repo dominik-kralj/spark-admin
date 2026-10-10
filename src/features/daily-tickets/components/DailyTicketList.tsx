@@ -3,8 +3,8 @@ import { ClipboardList } from 'lucide-react'
 
 import { useStrings } from '@/shared/i18n/useStrings'
 import { pageRange } from '@/shared/lib/pageRange'
-import type { TicketFilters } from '@/shared/lib/ticketFilterValues'
 import { pageParam, usePageSearchParam } from '@/shared/lib/usePageSearchParam'
+import { useSearchParams } from '@/shared/lib/useSearchParams'
 import { useSortSearchParams } from '@/shared/lib/useSortSearchParams'
 import { EmptyState } from '@/shared/ui/EmptyState'
 import { ErrorState } from '@/shared/ui/ErrorState'
@@ -12,9 +12,9 @@ import { LoadingState } from '@/shared/ui/LoadingState'
 
 import { useDailyTickets } from '../api/useDailyTickets'
 import {
-    defaultDailyTicketSort,
-    dailyTicketPageSize,
     dailyTicketSortKeys,
+    defaultDailyTicketSort,
+    readDailyTicketListParams,
 } from '../lib/dailyTicketListParams'
 
 import { DailyTicketCards } from './DailyTicketCards'
@@ -26,20 +26,18 @@ const resetOnSort = [pageParam]
 const skeletonColumnWidths = [2, 2, 1, 3, 2, 1, 2, 2]
 
 interface DailyTicketListProps {
-    filters: TicketFilters
     onClearFilters: () => void
 }
 
-export function DailyTicketList({ filters, onClearFilters }: DailyTicketListProps) {
+export function DailyTicketList({ onClearFilters }: DailyTicketListProps) {
     const t = useStrings()
     const strings = t.dailyTickets
-    const { page, setPage } = usePageSearchParam()
-    const { sort, sortBy } = useSortSearchParams(
-        dailyTicketSortKeys,
-        defaultDailyTicketSort,
-        resetOnSort,
-    )
-    const dailyTickets = useDailyTickets({ page, pageSize: dailyTicketPageSize, sort, filters })
+    const { searchParams } = useSearchParams()
+    const params = readDailyTicketListParams(searchParams)
+    const { page, sort, filters } = params
+    const { setPage } = usePageSearchParam()
+    const { sortBy } = useSortSearchParams(dailyTicketSortKeys, defaultDailyTicketSort, resetOnSort)
+    const dailyTickets = useDailyTickets(params)
     const isFiltered = Object.keys(filters).length > 0
 
     if (dailyTickets.isPending) {
