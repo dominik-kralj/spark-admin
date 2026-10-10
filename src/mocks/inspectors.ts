@@ -2,7 +2,7 @@ import { http, HttpResponse } from 'msw'
 import { z } from 'zod'
 
 import { mockAdminUser } from './adminAccount'
-import { notFound, validationProblem } from './responses'
+import { duplicate, notFound, validationProblem } from './responses'
 import { apiUrl } from './url'
 
 interface InspectorRow {
@@ -119,12 +119,7 @@ async function readInspectorBody(request: Request, ownId: number | null): Promis
     if (!parsed.success) return { response: validationProblem(parsed.error) }
 
     if (hasDuplicateOib(parsed.data, ownId)) {
-        return {
-            response: HttpResponse.json(
-                { status: 409, code: 'duplicate', field: 'oib' },
-                { status: 409 },
-            ),
-        }
+        return { response: duplicate('oib') }
     }
 
     return { body: parsed.data }

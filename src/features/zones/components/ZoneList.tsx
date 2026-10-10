@@ -2,13 +2,13 @@ import { Box } from '@chakra-ui/react'
 import { MapPin } from 'lucide-react'
 
 import { useStrings } from '@/shared/i18n/useStrings'
+import { sortByText } from '@/shared/lib/sortByText'
 import { useSortSearchParams, type Sort } from '@/shared/lib/useSortSearchParams'
 import { EmptyState } from '@/shared/ui/EmptyState'
 import { ErrorState } from '@/shared/ui/ErrorState'
 import { LoadingState } from '@/shared/ui/LoadingState'
 
 import { useZones } from '../api/useZones'
-import { sortZonesByCode } from '../lib/sortZones'
 import type { Zone } from '../validators/zone'
 
 import { AddZoneButton } from './AddZoneButton'
@@ -63,7 +63,11 @@ export function ZoneList({ onAdd, onEdit, onDelete }: ZoneListProps) {
         )
     }
 
-    const sortedZones = sortZonesByCode(zones.data, sort.direction)
+    const sortedZones = sortByText(zones.data, {
+        keysOf: (zone) => [zone.code],
+        direction: sort.direction,
+        numeric: true,
+    })
 
     return (
         <>
