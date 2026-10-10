@@ -42,6 +42,9 @@ export function DateInput({ label, value, onPick, min, max, children }: DateInpu
         <DatePicker.Root
             locale={strings.locale}
             startOfWeek={1}
+            // A closed calendar's cells would re-render with every keystroke in the field.
+            lazyMount
+            unmountOnExit
             // Inside a Field the picker adopts the field's input and writes to it in this format.
             format={formatCalendarDate}
             value={'date' in typed ? [toDateValue(typed.date)] : []}
