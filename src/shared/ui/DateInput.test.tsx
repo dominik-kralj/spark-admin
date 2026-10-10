@@ -9,9 +9,11 @@ import { DateInput } from './DateInput'
 import { FormField } from './FormField'
 
 const label = 'Datum od'
+// Every month the calendar opens on has a 15th.
+const dayFifteen = /(^|\s)15\. /
 
 function dayCells() {
-    return screen.queryAllByRole('button', { name: /(^|\s)15\. /, hidden: true })
+    return screen.queryAllByRole('button', { name: dayFifteen, hidden: true })
 }
 
 describe('DateInput', () => {
@@ -29,7 +31,7 @@ describe('DateInput', () => {
         expect(dayCells()).toHaveLength(0)
 
         await user.click(screen.getByRole('button', { name: hr.forms.datePicker.open(label) }))
-        expect(await screen.findByRole('button', { name: /(^|\s)15\. / })).toBeVisible()
+        expect(await screen.findByRole('button', { name: dayFifteen })).toBeVisible()
 
         await user.keyboard('{Escape}')
         await waitFor(() => {

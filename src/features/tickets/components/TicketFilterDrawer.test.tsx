@@ -7,7 +7,7 @@ import { expectNoAxeViolations } from '@/test/axe'
 import { server } from '@/test/server'
 import { signInForTest } from '@/test/session'
 
-import { bar, listRequests, openPage } from './ticketFiltersPage'
+import { filterBar, listRequests, openPage } from './ticketFiltersPage'
 
 const f = hr.ticketFilters
 
@@ -23,13 +23,13 @@ describe('Karte filter drawer (phone and tablet)', () => {
     it('names the active filter count on its button', async () => {
         await openPage(`${paths.tickets}?plate=ZG&from=2026-10-01&to=2026-10-06&zone=1`)
 
-        expect(bar().getByRole('button', { name: f.openWithCount(2) })).toBeInTheDocument()
+        expect(filterBar().getByRole('button', { name: f.openWithCount(2) })).toBeInTheDocument()
     })
 
     it('applies the filters in the drawer, then returns focus to its button', async () => {
         const requests = listRequests()
         const { user, router } = await openPage(`${paths.tickets}?page=2&plate=ZG`)
-        const trigger = bar().getByRole('button', { name: f.open })
+        const trigger = filterBar().getByRole('button', { name: f.open })
 
         await user.click(trigger)
 
@@ -55,7 +55,7 @@ describe('Karte filter drawer (phone and tablet)', () => {
         // Focus returns after the drawer's exit animation, which a full parallel run slows past 3 s.
         await waitFor(
             () => {
-                expect(bar().getByRole('button', { name: f.openWithCount(2) })).toHaveFocus()
+                expect(filterBar().getByRole('button', { name: f.openWithCount(2) })).toHaveFocus()
             },
             { timeout: 5000 },
         )
@@ -68,7 +68,7 @@ describe('Karte filter drawer (phone and tablet)', () => {
     it('keeps the drawer open on a date it cannot read, with the error under the field', async () => {
         const { user, router } = await openPage()
 
-        await user.click(bar().getByRole('button', { name: f.open }))
+        await user.click(filterBar().getByRole('button', { name: f.open }))
         const drawer = await screen.findByRole('dialog', { name: f.drawerTitle })
         await user.type(within(drawer).getByRole('textbox', { name: f.from }), '31.02.2026')
         await user.click(within(drawer).getByRole('button', { name: f.apply }))
@@ -81,7 +81,7 @@ describe('Karte filter drawer (phone and tablet)', () => {
     it('clears every drawer filter but keeps the plate', async () => {
         const { user, router } = await openPage(`${paths.tickets}?plate=ZG&zone=1&fiscal=done`)
 
-        await user.click(bar().getByRole('button', { name: f.openWithCount(2) }))
+        await user.click(filterBar().getByRole('button', { name: f.openWithCount(2) }))
         const drawer = await screen.findByRole('dialog', { name: f.drawerTitle })
         await user.click(within(drawer).getByRole('button', { name: f.clearAll }))
 
@@ -93,7 +93,7 @@ describe('Karte filter drawer (phone and tablet)', () => {
 
     it('closes on Escape without applying anything', async () => {
         const { user, router } = await openPage()
-        const trigger = bar().getByRole('button', { name: f.open })
+        const trigger = filterBar().getByRole('button', { name: f.open })
 
         await user.click(trigger)
         const drawer = await screen.findByRole('dialog', { name: f.drawerTitle })
@@ -115,7 +115,7 @@ describe('Karte filter drawer (phone and tablet)', () => {
     it('has no axe violations with the drawer open', async () => {
         const { user, container } = await openPage(`${paths.tickets}?zone=1`)
 
-        await user.click(bar().getByRole('button', { name: f.openWithCount(1) }))
+        await user.click(filterBar().getByRole('button', { name: f.openWithCount(1) }))
         await screen.findByRole('dialog', { name: f.drawerTitle })
 
         await expectNoAxeViolations(container.ownerDocument.body)

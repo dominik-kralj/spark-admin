@@ -26,7 +26,7 @@ export async function ticketsTable() {
 }
 
 /** Queries inside the Karte filter bar. */
-export function bar() {
+export function filterBar() {
     return within(screen.getByRole('search', { name: t.filters.label }))
 }
 
