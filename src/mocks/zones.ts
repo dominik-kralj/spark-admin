@@ -1,7 +1,7 @@
 import { http, HttpResponse } from 'msw'
 import { z } from 'zod'
 
-import { mockAdminUser } from './adminUsers'
+import { mockAdminUser } from './adminAccount'
 import { notFound, validationProblem } from './responses'
 import { apiUrl } from './url'
 

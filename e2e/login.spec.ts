@@ -1,6 +1,6 @@
 import { expect, test, type Page } from '@playwright/test'
 
-import { mockAdminCredentials } from '../src/mocks/adminUsers'
+import { mockAdminCredentials } from '../src/mocks/adminAccount'
 import { hr } from '../src/shared/i18n/hr'
 import { paths } from '../src/shared/paths'
 

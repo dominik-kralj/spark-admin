@@ -12,6 +12,7 @@ export type ValidationMessage =
     | 'dateFormat'
     | 'dateInvalid'
     | 'dateRangeOrder'
+    | 'passwordMismatch'
 
 /** A Zod error message that is a dictionary key, so the form translates it at render. */
 export const messageKey = <TKey extends string>(key: TKey) => ({ message: key })

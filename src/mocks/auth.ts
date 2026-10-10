@@ -1,7 +1,7 @@
 import { http, HttpResponse } from 'msw'
 import { z } from 'zod'
 
-import { mockAdminCredentials, mockAdminUser } from './adminUsers'
+import { mockAdminCredentials, mockAdminUser } from './adminAccount'
 import { apiUrl } from './url'
 
 const loginBodySchema = z.object({ username: z.string(), password: z.string() })

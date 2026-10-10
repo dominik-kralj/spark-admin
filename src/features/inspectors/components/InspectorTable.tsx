@@ -2,11 +2,11 @@ import { HStack, IconButton, Table } from '@chakra-ui/react'
 import { Pencil } from 'lucide-react'
 
 import { useStrings } from '@/shared/i18n/useStrings'
+import { fullName } from '@/shared/lib/fullName'
 import type { SortDirection } from '@/shared/lib/useSortSearchParams'
 import { SortableColumnHeader } from '@/shared/ui/SortableColumnHeader'
 import { TablePanel } from '@/shared/ui/TablePanel'
 
-import { fullName } from '../lib/fullName'
 import { inactiveTint } from '../lib/inactiveTint'
 import type { Inspector } from '../validators/inspector'
 

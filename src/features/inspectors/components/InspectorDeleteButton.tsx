@@ -12,9 +12,9 @@ import { Trash2 } from 'lucide-react'
 import { useId } from 'react'
 
 import { useStrings } from '@/shared/i18n/useStrings'
+import { fullName } from '@/shared/lib/fullName'
 
 import { hasIssuedTickets } from '../lib/canDelete'
-import { fullName } from '../lib/fullName'
 import type { Inspector } from '../validators/inspector'
 
 interface InspectorDeleteButtonProps {

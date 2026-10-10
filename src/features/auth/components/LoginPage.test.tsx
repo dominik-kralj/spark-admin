@@ -2,7 +2,7 @@ import { screen, waitFor } from '@testing-library/react'
 import { http, HttpResponse } from 'msw'
 import { describe, expect, it } from 'vitest'
 
-import { mockAdminCredentials } from '@/mocks/adminUsers'
+import { mockAdminCredentials } from '@/mocks/adminAccount'
 import { apiUrl } from '@/mocks/url'
 import { hr } from '@/shared/i18n/hr'
 import { languagePickerLabel } from '@/shared/i18n/language'

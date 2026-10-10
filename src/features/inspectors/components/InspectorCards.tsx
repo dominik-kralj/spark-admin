@@ -4,8 +4,8 @@ import type { ReactNode } from 'react'
 
 import type { Dictionary } from '@/shared/i18n/dictionary'
 import { useStrings } from '@/shared/i18n/useStrings'
+import { fullName } from '@/shared/lib/fullName'
 
-import { fullName } from '../lib/fullName'
 import { inactiveTint } from '../lib/inactiveTint'
 import type { Inspector } from '../validators/inspector'
 
