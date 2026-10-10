@@ -267,6 +267,38 @@ it. Mapping to the domain `Inspector` (`id`, `name`, `surname`, `oib`,
 | Delete     | only an inspector with no tickets (user decision). The list carries `ticketCount`, the daily tickets they issued [proposed]; with tickets the delete is disabled and says to deactivate instead. The server still answers `409 inUse` when anything points at them (tickets or `PARKING_OBSERVATIONS`), and the dialog says so. A missing `ticketCount` leaves the decision to the server | user decision; spec: `TICKETS.InspectorId`, `FK_PARKING_OBSERVATIONS_INSPECTOR` |
 | Update     | `PUT` replaces every field; the list cache takes the returned inspector without a refetch, and the detail is fetched again on the next edit                                                                                                                                                                                                                                               | `api-contract.md` Writes                                                        |
 
+### Admin users (`src/features/admin-users/api/useAdminUsers.ts`)
+
+The spec has no table for back-office users (open question #2, `api-contract.md`
+D13), so the shape is `api-contract.md` ADM-9 as written: the login's user
+fields without `tenantId`. Mapping to the domain `AdminUser` (`id`, `username`,
+`name`, `surname`) is in `src/features/admin-users/validators/adminUser.ts`.
+
+```json
+{ "adminUserId": 2, "username": "marin.loncar", "name": "Marin", "surname": "Lončar" }
+```
+
+| Call                       | Body                                                     | Success           | Errors                                            |
+| -------------------------- | -------------------------------------------------------- | ----------------- | ------------------------------------------------- |
+| `GET /users`               |                                                          | `200 AdminUser[]` |                                                   |
+| `POST /users`              | `username`, `name`, `surname`, `password`                | `201 AdminUser`   | `400` field errors; `409 duplicate` on `username` |
+| `PUT /users/{adminUserId}` | `name`, `surname`, and `password` only when one is typed | `200 AdminUser`   | `400` field errors; `404`                         |
+
+| Item           | Assumption                                                                                                                                                                                                                                                                     | Source                       |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------- |
+| List           | a plain array of the signed-in city's users, sorted in the browser by username; no paging                                                                                                                                                                                      | `api-contract.md` Lists      |
+| Tenant         | from the JWT; another city's user answers `404`, and their username is free in this city                                                                                                                                                                                       | assumed, as for inspectors   |
+| Password       | write-only: sent on create and on an edit that types one, exactly as typed; never in a response. The response schemas have no `password`, so one sent by mistake is dropped, and the mutations are collected as soon as the form closes so the password leaves the query cache | `api-contract.md` ADM-9      |
+| Password rules | none checked beyond "required on create" until they are defined (open question #49)                                                                                                                                                                                            | `api-contract.md` D13        |
+| Username       | fixed after create: the `PUT` has no `username`, and the edit form shows it read-only (open question #50). Unique per city, compared exactly as typed after trimming                                                                                                           | `api-contract.md` ADM-9, D13 |
+| Limits         | `username`, `name`, `surname` 1–100 characters, trimmed (as INSPECTORS names)                                                                                                                                                                                                  | assumed                      |
+| "Vi"           | the row whose `adminUserId` equals the signed-in user's from login                                                                                                                                                                                                             | `api-contract.md` ADM-9      |
+| Update         | the list cache takes the returned user without a refetch                                                                                                                                                                                                                       | `api-contract.md` Writes     |
+| Delete         | not built yet (#85): `DELETE /users/{adminUserId}`, `409 cannotDeleteSelf`                                                                                                                                                                                                     | `api-contract.md` ADM-9      |
+
+The mock's login still checks only the seed admin (`src/mocks/adminAccount.ts`),
+so a user added on Korisnici cannot sign in to the mock.
+
 ### Tickets (`src/features/tickets/api/useTickets.ts`)
 
 The shape is `api-contract.md` ADM-4. Mapping to the domain `Ticket` (`id`,

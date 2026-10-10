@@ -2,7 +2,7 @@ import { act, waitFor } from '@testing-library/react'
 import { http, HttpResponse } from 'msw'
 import { describe, expect, it, vi } from 'vitest'
 
-import { mockAdminCredentials } from '@/mocks/adminUsers'
+import { mockAdminCredentials } from '@/mocks/adminAccount'
 import { apiUrl } from '@/mocks/url'
 import { startSession } from '@/shared/api'
 import { renderHookWithQueryClient } from '@/test/render'

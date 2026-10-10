@@ -3,7 +3,7 @@ import { z } from 'zod'
 
 import { platePattern } from '@/shared/lib/validation'
 
-import { mockAdminUser } from './adminUsers'
+import { mockAdminUser } from './adminAccount'
 import { notFound, validationProblem } from './responses'
 import { apiUrl } from './url'
 

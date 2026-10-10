@@ -2,6 +2,7 @@ import '@testing-library/jest-dom/vitest'
 import { cleanup, configure } from '@testing-library/react'
 import { afterAll, afterEach, beforeAll } from 'vitest'
 
+import { resetAdminUsers } from '@/mocks/adminUsers'
 import { resetLoginRateLimit } from '@/mocks/auth'
 import { resetDailyTickets } from '@/mocks/dailyTickets'
 import { resetInspectors } from '@/mocks/inspectors'
@@ -47,6 +48,7 @@ afterEach(() => {
     resetTickets()
     resetDailyTickets()
     resetTenant()
+    resetAdminUsers()
     // The toaster is one store for the whole run; a toast left over would show in the next test.
     toaster.remove()
     // Absent in files that opt into the node environment.

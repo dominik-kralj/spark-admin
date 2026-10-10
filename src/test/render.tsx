@@ -32,7 +32,7 @@ export function renderHookWithQueryClient<TResult>(hook: () => TResult) {
         <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     )
 
-    return renderHook(hook, { wrapper })
+    return { queryClient, ...renderHook(hook, { wrapper }) }
 }
 
 export type RenderedRoute = Awaited<ReturnType<typeof renderRoute>>
