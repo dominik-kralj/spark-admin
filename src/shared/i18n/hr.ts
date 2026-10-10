@@ -67,12 +67,7 @@ export const hr = {
             payment: 'Plaćanje',
             fiscal: 'Fiskalizacija',
         },
-        details: 'Detalji',
         moreInDetail: 'Vrijeme kupnje, trajanje i iznos nalaze se u detaljima karte.',
-        shown: (from: number, to: number, total: number) =>
-            `Prikazano ${String(from)}–${String(to)} od ${String(total)}`,
-        shownShort: (from: number, to: number, total: number) =>
-            `${String(from)}–${String(to)} od ${String(total)}`,
         loading: 'Učitavanje karata…',
         errorTitle: 'Karte nije moguće učitati',
         empty: {
@@ -86,33 +81,6 @@ export const hr = {
         },
         filters: {
             label: 'Filteri karata',
-            plate: 'Registracija',
-            platePlaceholder: 'npr. ZG1234AB',
-            clearPlate: 'Obriši registraciju',
-            from: 'Datum od',
-            to: 'Datum do',
-            zone: 'Zona',
-            allZones: 'Sve zone',
-            fiscal: 'Fiskalizacija',
-            allStatuses: 'Svi statusi',
-            search: 'Pretraži',
-            notApplied: 'Filteri nisu primijenjeni.',
-            clear: 'Očisti filtere',
-            clearAll: 'Očisti sve',
-            open: 'Filteri',
-            openWithCount: (count: number) =>
-                `Filteri, ${String(count)} ${plural(count, { one: 'aktivan', few: 'aktivna', other: 'aktivnih' })}`,
-            drawerTitle: 'Filteri',
-            close: 'Zatvori filtere',
-            apply: 'Prikaži rezultate',
-            tags: {
-                range: (from: string, to: string) => `Razdoblje: ${from} – ${to}`,
-                rangeFrom: (from: string) => `Razdoblje: od ${from}`,
-                rangeTo: (to: string) => `Razdoblje: do ${to}`,
-                zone: (code: string) => `Zona: ${code}`,
-                fiscal: (status: string) => `Fiskalizacija: ${status}`,
-            },
-            remove: (tag: string) => `Ukloni filter ${tag}`,
             noResults: {
                 title: 'Nema karata za odabrane filtere',
                 description: 'Promijenite ili uklonite filtere da vidite više karata.',
@@ -131,7 +99,6 @@ export const hr = {
             fallbackTitle: 'Detalji karte',
             close: 'Zatvori detalje karte',
             back: 'Natrag na karte',
-            closeButton: 'Zatvori',
             ticketSection: 'Podaci o karti',
             transactionSection: 'Transakcija i fiskalizacija',
             fields: {
@@ -156,13 +123,117 @@ export const hr = {
                 zki: 'Kopiraj ZKI',
             },
             copied: 'Kopirano',
-            missing: 'Nema podatka',
             loading: 'Učitavanje karte…',
             errorTitle: 'Kartu nije moguće učitati',
             notFound: {
                 title: 'Karta nije pronađena',
                 description:
                     'Karta ne postoji ili ne pripada vašem gradu. Provjerite poveznicu ili se vratite na popis karata.',
+            },
+        },
+    },
+    dailyTickets: {
+        description: 'Dnevne parkirne karte koje su izdali kontrolori.',
+        listLabel: 'Dnevne parkirne karte',
+        columns: {
+            createdAt: 'Vrijeme',
+            plate: 'Registracija',
+            zone: 'Zona',
+            address: 'Adresa',
+            inspector: 'Kontrolor',
+            amount: 'Iznos',
+            fiscal: 'Fiskalizacija',
+            action: 'Radnja',
+        },
+        moreInDetail: 'Adresa, kontrolor i iznos nalaze se u detaljima dnevne karte.',
+        loading: 'Učitavanje dnevnih karata…',
+        errorTitle: 'Dnevne karte nije moguće učitati',
+        empty: {
+            title: 'Još nema dnevnih karata',
+            description: 'Ovdje će se prikazati dnevne karte čim ih kontrolori izdaju na terenu.',
+        },
+        pastEnd: {
+            title: 'Ova stranica je prazna',
+            description: 'Popis dnevnih karata ima manje stranica. Vratite se na prvu stranicu.',
+            action: 'Na prvu stranicu',
+        },
+        filters: {
+            label: 'Filteri dnevnih karata',
+            noResults: {
+                title: 'Nema dnevnih karata za odabrane filtere',
+                description: 'Promijenite ili uklonite filtere da vidite više dnevnih karata.',
+            },
+        },
+        fiscalize: {
+            action: 'Fiskaliziraj ponovno',
+            actionFor: (plate: string) => `Fiskaliziraj ponovno DPK za ${plate}`,
+            confirmTitle: (plate: string) => `Fiskalizirati ponovno DPK za ${plate}?`,
+            confirmDescription:
+                'Račun se ponovno šalje Poreznoj upravi. Odgovor može stići tek za nekoliko sekundi.',
+            done: (plate: string) => `DPK za ${plate} je fiskaliziran.`,
+            failedAgain: (plate: string) => `Fiskalizacija DPK-a za ${plate} ponovno nije uspjela.`,
+            failedAgainDescription:
+                'Odgovor sustava nalazi se u detaljima karte. Ako se pogreška ponavlja, provjerite certifikat i postavke grada.',
+            started: (plate: string) =>
+                `Fiskalizacija DPK-a za ${plate} je u obradi. Status će se promijeniti kad Porezna uprava odgovori.`,
+            failed: 'Fiskalizacija nije pokrenuta.',
+            errors: {
+                network:
+                    'Poslužitelj nije odgovorio. Provjerite internetsku vezu i pokušajte ponovno.',
+                notFound: 'Dnevna karta više ne postoji.',
+                conflict:
+                    'Stanje fiskalizacije se u međuvremenu promijenilo. Popis i detalji su osvježeni.',
+                forbidden:
+                    'Nemate ovlasti za fiskalizaciju. Ako mislite da biste je trebali moći pokrenuti, javite se administratoru sustava.',
+                server: 'Došlo je do pogreške na poslužitelju. Pokušajte ponovno za nekoliko minuta.',
+            },
+        },
+        detail: {
+            title: (plate: string) => `Dnevna karta ${plate}`,
+            fallbackTitle: 'Detalji dnevne karte',
+            close: 'Zatvori detalje dnevne karte',
+            back: 'Natrag na DPK',
+            ticketSection: 'Podaci o dnevnoj karti',
+            photosSection: (count: number) => `Fotografije vozila (${String(count)})`,
+            fiscalSection: 'Fiskalizacija',
+            fields: {
+                plate: 'Registracija',
+                zone: 'Zona',
+                createdAt: 'Vrijeme izdavanja',
+                amount: 'Iznos',
+                address: 'Adresa',
+                inspector: 'Kontrolor',
+                status: 'Status',
+                jir: 'JIR',
+                zki: 'ZKI',
+            },
+            jirMissing: 'Nije dodijeljen',
+            failure: {
+                title: 'Fiskalizacija nije uspjela.',
+                description: 'Račun nije prijavljen Poreznoj upravi.',
+                response: (text: string) => `Odgovor sustava: ${text}`,
+                advice: 'Pokušajte ponovno; ako ne uspije, provjerite certifikat i postavke grada.',
+            },
+            photos: {
+                hint: 'Fotografije je snimio kontrolor pri izdavanju karte. Odaberite fotografiju za prikaz u punoj veličini.',
+                hintTouch:
+                    'Fotografije je snimio kontrolor pri izdavanju karte. Dodirnite fotografiju za prikaz u punoj veličini.',
+                enlarge: (index: number, total: number) =>
+                    `Povećaj fotografiju ${String(index)} od ${String(total)}`,
+                alt: (plate: string, index: number, total: number) =>
+                    `Fotografija vozila ${plate}, ${String(index)} od ${String(total)}`,
+                viewerTitle: (index: number, total: number) =>
+                    `Fotografija ${String(index)} od ${String(total)}`,
+                closeViewer: 'Zatvori fotografiju',
+                unavailable: 'Fotografija nije dostupna',
+                none: 'Uz ovu kartu nema fotografija vozila.',
+            },
+            loading: 'Učitavanje dnevne karte…',
+            errorTitle: 'Dnevnu kartu nije moguće učitati',
+            notFound: {
+                title: 'Dnevna karta nije pronađena',
+                description:
+                    'Dnevna karta ne postoji ili ne pripada vašem gradu. Provjerite poveznicu ili se vratite na popis dnevnih karata.',
             },
         },
     },
@@ -450,6 +521,40 @@ export const hr = {
             server: 'Došlo je do pogreške na poslužitelju. Vaš je unos ostao u obrascu. Pokušajte ponovno za nekoliko minuta.',
         },
     },
+    ticketFilters: {
+        plate: 'Registracija',
+        platePlaceholder: 'npr. ZG1234AB',
+        clearPlate: 'Obriši registraciju',
+        from: 'Datum od',
+        to: 'Datum do',
+        zone: 'Zona',
+        allZones: 'Sve zone',
+        fiscal: 'Fiskalizacija',
+        allStatuses: 'Svi statusi',
+        search: 'Pretraži',
+        notApplied: 'Filteri nisu primijenjeni.',
+        clear: 'Očisti filtere',
+        clearAll: 'Očisti sve',
+        open: 'Filteri',
+        openWithCount: (count: number) =>
+            `Filteri, ${String(count)} ${plural(count, { one: 'aktivan', few: 'aktivna', other: 'aktivnih' })}`,
+        drawerTitle: 'Filteri',
+        close: 'Zatvori filtere',
+        apply: 'Prikaži rezultate',
+        tags: {
+            range: (from: string, to: string) => `Razdoblje: ${from} – ${to}`,
+            rangeFrom: (from: string) => `Razdoblje: od ${from}`,
+            rangeTo: (to: string) => `Razdoblje: do ${to}`,
+            zone: (code: string) => `Zona: ${code}`,
+            fiscal: (status: string) => `Fiskalizacija: ${status}`,
+        },
+        remove: (tag: string) => `Ukloni filter ${tag}`,
+    },
+    details: {
+        open: 'Detalji',
+        close: 'Zatvori',
+        missing: 'Nema podatka',
+    },
     processingStatus: {
         payment: {
             pending: 'Na čekanju',
@@ -465,6 +570,10 @@ export const hr = {
         },
     },
     pagination: {
+        shown: (from: number, to: number, total: number) =>
+            `Prikazano ${String(from)}–${String(to)} od ${String(total)}`,
+        shownShort: (from: number, to: number, total: number) =>
+            `${String(from)}–${String(to)} od ${String(total)}`,
         tableLabel: 'Stranice tablice',
         listLabel: 'Stranice popisa',
         previous: 'Prethodna stranica',

@@ -2,17 +2,12 @@ import { waitFor } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 
 import { mockTicketIds } from '@/mocks/tickets'
+import type { TicketFilters } from '@/shared/lib/ticketFilterValues'
 import { renderHookWithQueryClient } from '@/test/render'
 import { signInForTest } from '@/test/session'
 
-import {
-    useNewestTicketTime,
-    useNewTicketCount,
-    useTicket,
-    useTicketZoneOptions,
-    useTickets,
-} from './useTickets'
-import type { TicketFilters, TicketListParams, TicketPage } from '../validators/ticket'
+import { useNewestTicketTime, useNewTicketCount, useTicket, useTickets } from './useTickets'
+import type { TicketListParams, TicketPage } from '../validators/ticket'
 
 const seedCount = 300
 
@@ -254,20 +249,6 @@ describe('useNewestTicketTime', () => {
 
         await waitFor(() => {
             expect(result.current.data).toEqual(new Date('2098-12-31T23:59:59.999Z'))
-        })
-    })
-})
-
-describe('useTicketZoneOptions', () => {
-    it("lists the city's zones by code", async () => {
-        signInForTest()
-        const { result } = renderHookWithQueryClient(() => useTicketZoneOptions())
-
-        await waitFor(() => {
-            expect(result.current.data).toEqual([
-                { id: 2, code: '2A' },
-                { id: 1, code: 'ZONA1' },
-            ])
         })
     })
 })

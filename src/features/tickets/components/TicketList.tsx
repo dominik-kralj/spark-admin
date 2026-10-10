@@ -3,16 +3,17 @@ import { Ticket } from 'lucide-react'
 import { useEffect } from 'react'
 
 import { useStrings } from '@/shared/i18n/useStrings'
+import { pageRange } from '@/shared/lib/pageRange'
+import type { TicketFilters } from '@/shared/lib/ticketFilterValues'
 import { pageParam, usePageSearchParam } from '@/shared/lib/usePageSearchParam'
 import { useSortSearchParams, type Sort } from '@/shared/lib/useSortSearchParams'
+import { visibleRowLink } from '@/shared/lib/visibleRowLink'
 import { EmptyState } from '@/shared/ui/EmptyState'
 import { ErrorState } from '@/shared/ui/ErrorState'
 import { LoadingState } from '@/shared/ui/LoadingState'
 
 import { useTickets } from '../api/useTickets'
-import { pageRange } from '../lib/pageRange'
-import { visibleRowLink } from '../lib/visibleRowLink'
-import type { TicketFilters, TicketSortKey } from '../validators/ticket'
+import type { TicketSortKey } from '../validators/ticket'
 
 import { TicketCards } from './TicketCards'
 import { TicketTable } from './TicketTable'
@@ -85,7 +86,7 @@ export function TicketList({
                 description={t.tickets.filters.noResults.description}
                 action={
                     <Button variant="outline" onClick={onClearFilters}>
-                        {t.tickets.filters.clearAll}
+                        {t.ticketFilters.clearAll}
                     </Button>
                 }
             />

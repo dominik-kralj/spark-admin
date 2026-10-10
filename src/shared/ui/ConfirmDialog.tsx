@@ -2,6 +2,11 @@ import { Button, Dialog, Portal, Stack, type ButtonProps } from '@chakra-ui/reac
 import { Fragment, useRef, type ReactNode } from 'react'
 
 const tones = {
+    action: {
+        cancel: { variant: 'outline' },
+        confirm: { variant: 'solid', colorPalette: 'blue' },
+        order: ['cancel', 'confirm'],
+    },
     destructive: {
         cancel: { variant: 'outline' },
         confirm: { variant: 'solid', colorPalette: 'red' },

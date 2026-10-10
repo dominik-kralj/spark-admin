@@ -9,7 +9,7 @@ import { server } from '@/test/server'
 import { signInForTest } from '@/test/session'
 
 const t = hr.tickets
-const f = t.filters
+const f = hr.ticketFilters
 
 /** Records the query string of every list request (not the newest-ticket lookup). */
 function listRequests(): URLSearchParams[] {
@@ -30,7 +30,7 @@ async function ticketsTable() {
 }
 
 function filterBar() {
-    return screen.getByRole('search', { name: f.label })
+    return screen.getByRole('search', { name: t.filters.label })
 }
 
 function bar() {
@@ -345,7 +345,7 @@ describe('Karte filters', () => {
         const { user, router } = await renderRoute(`${paths.tickets}?plate=NOSUCH`)
 
         expect(
-            await screen.findByRole('heading', { level: 2, name: f.noResults.title }),
+            await screen.findByRole('heading', { level: 2, name: t.filters.noResults.title }),
         ).toBeInTheDocument()
         expect(screen.queryByText(t.empty.title)).not.toBeInTheDocument()
 

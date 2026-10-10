@@ -153,9 +153,9 @@ describe('Karte detail', () => {
             ['JIR', 'ZKI', 'Vrijeme fiskalizacije'].includes(label),
         )
         expect(missing).toEqual([
-            ['JIR', `–${t.missing}`],
-            ['ZKI', `–${t.missing}`],
-            ['Vrijeme fiskalizacije', `–${t.missing}`],
+            ['JIR', `–${hr.details.missing}`],
+            ['ZKI', `–${hr.details.missing}`],
+            ['Vrijeme fiskalizacije', `–${hr.details.missing}`],
         ])
         expect(drawer).not.toHaveTextContent(/null|undefined/)
         expect(within(drawer).queryByRole('button', { name: t.copy.jir })).not.toBeInTheDocument()

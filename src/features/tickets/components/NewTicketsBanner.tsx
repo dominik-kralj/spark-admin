@@ -5,7 +5,7 @@ import { useStrings } from '@/shared/i18n/useStrings'
 import { useAnnouncement } from '@/shared/lib/useAnnouncement'
 
 import { useNewestTicketTime, useNewTicketCount } from '../api/useTickets'
-import type { TicketFilters } from '../validators/ticket'
+import type { TicketFilters } from '@/shared/lib/ticketFilterValues'
 
 interface NewTicketsNoticeProps {
     count: number

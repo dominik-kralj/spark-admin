@@ -102,8 +102,9 @@ describe('app shell', () => {
             await waitFor(() => {
                 expect(router.state.location.pathname).toBe(path)
             })
+            // A list screen's first render can pass the default 3 s while every file runs at once.
             expect(
-                await screen.findByRole('heading', { level: 1, name: label }),
+                await screen.findByRole('heading', { level: 1, name: label }, { timeout: 5000 }),
             ).toBeInTheDocument()
             expect(within(nav).getByRole('link', { current: 'page' })).toHaveAccessibleName(label)
             await waitFor(() => {

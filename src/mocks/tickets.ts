@@ -3,6 +3,7 @@ import { z } from 'zod'
 
 import { mockAdminUser } from './adminUsers'
 import { notFound, validationProblem } from './responses'
+import { createSeededRandom } from './seededRandom'
 import { apiUrl } from './url'
 
 type Status = 'PENDING' | 'PROCESSING' | 'DONE' | 'FAIL'
@@ -52,53 +53,7 @@ const designRows = [
     ['08:40', 'ZG3358EH', 1, 60, 'PENDING', 'PENDING'],
 ] as const
 
-/** Mulberry32: the same seed gives the same tickets on every run. */
-function createRandom(seed: number): () => number {
-    let state = seed
-
-    return () => {
-        state = (state + 0x6d2b79f5) | 0
-        let t = Math.imul(state ^ (state >>> 15), 1 | state)
-        t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
-
-        return ((t ^ (t >>> 14)) >>> 0) / 4294967296
-    }
-}
-
-const random = createRandom(2026)
-
-function pick<T>(items: readonly T[]): T {
-    return items[Math.floor(random() * items.length)] as T
-}
-
-function hex(length: number): string {
-    return Array.from({ length }, () => Math.floor(random() * 16).toString(16)).join('')
-}
-
-function guid(): string {
-    return `${hex(8)}-${hex(4)}-4${hex(3)}-a${hex(3)}-${hex(12)}`
-}
-
-const plateLetters = 'ABCDEFGHIJKLMNOPRSTUVZ'
-
-function randomPlate(): string {
-    const letter = () => plateLetters.charAt(Math.floor(random() * plateLetters.length))
-    const digits = Array.from({ length: random() < 0.7 ? 4 : 3 }, () =>
-        String(Math.floor(random() * 10)),
-    ).join('')
-
-    return `${pick(['ZG', 'ZG', 'ZG', 'ST', 'RI', 'KA', 'OS', 'VŽ'])}${digits}${letter()}${random() < 0.8 ? letter() : ''}`
-}
-
-function weighted(weights: Record<Status, number>): Status {
-    let roll = random() * Object.values(weights).reduce((sum, weight) => sum + weight, 0)
-    for (const [status, weight] of Object.entries(weights) as [Status, number][]) {
-        roll -= weight
-        if (roll < 0) return status
-    }
-
-    return 'DONE'
-}
+const { random, pick, hex, guid, plate: randomPlate, weighted } = createSeededRandom(2026)
 
 const round = (value: number, decimals: number) => Number(value.toFixed(decimals))
 
